@@ -60,11 +60,35 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         }
     }
 
+    async function categoryById(id: string): Promise< Categories | null> {
+        categoryUiState.value.isLoading = true;
+        try {
+            const category = await CategoryRepository.getCategoryById(id)
+            if (category) {
+                categoryUiState.value.nameCategory = category.nameCategory;
+                categoryUiState.value.descriptionCategory = category.descriptionCategory || "";
+
+                // Tip: Activa el modo edición en tu uiState
+                categoryUiState.value.isEdit = true;
+                categoryUiState.value.idCategory = category.idCategory;
+                return category
+            }
+            return null;
+        }catch (error: any) {
+            categoryUiState.value.isLoading = false;
+            categoryUiState.value.errorMessage = error || `Error al obtener categoria: ${id}`+id;
+            return null
+        } finally {
+            categoryUiState.value.isLoading = false;
+        }
+    }
+
     return {
         allCategories,
         categoryUiState,
         getAllCategories,
         clear,
-        addCategory
+        addCategory,
+        categoryById
     }
 })

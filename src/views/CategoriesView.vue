@@ -23,6 +23,17 @@ const handleSave = async () => {
     descCategory.value = ""
   }
 }
+
+const handleEdit = async (id: string) => {
+  categoryStore.categoryUiState.success = false;
+  const category = await categoryStore.categoryById(id)
+
+  if (category) {
+    nameCategory.value = category.nameCategory;
+    descCategory.value = category.descriptionCategory || "";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
 </script>
 
 <template>
@@ -52,6 +63,7 @@ const handleSave = async () => {
         <li v-for="cat in categoryStore.allCategories" :key="cat.idCategory">
           <strong>{{ cat.nameCategory }}</strong>
           <p>{{ cat.descriptionCategory }}</p>
+          <button :key="cat.idCategory" @click="handleEdit(cat.idCategory)">actualizar</button>
         </li>
       </ul>
     </section>
