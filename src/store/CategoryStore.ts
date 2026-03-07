@@ -36,13 +36,15 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         if (stopListener) stopListener();
     }
 
-    async function addCategory(name: string, description: string) {
+    async function addCategory() {
         const idCateGenerated = crypto.randomUUID();
+        const actualState = categoryUiState.value;
+
 
         const category: Categories = {
             idCategory: idCateGenerated,
-            nameCategory: name,
-            descriptionCategory: description,
+            nameCategory: actualState.nameCategory ?? '',
+            descriptionCategory: actualState.descriptionCategory ?? '',
         }
 
         categoryUiState.value.isLoading = true;
@@ -83,12 +85,64 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         }
     }
 
+    async function updateCategory(): Promise<void> {
+        const actualState = categoryUiState.value;
+        const category: Categories = {
+            idCategory: actualState.idCategory?? '',
+            nameCategory: actualState.nameCategory?? '',
+            descriptionCategory: actualState.descriptionCategory?? '',
+        }
+
+        categoryUiState.value.isLoading = true;
+        categoryUiState.value.errorMessage = null;
+        categoryUiState.value.success = false;
+
+        try {
+            await CategoryRepository.updateCategory(category);
+
+            categoryUiState.value.success = true;
+            categoryUiState.value.isLoading = false;
+        }catch (e: any) {
+            categoryUiState.value.isLoading = false;
+            categoryUiState.value.errorMessage = e;
+        }
+    }
+
+    async function deleteCategory(id: string): Promise<void> {
+        categoryUiState.value.isLoading = true;
+        categoryUiState.value.errorMessage = null;
+        categoryUiState.value.success = false;
+
+        try {
+            await CategoryRepository.deleteCategory(id);
+        } catch (error: any) {
+            categoryUiState.value.isLoading = false;
+            categoryUiState.value.errorMessage = error;
+        }
+    }
+
+    function clearForm() {
+        categoryUiState.value.isLoading = false;
+        categoryUiState.value.isEdit = false;
+        categoryUiState.value.errorMessage = null;
+        categoryUiState.value.success = false;
+        categoryUiState.value.idCategory = null;
+        categoryUiState.value.nameCategory = ""; // Usa string vacío mejor que null para inputs
+        categoryUiState.value.descriptionCategory = "";
+        categoryUiState.value.nameError = null;
+        categoryUiState.value.nameTouched = false;
+        categoryUiState.value.isValid = false;
+    }
+
     return {
         allCategories,
         categoryUiState,
         getAllCategories,
         clear,
         addCategory,
-        categoryById
+        categoryById,
+        updateCategory,
+        deleteCategory,
+        clearForm
     }
 })

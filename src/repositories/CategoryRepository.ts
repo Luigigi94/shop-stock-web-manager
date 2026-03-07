@@ -1,4 +1,4 @@
-import {collection, doc, onSnapshot, query, setDoc, Unsubscribe, getDoc} from "firebase/firestore"
+import {collection, doc, onSnapshot, query, setDoc, Unsubscribe, getDoc, deleteDoc} from "firebase/firestore"
 import {COLLECTIONS} from "@/constants/collections";
 
 import {db} from "@/firebase/firebase"
@@ -35,5 +35,13 @@ export const CategoryRepository = {
             } as Categories
         }
         return null
+    },
+    async updateCategory(category: Categories): Promise<void> {
+        const docRef = doc(categoriesCollection, category.idCategory)
+        await setDoc(docRef, category)
+    },
+    async deleteCategory(categoryId: string): Promise<void> {
+        const docRef = doc(categoriesCollection, categoryId)
+        await deleteDoc(docRef)
     }
 }
