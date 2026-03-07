@@ -1,24 +1,31 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+/*import HelloWorld from './components/HelloWorld.vue'
+import TheWelcome from './components/TheWelcome.vue'*/
 </script>
 
 <template>
-  <header>
+<!--  <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
     </div>
-  </header>
-
+  </header>-->
+  <nav>
+    <router-link to="/">Inicio</router-link>
+    <router-link to="/categories">Categorías</router-link>
+  </nav>
   <main>
-    <TheWelcome />
+    <router-view/>
   </main>
+
+<!--  <main>
+    <TheWelcome />
+  </main>-->
 </template>
 
 <style scoped>
-header {
+/*header {
   line-height: 1.5;
 }
 
@@ -43,5 +50,23 @@ header {
     place-items: flex-start;
     flex-wrap: wrap;
   }
+}*/
+nav {
+  padding: 20px;
+  background: #f4f4f4;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+}
+nav a {
+  color: #42b883;
+  text-decoration: none;
+  font-weight: bold;
+}
+nav a.router-link-active {
+  border-bottom: 2px solid #42b883;
+}
+main {
+  padding: 20px;
 }
 </style>
