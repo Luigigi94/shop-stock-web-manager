@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue'
-import { useCategoryStore } from "@/store/CategoryStore";
+import {onMounted, onUnmounted, watch} from 'vue'
+import {useCategoryStore} from "@/store/CategoryStore";
 import TableDataComponent from "@/components/categories/TableDataComponent.vue";
 import FormComponent from "@/components/categories/FormComponent.vue";
 import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
 
 const categoryStore = useCategoryStore();
 const stateCategory = categoryStore.categoryUiState
-const visibleDialog = ref(false);
+const visibleDialog = stateCategory.isModalVisible;
 
-const openModal = () => {
-  visibleDialog.value = true;
-};
 
 watch(() => stateCategory.success, (isSuccess) => {
   if (isSuccess) {
-    visibleDialog.value = false;
     categoryStore.clearForm();
   }
 });
@@ -35,16 +32,16 @@ onUnmounted(() => {
     <Button
         label="Nueva Categoría"
         icon="pi pi-plus"
-        @click="openModal"
+        @click="categoryStore.openNewCategory()"
         class="btn-new"
     />
     <Dialog
-        v-model:visible="visibleDialog"
+        v-model:visible="categoryStore.categoryUiState.isModalVisible"
         modal
         :header="stateCategory.isEdit ? 'Editar Categoría' : 'Nueva Categoría'"
-        :style="{ width: '30vw' }"
-        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     >
+<!--        :style="{ width: '30vw' }"
+        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"-->
       <section class="form-section">
         <FormComponent/>
       </section>
@@ -60,12 +57,6 @@ onUnmounted(() => {
 
 <style scoped>
 /* Contenedor principal: ahora ocupa casi toda la pantalla */
-.inventory-view {
-  max-width: 1200px; /* O usa 95% si quieres más ancho */
-  margin: 2rem auto;
-  padding: 0 1rem;
-  font-family: 'Inter', sans-serif; /* O la que uses */
-}
 
 /* El formulario: lo mantenemos centrado y no tan ancho */
 .form-section {
@@ -83,10 +74,6 @@ onUnmounted(() => {
 }
 
 /* La sección de la tabla: ¡Aquí es donde liberamos el espacio! */
-.table-section {
-  width: 100%;
-  margin-top: 2rem;
-}
 
 /* Estilos de inputs para que se vean mejor con PrimeVue */
 input {
@@ -119,5 +106,4 @@ button:disabled {
   background: #ccc;
 }
 
-.error { color: #ef4444; font-size: 0.9rem; margin-top: -10px; }
 </style>

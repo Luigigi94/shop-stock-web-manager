@@ -17,9 +17,15 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         nameError: '' as string | null,
         nameTouched: false,
         isValid: false,
+        isModalVisible: false,
     })
 
     let stopListener: Unsubscribe | null = null;
+
+    function openNewCategory() {
+        clearForm();
+        categoryUiState.value.isModalVisible = true;
+    }
 
     function getAllCategories() {
         categoryUiState.value.isLoading = true;
@@ -51,11 +57,13 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         categoryUiState.value.errorMessage = null;
         categoryUiState.value.success = false;
 
+
         try{
             await CategoryRepository.addCategory(category);
 
             categoryUiState.value.success = true;
             categoryUiState.value.isLoading = false;
+            categoryUiState.value.isModalVisible = false;
         } catch (error: any) {
             categoryUiState.value.isLoading = false;
             categoryUiState.value.errorMessage = error || "Error al crear categoria";
@@ -132,6 +140,7 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         categoryUiState.value.nameError = null;
         categoryUiState.value.nameTouched = false;
         categoryUiState.value.isValid = false;
+        categoryUiState.value.isModalVisible = false;
     }
 
     return {
@@ -143,6 +152,7 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
         categoryById,
         updateCategory,
         deleteCategory,
-        clearForm
+        clearForm,
+        openNewCategory
     }
 })

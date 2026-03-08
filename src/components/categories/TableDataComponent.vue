@@ -16,6 +16,7 @@ const props = defineProps({
 
 const handleEdit = async (id: string) => {
   categoryStore.categoryUiState.success = false;
+  categoryStore.categoryUiState.isModalVisible = true;
   const category = await categoryStore.categoryById(id)
 
   if (category) {
