@@ -43,25 +43,6 @@ const cancelUpdate = () => {
 </script>
 
 <template>
-<!--  <div class="card flex flex-col gap-6 p-4">
-    <FloatLabel>
-      <InputText id="name" v-model="stateCategory.nameCategory" class="w-full"/>
-      <label for="name">Nombre de la Categoría</label>
-    </FloatLabel>
-
-    <FloatLabel>
-      <Textarea id="description" v-model="stateCategory.descriptionCategory" rows="3" class="w-full"/>
-      <label for="description">Descripción (Opcional)</label>
-    </FloatLabel>
-
-    <Button
-        :label="stateCategory.isLoading ? 'Guardando' : stateCategory.isEdit ? 'Actualizar Categoria' : 'Agregar Categoría'"
-        :icon="stateCategory.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-        :disabled="stateCategory.isLoading"
-        @click="handleByStateAction"
-    />
-  </div>-->
-
   <div class="form-container shadow-sm border border-surface-200 p-6 rounded-xl bg-surface-0">
 
     <div class="flex items-center gap-2 mb-6">

@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { CategoryRepository } from "@/repositories/CategoryRepository";
 import type { Unsubscribe } from "firebase/firestore";
-import {Categories} from "@/models/Categories";
-import {ref} from "vue";
+import { Categories } from "@/models/Categories";
+import { ref } from "vue";
 
 export const useCategoryStore = defineStore("CategoryStore", () => {
     const allCategories = ref<Categories[]>([])
@@ -38,13 +38,13 @@ export const useCategoryStore = defineStore("CategoryStore", () => {
 
     async function addCategory() {
         const idCateGenerated = crypto.randomUUID();
-        const actualState = categoryUiState.value;
+        const currentState = categoryUiState.value;
 
 
         const category: Categories = {
             idCategory: idCateGenerated,
-            nameCategory: actualState.nameCategory ?? '',
-            descriptionCategory: actualState.descriptionCategory ?? '',
+            nameCategory: currentState.nameCategory ?? '',
+            descriptionCategory: currentState.descriptionCategory ?? '',
         }
 
         categoryUiState.value.isLoading = true;
