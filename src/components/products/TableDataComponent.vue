@@ -34,7 +34,34 @@ const handleDelete = async (id: string) => {
 </script>
 
 <template>
-
+<div class="card">
+  <h2>Productos</h2>
+  <DataTable :value="props.datos" paginator :rows="5" table-style="min-width: 40 rem">
+    <Column field="nameProduct" header="Nombre"></Column>
+    <Column field="descriptionProduct" header="Descripción"></Column>
+    <Column field="priceProduct" header="Precio"></Column>
+    <Column field="stock" header="Stock"></Column>
+    <Column field="categoryName" header="Categoria"></Column>
+    <Column header="Acciones">
+      <template #body="slotProps">
+        <div class="flex gap-2">
+          <Button
+            security="info"
+            rounded
+            @click="handleEdit(slotProps.data.idProduct)"
+          ><i class="pi pi-pencil"></i></Button>
+        </div>
+        <div class="flex gap-2">
+          <Button
+            security="danger"
+            rounded
+            @click="handleDelete(slotProps.data.idProduct)"
+            ><i class="pi pi-trash"></i></Button>
+        </div>
+      </template>
+    </Column>
+  </DataTable>
+</div>
 </template>
 
 <style scoped>

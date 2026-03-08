@@ -14,6 +14,7 @@ import TheWelcome from './components/TheWelcome.vue'*/
   <nav>
     <router-link to="/">Inicio</router-link>
     <router-link to="/categories">Categorías</router-link>
+    <router-link to="/products">Productos</router-link>
   </nav>
   <main>
     <router-view/>

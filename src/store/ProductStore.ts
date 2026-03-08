@@ -1,41 +1,55 @@
 import { defineStore } from 'pinia'
 import { ProductsRepository } from "@/repositories/ProductRepository";
+import {useCategoryStore} from "@/store/CategoryStore";
 import type { Unsubscribe } from "firebase/firestore";
 import { Products } from "@/models/Products";
-import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import Timestamp = firebase.firestore.Timestamp;
+import { ref, computed } from "vue";
+import { Timestamp } from "firebase/firestore";
 
 export const useProductStore = defineStore("ProductStore", () => {
   const allProducts = ref<Products[]>([]);
+
+  const productsWithCategoryName = computed(()=>{
+      return allProducts.value.map( product => {
+          const category = useCategoryStore().allCategories.find(
+              (cat) => cat.idCategory === product.idCategory
+          )
+
+          return {
+              ...product,
+              categoryName: category ? category.nameCategory : "Sin Categories",
+          }
+      })
+  })
+
   const productUiState = ref({
-      isLoading: false,
-        isEdit: false,
-        success: false,
-        errorMessage: '' as string | null,
+    isLoading: false,
+    isEdit: false,
+    success: false,
+    errorMessage: '' as string | null,
 
-        idProduct: '' as string | null,
-        nameProduct: '' as string | null,
-        stock: '' as string | null,
-        imageProduct: null as string | null,
-        descriptionProduct: null as string | null,
-        priceProduct: '' as string | null,
-        statusProduct: false,
-        idCategory: '' as string | null,
-        createdAt: null as Timestamp | null,
-        updatedAt: null as Timestamp | null,
+    idProduct: '' as string | null,
+    nameProduct: '' as string | null,
+    stock: '' as string | null,
+    imageProduct: null as string | null,
+    descriptionProduct: null as string | null,
+    priceProduct: '' as string | null,
+    statusProduct: false,
+    idCategory: '' as string | null,
+    createdAt: null as Timestamp | null,
+    updatedAt: null as Timestamp | null,
 
-        nameError: null as string | null,
-        quantityError: null as string | null,
-        priceError: null as string | null,
-        idCategoryError: null as string | null,
+    nameError: null as string | null,
+    quantityError: null as string | null,
+    priceError: null as string | null,
+    idCategoryError: null as string | null,
 
-        nameTouched: false,
-        quantityTouched: false,
-        priceTouched: false,
-        idCategoryTouched: false,
+    nameTouched: false,
+    quantityTouched: false,
+    priceTouched: false,
+    idCategoryTouched: false,
 
-        isValid: false,
+    isValid: false,
   })
 
     let stopListener: Unsubscribe | null = null;
@@ -151,6 +165,33 @@ export const useProductStore = defineStore("ProductStore", () => {
       }
   }
 
+  function clearState(){
+      const currentState = productUiState.value
+
+      currentState.isEdit = false
+      currentState.success = false
+      currentState.errorMessage = ''
+      currentState.idProduct = ''
+      currentState.nameProduct = ''
+      currentState.stock = ''
+      currentState.imageProduct = null
+      currentState.descriptionProduct = null
+      currentState.priceProduct = ''
+      currentState.statusProduct = false
+      currentState.idCategory = ''
+      currentState.createdAt = null
+      currentState.updatedAt = null
+      currentState.nameError = null
+      currentState.quantityError = null
+      currentState.priceError = null
+      currentState.idCategoryError = null
+      currentState.nameTouched = false
+      currentState.quantityTouched = false
+      currentState.priceTouched = false
+      currentState.idCategoryTouched = false
+      currentState.isValid = false
+  }
+
   return{
       allProducts,
       clear,
@@ -159,6 +200,8 @@ export const useProductStore = defineStore("ProductStore", () => {
       updateProduct,
       deleteProduct,
       getAllProducts,
-      productUiState
+      productUiState,
+      productsWithCategoryName,
+      clearState
   }
 })
