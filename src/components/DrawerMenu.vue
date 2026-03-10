@@ -3,40 +3,43 @@ import Menu from 'primevue/menu';
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { NAVIGATE_MENU } from "@/constants/NavigateMenus.ts";
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n();
 
 const router = useRouter();
 
 const menuItems = computed(() => [
   {
-    label: "Home",
+    label: t("menu.home"),
     items: [
       {
-        label: "Inicio",
+        label: t("menu.home"),
         icon: 'pi pi-home',
         command: () => router.push(NAVIGATE_MENU.HOME)
       }
     ]
   },
   {
-    label: "Gestion",
+    label: t("menu.management"),
     items: [
       {
-        label: "Categorias",
+        label: t("menu.categories"),
         icon: "pi pi-tags",
         command: () => router.push(NAVIGATE_MENU.CATEGORIES)
       },
       {
-        label: "Clientes",
+        label: t("menu.clients"),
         icon: "pi pi-users",
         command: () => router.push(NAVIGATE_MENU.CLIENTS)
       },
       {
-        label: "Productos",
+        label: t("menu.products"),
         icon: "pi pi-box",
         command: () => router.push(NAVIGATE_MENU.PRODUCTS)
       },
       {
-        label: "Proveedores",
+        label: t("menu.suppliers"),
         icon: "pi pi-truck",
         command: () => router.push(NAVIGATE_MENU.SUPPLIERS)
       }
@@ -45,7 +48,7 @@ const menuItems = computed(() => [
   {
     items: [
       {
-        label: "Cerrar Session",
+        label: t("menu.logOut"),
         icon: "pi pi-sign-out",
         class: "logout-item"
       }

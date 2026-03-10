@@ -1,0 +1,34 @@
+{
+  "menu": {
+    "home": "Inicio",
+    "management": "Gestion",
+    "categories": "Categorías",
+    "clients": "Clientes",
+    "products": "Productos",
+    "suppliers": "Proveedores",
+    "logOut": "Cerrar Sesión"
+  },
+  "formsGeneric": {
+    "new_m": "Nuevo {item}",
+    "new_f": "Nueva {item}",
+    "edit": "Editar {item}",
+    "save": "Guardar {item}",
+    "delete": "Eliminar {item}",
+    "update": "Actualizar",
+    "cancel": "Cancelar",
+    "name": "Nombre",
+    "description": "Descripción (Opcional)"
+  },
+  "tableGeneric": {
+    "management": "Gestion de {item}",
+    "records": "Registros",
+    "emptyState": "No existen registros disponibles",
+    "currentPageReportTemplate": "Mostrando {'{'}first{'}'} a {'{'}last{'}'} de {'{'}totalRecords{'}'}",
+    "noDescAvailable": "Sin descripción disponible",
+    "descHeader": "Descripción",
+    "actions": "Acciones"
+  },
+  "entityName": {
+    "category": "Categoría"
+  }
+}

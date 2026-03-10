@@ -36,9 +36,8 @@ onUnmounted(() => {
     <Dialog
         v-model:visible="categoryStore.categoryUiState.isModalVisible"
         modal
-        :header="stateCategory.isEdit ? 'Editar Categoría' : 'Nueva Categoría'"
     >
-      <section class="form-section">
+      <section>
         <FormComponent/>
       </section>
     </Dialog>

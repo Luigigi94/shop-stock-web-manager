@@ -1,0 +1,34 @@
+{
+  "menu": {
+    "home": "Home",
+    "management": "Management",
+    "categories": "Categories",
+    "clients": "Cliente",
+    "products": "Products",
+    "suppliers": "Suppliers",
+    "logOut": "Logout"
+  },
+  "formsGeneric": {
+    "new_m": "New {item}",
+    "new_f": "New {item}",
+    "edit": "Edit {item}",
+    "save": "Save {item}",
+    "delete": "Delete {item}",
+    "update": "Update",
+    "cancel": "Cancel",
+    "name": "Name",
+    "description": "Description (Optional)"
+  },
+  "tableGeneric": {
+    "management": "{item} Management",
+    "records": "Records",
+    "emptyState": "No Records Available",
+    "currentPageReportTemplate": "Show {'{'}first{'}'} to {'{'}last{'}'} of {'{'}totalRecords{'}'}",
+    "noDescAvailable": "No description available",
+    "descHeader": "Description",
+    "actions": "Actions"
+  },
+  "entityName": {
+    "category": "Category"
+  }
+}

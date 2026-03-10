@@ -2,9 +2,12 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
+import i18n from "@/i18n";
 import {useCategoryStore} from "@/store/CategoryStore";
+import {useI18n} from "vue-i18n";
 
 const categoryStore = useCategoryStore();
+const { t } = useI18n();
 
 const props = defineProps({
   datos: {
@@ -39,10 +42,10 @@ const handleDelete = async (id: string) => {
       <div class="header-section">
         <div class="title-wrapper">
           <i class="pi pi-tags icon-magenta"></i>
-          <h2>Gestión de Categorías</h2>
+          <h2>{{ t("tableGeneric.management", {item: t("entityName.category")}) }}</h2>
         </div>
         <div class="stats-badge">
-          {{ props.datos.length }} Registros
+          {{ `${props.datos.length} ${t('tableGeneric.records')}` }}
         </div>
       </div>
 
@@ -57,25 +60,26 @@ const handleDelete = async (id: string) => {
           removableSort
           :rowsPerPageOptions="[5, 10, 20, 50]"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
       >
+<!--          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"-->
         <template #empty>
-          <div class="empty-state">No hay categorías registradas.</div>
+          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
         </template>
 
-        <Column field="nameCategory" header="Categoría" sortable style="width: 25%">
+        <Column field="nameCategory" :header="t('entityName.category')" sortable style="width: 25%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.nameCategory }}</span>
           </template>
         </Column>
 
-        <Column field="descriptionCategory" header="Descripción" style="width: 50%">
+        <Column field="descriptionCategory" :header="t('tableGeneric.descHeader')" style="width: 50%">
           <template #body="slotProps">
             <span class="text-description">{{ slotProps.data.descriptionCategory || 'Sin descripción disponible' }}</span>
           </template>
         </Column>
 
-        <Column header="Acciones" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
           <template #body="slotProps">
             <div class="actions-wrapper">
               <Button
@@ -96,110 +100,4 @@ const handleDelete = async (id: string) => {
   </div>
 </template>
 
-<!--
-<style scoped>
-/* Contenedor externo para dar aire en la página */
-.inventory-container {
-  width: 100%;
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-}
-
-/* El Card que contiene todo */
-.inventory-card {
-  background: var(&#45;&#45;surface-card, #ffffff);
-  width: 100%;
-  max-width: 1400px; /* Evita que se estire infinito en monitores ultra-wide */
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(&#45;&#45;surface-border, #ececec);
-}
-
-/* Header estilizado */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.title-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.icon-magenta {
-  font-size: 1.5rem;
-  color: #d946ef; /* Magenta */
-}
-
-h2 {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #4b5563;
-}
-
-.stats-badge {
-  background: #f5f3ff;
-  color: #7c3aed; /* Morado */
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-/* Estilos de la tabla */
-.custom-table :deep(.p-datatable-thead > tr > th) {
-  background: #f9fafb;
-  padding: 1rem;
-  color: #6b7280;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-}
-
-.text-magenta {
-  color: #c026d3;
-}
-
-.text-description {
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-.actions-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.edit-btn:hover {
-  color: #8b5cf6 !important; /* Morado al pasar el mouse */
-  background: #f5f3ff !important;
-}
-
-.empty-state {
-  padding: 3rem;
-  text-align: center;
-  color: #9ca3af;
-  font-style: italic;
-}
-
-/* Responsividad */
-@media screen and (max-width: 960px) {
-  .inventory-card {
-    padding: 1rem;
-  }
-
-  .header-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-}
-</style>-->
+<style scoped></style>
