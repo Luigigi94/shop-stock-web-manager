@@ -19,7 +19,10 @@ import TheWelcome from './components/TheWelcome.vue'*/
     <router-link to="/suppliers">Proveedores</router-link>
   </nav>
   <main>
-    <router-view/>
+    <div>
+      <div class="drawer" style="display:flex; flex-direction: column; border: 1px solid #333333">drawer aquí</div>
+      <router-view/>
+    </div>
   </main>
 
 <!--  <main>
@@ -69,7 +72,7 @@ nav a {
 nav a.router-link-active {
   border-bottom: 2px solid #42b883;
 }
-main {
+/*main {
   padding: 20px;
-}
+}*/
 </style>
