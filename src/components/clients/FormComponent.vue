@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
+import { useClientStore } from "@/store/ClientStore";
 
-import {useProductStore} from "@/store/ProductStore";
-
-const productStore = useProductStore();
-const stateProduct = productStore.productUiState;
-
-import {useCategoryStore} from "@/store/CategoryStore";
-
-const categoryStore = useCategoryStore();
-const stateCategory = categoryStore.categoryUiState;
+const clientStore = useClientStore();
+const stateClient = clientStore.clientUiState
 
 const handleByStateAction = async () => {
-  if (stateProduct.isEdit) {
+  if (stateClient.isEdit){
     await handleUpdate()
   } else {
     await handleSave()
@@ -23,23 +16,23 @@ const handleByStateAction = async () => {
 }
 
 const handleUpdate = async () => {
-  await productStore.updateProduct()
+  await clientStore.updateClient()
 
-  if (stateProduct.success) {
-    productStore.clearState()
+  if (stateClient.success){
+    clientStore.clearForm()
   }
 }
 
 const handleSave = async () => {
-  await productStore.addProduct()
+  await clientStore.createClient()
 
-  if (stateProduct.success) {
-    productStore.clearState()
+  if (stateClient.success){
+    clientStore.clearForm()
   }
 }
 
 const cancelUpdate = () => {
-  productStore.clearState()
+  clientStore.clearForm()
 }
 </script>
 
@@ -47,8 +40,8 @@ const cancelUpdate = () => {
   <div class="form-card">
     <div class="form-header">
       <div class="title-wrapper">
-        <i :class="stateProduct.isEdit ? 'pi pi-pencil icon-edit' :'pi pi-plus-circle icon-add'"></i>
-        <h2> {{ stateProduct.isEdit ? 'Editar Producto' : 'Nuevo Producto' }} </h2>
+        <i :class="stateClient.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
+        <h2>{{ stateClient.isEdit ? 'Editar Cliente' : 'Crear Cliente' }}</h2>
       </div>
     </div>
 
@@ -57,86 +50,68 @@ const cancelUpdate = () => {
         <FloatLabel>
           <InputText
               id="name"
-              v-model="stateProduct.nameProduct"
+              v-model="stateClient.nameClient"
               class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.nameError }"
+              :class="{ 'p-invalid': stateClient.nameError }"
           />
-          <label for="name">Nombre del Producto</label>
+          <label for="name">Nombre del Cliente</label>
         </FloatLabel>
-        <small v-if="stateProduct.nameError" class="error-msg">
-          {{ stateProduct.nameError }}
+        <small v-if="stateClient.nameError" class="error-msg">
+          {{ stateClient.nameError }}
         </small>
       </div>
 
       <div class="field">
         <FloatLabel>
           <InputText
-              id="name"
-              v-model="stateProduct.descriptionProduct"
-              class="w-full custom-input"
+            id="apePClient"
+            v-model="stateClient.apePClient"
+            class="w-full custom-input"
+            :class="{ 'p-invalid': stateClient.apePError }"
           />
-          <label for="name">Descripción del Producto</label>
+          <label for="apePClient">Apellido Paterno</label>
+        </FloatLabel>
+        <small class="error-msg" v-if="stateClient.apePError">
+          {{ stateClient.apePError }}
+        </small>
+      </div>
+      <div class="field">
+        <FloatLabel>
+          <InputText
+            id="apeMClient"
+            v-model="stateClient.apeMClient"
+            class="w-full custom-input"
+          />
+          <label for="apeMClient">Apellido Materno</label>
         </FloatLabel>
       </div>
 
       <div class="field">
         <FloatLabel>
           <InputText
-              id="name"
-              v-model="stateProduct.priceProduct"
+              id="telephone"
+              v-model="stateClient.telephone"
               class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.priceError }"
+              :class="{ 'p-invalid': stateClient.telephoneError }"
           />
-          <label for="name">Precio del Producto</label>
+          <label for="telephone">Telefono</label>
         </FloatLabel>
-        <small v-if="stateProduct.priceError" class="error-msg">
-          {{ stateProduct.priceError }}
-        </small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateProduct.stock"
-              class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.quantityError }"
-          />
-          <label for="name">Cantidad del Producto</label>
-        </FloatLabel>
-        <small v-if="stateProduct.quantityError" class="error-msg">
-          {{ stateProduct.quantityError }}
-        </small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <label for="category">Categoría</label>
-
-          <Select
-              v-model="stateProduct.idCategory"
-              :options="categoryStore.allCategories"
-              optionLabel="nameCategory"
-              optionValue="idCategory"
-              placeholder="Selecciona una categoría"
-              class="w-full md:w-14rem"
-              :loading="categoryStore.categoryUiState.isLoading"
-          />
-        </FloatLabel>
-        <small v-if="stateProduct.idCategoryError" class="error-msg">
-          {{ stateProduct.idCategoryError }}
+        <small class="error-msg" v-if="stateClient.telephoneError">
+          {{ stateClient.telephoneError }}
         </small>
       </div>
 
       <div class="actions-group">
         <Button
             type="button"
-            :label="stateProduct.isEdit ? 'Actualizar' : 'Guardar Producto'"
-            :icon="stateProduct.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            :disabled="stateProduct.isLoading"
+            :label="stateClient.isEdit ? 'Actualizar' : 'Guardar Categoría'"
+            :icon="stateClient.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+            :disabled="stateClient.isLoading"
             @click="handleByStateAction"
             class="btn-submit w-full"
         />
         <Button
-            v-if="stateProduct.isEdit"
+            v-if="stateClient.isEdit"
             label="Cancelar"
             icon="pi pi-times"
             severity="secondary"

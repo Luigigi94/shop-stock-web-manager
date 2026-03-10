@@ -7,6 +7,9 @@ import Primevue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
 import App from './App.vue'
 import 'primeicons/primeicons.css';
+import '@/assets/formsStyles/formStyles.css'
+import '@/assets/formsStyles/viewStyles.css'
+import '@/assets/formsStyles/tableStyles.css'
 
 
 // createApp(App).mount('#app')

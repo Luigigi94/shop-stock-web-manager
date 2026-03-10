@@ -8,8 +8,6 @@ import Button from 'primevue/button';
 
 const categoryStore = useCategoryStore();
 const stateCategory = categoryStore.categoryUiState
-const visibleDialog = stateCategory.isModalVisible;
-
 
 watch(() => stateCategory.success, (isSuccess) => {
   if (isSuccess) {
@@ -40,8 +38,6 @@ onUnmounted(() => {
         modal
         :header="stateCategory.isEdit ? 'Editar Categoría' : 'Nueva Categoría'"
     >
-<!--        :style="{ width: '30vw' }"
-        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"-->
       <section class="form-section">
         <FormComponent/>
       </section>
@@ -55,16 +51,14 @@ onUnmounted(() => {
   </div>
 </template>
 
+<!--
 <style scoped>
-/* Contenedor principal: ahora ocupa casi toda la pantalla */
-
-/* El formulario: lo mantenemos centrado y no tan ancho */
 .form-section {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-bottom: 3rem;
-  max-width: 500px; /* El formulario no necesita ser gigante */
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
   padding: 1.5rem;
@@ -73,9 +67,6 @@ onUnmounted(() => {
   border: 1px solid #eee;
 }
 
-/* La sección de la tabla: ¡Aquí es donde liberamos el espacio! */
-
-/* Estilos de inputs para que se vean mejor con PrimeVue */
 input {
   padding: 10px;
   border: 1px solid #ddd;
@@ -84,13 +75,13 @@ input {
 }
 
 input:focus {
-  border-color: #d946ef; /* Magenta al foco */
+  border-color: #d946ef;
   outline: none;
 }
 
 button {
   padding: 12px;
-  background: #8b5cf6; /* Morado para combinar con la tabla */
+  background: #8b5cf6;
   color: white;
   border: none;
   border-radius: 6px;
@@ -106,4 +97,4 @@ button:disabled {
   background: #ccc;
 }
 
-</style>
+</style>-->

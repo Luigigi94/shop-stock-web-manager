@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import {useCategoryStore} from "@/store/CategoryStore";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Button from "primevue/button";
+import { useClientStore } from "@/store/ClientStore";
 
-const categoryStore = useCategoryStore();
+const clientStore = useClientStore();
+const currentState = clientStore.clientUiState
 
 const props = defineProps({
   datos: {
@@ -12,25 +13,27 @@ const props = defineProps({
     required: true,
     default: () => []
   }
-});
+})
 
 const handleEdit = async (id: string) => {
-  categoryStore.categoryUiState.success = false;
-  categoryStore.categoryUiState.isModalVisible = true;
-  const category = await categoryStore.categoryById(id)
+  currentState.success = false
+  currentState.isModalVisible = true
 
-  if (category) {
-    categoryStore.categoryUiState.idCategory = category.idCategory;
-    categoryStore.categoryUiState.nameCategory = category.nameCategory;
-    categoryStore.categoryUiState.descriptionCategory = category.descriptionCategory || "";
+  const client = await clientStore.clientById(id)
+
+  if (client) {
+    currentState.idClient = client.idClient
+    currentState.nameClient = client.nameClient
+    currentState.apeMClient = client.apeMClient
+    currentState.apePClient = client.apePClient
+    currentState.telephone = client.telephone
   }
 }
 
 const handleDelete = async (id: string) => {
-  categoryStore.categoryUiState.success = false;
-  const category = await categoryStore.deleteCategory(id)
+  currentState.success = false
+  const client = await clientStore.clientById(id)
 }
-
 </script>
 
 <template>
@@ -39,7 +42,7 @@ const handleDelete = async (id: string) => {
       <div class="header-section">
         <div class="title-wrapper">
           <i class="pi pi-tags icon-magenta"></i>
-          <h2>Gestión de Categorías</h2>
+          <h2>Gestión de Clientes</h2>
         </div>
         <div class="stats-badge">
           {{ props.datos.length }} Registros
@@ -60,33 +63,36 @@ const handleDelete = async (id: string) => {
           currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
       >
         <template #empty>
-          <div class="empty-state">No hay categorías registradas.</div>
+          <div class="empty-state">No hay clientes registrados.</div>
         </template>
 
-        <Column field="nameCategory" header="Categoría" sortable style="width: 25%">
+        <Column field="nameClient" header="Cliente" sortable style="width: 50%">
           <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.nameCategory }}</span>
+            <span class="font-bold text-magenta">{{ slotProps.data.nameClient }}</span>
           </template>
         </Column>
-
-        <Column field="descriptionCategory" header="Descripción" style="width: 50%">
+        <Column field="apePClient" header="Apellido Paterno" style="width: 25%">
           <template #body="slotProps">
-            <span class="text-description">{{ slotProps.data.descriptionCategory || 'Sin descripción disponible' }}</span>
+            <span class="font-bold text-magenta">{{ slotProps.data.apePClient }}</span>
           </template>
         </Column>
-
+        <Column field="apePClient" header="Apellido Materno" style="width: 25%">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.apeMClient }}</span>
+          </template>
+        </Column>
         <Column header="Acciones" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
           <template #body="slotProps">
             <div class="actions-wrapper">
               <Button
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-text p-button-secondary edit-btn"
-                  @click="handleEdit(slotProps.data.idCategory)"
+                  @click="handleEdit(slotProps.data.idClient)"
               />
               <Button
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-text p-button-danger"
-                  @click="handleDelete(slotProps.data.idCategory)"
+                  @click="handleDelete(slotProps.data.idClient)"
               />
             </div>
           </template>
@@ -96,7 +102,6 @@ const handleDelete = async (id: string) => {
   </div>
 </template>
 
-<!--
 <style scoped>
 /* Contenedor externo para dar aire en la página */
 .inventory-container {
@@ -108,13 +113,13 @@ const handleDelete = async (id: string) => {
 
 /* El Card que contiene todo */
 .inventory-card {
-  background: var(&#45;&#45;surface-card, #ffffff);
+  background: var(--surface-card, #ffffff);
   width: 100%;
   max-width: 1400px; /* Evita que se estire infinito en monitores ultra-wide */
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(&#45;&#45;surface-border, #ececec);
+  border: 1px solid var(--surface-border, #ececec);
 }
 
 /* Header estilizado */
@@ -202,4 +207,4 @@ h2 {
     gap: 1rem;
   }
 }
-</style>-->
+</style>

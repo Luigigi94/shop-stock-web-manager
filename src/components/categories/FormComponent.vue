@@ -3,13 +3,14 @@ import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import FloatLabel from 'primevue/floatlabel';
-import { useCategoryStore } from "@/store/CategoryStore";
+import {useCategoryStore} from "@/store/CategoryStore";
+
 const categoryStore = useCategoryStore();
 const stateCategory = categoryStore.categoryUiState
 
 
 const handleByStateAction = async () => {
-  if (stateCategory.isEdit){
+  if (stateCategory.isEdit) {
     await handleUpdate()
   } else {
     await handleSave()
@@ -103,17 +104,18 @@ const cancelUpdate = () => {
   </div>
 </template>
 
+<!--
 <style scoped>
 /* Estructura del Card similar a la tabla */
 .form-card {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
-  background: var(--surface-card, #ffffff);
+  background: var(&#45;&#45;surface-card, #ffffff);
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--surface-border, #ececec);
+  border: 1px solid var(&#45;&#45;surface-border, #ececec);
 }
 
 .form-header {
@@ -136,8 +138,18 @@ h2 {
 }
 
 /* Colores de iconos homologados */
-.icon-add { color: #d946ef; font-size: 1.5rem; } /* Magenta */
-.icon-edit { color: #8b5cf6; font-size: 1.5rem; } /* Morado */
+.icon-add {
+  color: #d946ef;
+  font-size: 1.5rem;
+}
+
+/* Magenta */
+.icon-edit {
+  color: #8b5cf6;
+  font-size: 1.5rem;
+}
+
+/* Morado */
 
 .form-body {
   display: flex;
@@ -200,4 +212,4 @@ h2 {
 .mt-5 {
   margin-top: 2rem; /* Espacio extra para que el FloatLabel no choque */
 }
-</style>
+</style>-->
