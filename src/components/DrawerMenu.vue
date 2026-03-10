@@ -1,13 +1,18 @@
 <script setup>
 import Menu from 'primevue/menu';
-import { computed } from "vue";
-import { useRouter } from "vue-router";
-import { NAVIGATE_MENU } from "@/constants/NavigateMenus.ts";
+import {computed} from "vue";
+import {useRouter} from "vue-router";
+import {NAVIGATE_MENU} from "@/constants/NavigateMenus.ts";
 import {useI18n} from "vue-i18n";
+import ToggleSwitch from 'primevue/toggleswitch';
 
-const { t } = useI18n();
+const {t, locale} = useI18n();
 
 const router = useRouter();
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'es' ? 'en' : 'es';
+};
 
 const menuItems = computed(() => [
   {
@@ -68,7 +73,18 @@ const menuItems = computed(() => [
 
 <template>
   <div class="sidebar">
-    <Menu :model="menuItems" class="w-full border-none h-full" />
+    <Menu :model="menuItems" class="w-full border-none h-full">
+      <template #start>
+        <div class="lang-wrapper">
+          <span :class="{ 'active-lang': locale === 'es' }">ES</span>
+          <ToggleSwitch
+              :modelValue="locale === 'en'"
+              @update:modelValue="toggleLanguage"
+          />
+          <span :class="{ 'active-lang': locale === 'en' }">EN</span>
+        </div>
+      </template>
+    </Menu>
   </div>
 </template>
 
@@ -116,5 +132,33 @@ const menuItems = computed(() => [
 
 :deep(.logout-item) {
   margin-top: auto !important;
+}
+
+.lang-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el switch y las letras */
+  gap: 12px;               /* Da espacio entre ES - Switch - EN */
+  padding: 20px 10px;      /* Le da aire arriba y abajo */
+  background-color: #f8fafc; /* Un gris muy tenue para diferenciar la zona */
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 10px;
+}
+
+.lang-wrapper span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8; /* Color gris suave para el que no está activo */
+  transition: color 0.3s ease;
+}
+
+/* Resaltamos el idioma activo */
+.lang-wrapper .active-lang {
+  color: #3b82f6; /* El azul primario de PrimeVue */
+}
+
+/* Ajuste opcional por si el switch se ve muy grande */
+:deep(.p-toggleswitch) {
+  transform: scale(0.8); /* Lo hace un poquito más elegante */
 }
 </style>
