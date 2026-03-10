@@ -50,7 +50,15 @@ onUnmounted(() => {
     </section>
   </div>
 </template>
-
+<style scoped>
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+</style>
 <!--
 <style scoped>
 .form-section {

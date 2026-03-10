@@ -55,6 +55,14 @@ onUnmounted(() => {
 
 
 <style scoped>
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+/*
 .form-section {
   display: flex;
   flex-direction: column;
@@ -98,5 +106,6 @@ button:hover {
 button:disabled {
   background: #ccc;
 }
+*/
 
 </style>

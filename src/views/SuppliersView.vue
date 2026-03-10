@@ -31,7 +31,6 @@ onUnmounted(() => {
       label="Nuevo Proveedor"
       icon="pi pi-plus"
       @click="supplierStore.openNewSupplier()"
-      class="btn-new"
     />
     <Dialog
         v-model:visible="supplierState.isModalVisible"
@@ -51,5 +50,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
 </style>

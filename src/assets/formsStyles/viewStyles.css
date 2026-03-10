@@ -24,7 +24,7 @@ input:focus {
     outline: none;
 }
 
-button {
+.p-button {
     padding: 12px;
     background: #8b5cf6;
     color: white;
@@ -34,10 +34,10 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.p-button:hover {
     background: #7c3aed;
 }
 
-button:disabled {
+.p-button:disabled {
     background: #ccc;
 }
