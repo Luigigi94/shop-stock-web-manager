@@ -28,6 +28,9 @@
     "descHeader": "Description",
     "actions": "Actions"
   },
+  "viewsGeneric": {
+    "list": "{entity} List"
+  },
   "entityName": {
     "category": "Category"
   }

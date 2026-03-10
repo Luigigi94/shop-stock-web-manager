@@ -5,7 +5,9 @@ import TableDataComponent from "@/components/categories/TableDataComponent.vue";
 import FormComponent from "@/components/categories/FormComponent.vue";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const categoryStore = useCategoryStore();
 const stateCategory = categoryStore.categoryUiState
 
@@ -26,9 +28,9 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <h1>Lista de Categorías</h1>
+    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.category")}) }}</h1>
     <Button
-        label="Nueva Categoría"
+        :label="t('formsGeneric.new_f', {item: t('entityName.category')})"
         icon="pi pi-plus"
         @click="categoryStore.openNewCategory()"
         class="btn-new"
