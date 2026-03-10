@@ -104,6 +104,10 @@ const cancelUpdate = () => {
   </div>
 </template>
 
+<style scoped>
+
+</style>
+
 <!--
 <style scoped>
 /* Estructura del Card similar a la tabla */
