@@ -1,78 +1,70 @@
 <script setup>
-/*import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'*/
+import DrawerMenu from "@/components/DrawerMenu.vue";
 </script>
 
 <template>
-<!--  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div class="layout-wrapper">
+    <DrawerMenu />
+    <div class="main-layout">
+      <main class="main-content">
+        <router-view />
+      </main>
     </div>
-  </header>-->
-  <nav>
-    <router-link to="/">Inicio</router-link>
-    <router-link to="/categories">Categorías</router-link>
-    <router-link to="/products">Productos</router-link>
-    <router-link to="/clients">Clientes</router-link>
-    <router-link to="/suppliers">Proveedores</router-link>
-  </nav>
-  <main>
-    <div>
-      <div class="drawer" style="display:flex; flex-direction: column; border: 1px solid #333333">drawer aquí</div>
-      <router-view/>
-    </div>
-  </main>
+  </div>
 
-<!--  <main>
-    <TheWelcome />
-  </main>-->
 </template>
 
-<style scoped>
-/*header {
-  line-height: 1.5;
+<style>
+/* Estilos globales para asegurar que no haya scrolls fantasmas */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Evita scroll en el body, lo manejamos internamente */
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}*/
-nav {
-  padding: 20px;
-  background: #f4f4f4;
-  margin-bottom: 20px;
+.layout-wrapper {
   display: flex;
-  gap: 15px;
+  height: 100vh;
+  width: 100vw;
+  align-items: stretch;
 }
-nav a {
-  color: #42b883;
-  text-decoration: none;
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  background-color: #f9fafb; /* Un gris muy ligero para contrastar con el blanco */
+}
+
+.top-nav {
+  height: 60px; /* Altura fija para el nav para mejor control */
+  padding: 0 1.5rem;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto; /* El scroll ocurre solo aquí */
+  padding: 2rem;
+}
+
+/* Estilo para los links activos (opcional pero recomendado) */
+.router-link-active {
+  color: var(--primary-color, #3b82f6);
   font-weight: bold;
 }
-nav a.router-link-active {
-  border-bottom: 2px solid #42b883;
-}
-/*main {
-  padding: 20px;
+/*.sidebar {
+  width: 260px;
+  height: 100vh;
+  flex-shrink: 0;
 }*/
 </style>

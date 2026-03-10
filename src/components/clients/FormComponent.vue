@@ -104,7 +104,7 @@ const cancelUpdate = () => {
       <div class="actions-group">
         <Button
             type="button"
-            :label="stateClient.isEdit ? 'Actualizar' : 'Guardar Categoría'"
+            :label="stateClient.isEdit ? 'Actualizar' : 'Guardar Cliente'"
             :icon="stateClient.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
             :disabled="stateClient.isLoading"
             @click="handleByStateAction"
@@ -182,13 +182,13 @@ h2 {
 }
 
 /* Inputs con el toque de la marca */
-.custom-input, .custom-textarea {
+.custom-input{
   border-radius: 8px;
   border: 1px solid #ddd;
   padding: 0.75rem;
 }
 
-.custom-input:focus, .custom-textarea:focus {
+.custom-input:focus{
   border-color: #d946ef !important; /* Magenta al foco */
   box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.1) !important;
 }
@@ -215,20 +215,10 @@ h2 {
   transform: translateY(-1px);
 }
 
-.btn-cancel {
-  border-radius: 8px;
-  color: #6b7280;
-}
-
 .error-msg {
   color: #ef4444;
   font-size: 0.8rem;
   margin-top: 0.4rem;
   margin-left: 0.2rem;
-}
-
-/* Espaciado extra */
-.mt-5 {
-  margin-top: 2rem; /* Espacio extra para que el FloatLabel no choque */
 }
 </style>

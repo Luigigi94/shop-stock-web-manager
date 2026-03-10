@@ -98,7 +98,7 @@ const cancelUpdate = () => {
       <div class="actions-group">
         <Button
             type="button"
-            :label="supplierState.isEdit ? 'Actualizar' : 'Guardar Categoría'"
+            :label="supplierState.isEdit ? 'Actualizar' : 'Crear Proveedor'"
             :icon="supplierState.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
             :disabled="supplierState.isLoading"
             @click="handleByStateAction"
