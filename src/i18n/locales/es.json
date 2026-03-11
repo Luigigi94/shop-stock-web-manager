@@ -22,6 +22,10 @@
       "lastName": "Apellido Paterno",
       "secondLastName": "Apellido Materno",
       "phone": "Teléfono"
+    },
+    "product": {
+      "price": "Precio",
+      "qty": "Cantidad"
     }
   },
   "tableGeneric": {
@@ -38,6 +42,7 @@
   },
   "entityName": {
     "category": "Categoría",
-    "client": "Cliente"
+    "client": "Cliente",
+    "product": "Producto"
   }
 }

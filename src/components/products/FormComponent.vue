@@ -3,11 +3,12 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
-
+import {useI18n} from "vue-i18n";
 import {useProductStore} from "@/store/ProductStore";
 
 const productStore = useProductStore();
 const stateProduct = productStore.productUiState;
+const {t} = useI18n();
 
 import {useCategoryStore} from "@/store/CategoryStore";
 
@@ -48,7 +49,7 @@ const cancelUpdate = () => {
     <div class="form-header">
       <div class="title-wrapper">
         <i :class="stateProduct.isEdit ? 'pi pi-pencil icon-edit' :'pi pi-plus-circle icon-add'"></i>
-        <h2> {{ stateProduct.isEdit ? 'Editar Producto' : 'Nuevo Producto' }} </h2>
+        <h2> {{ stateProduct.isEdit ? t("formsGeneric.edit", {item: t("entityName.product")}) : t("formsGeneric.new_m", {item: t("entityName.product")}) }} </h2>
       </div>
     </div>
 
@@ -61,7 +62,7 @@ const cancelUpdate = () => {
               class="w-full custom-input"
               :class="{ 'p-invalid:': stateProduct.nameError }"
           />
-          <label for="name">Nombre del Producto</label>
+          <label for="name">{{ t("formsGeneric.name") }}</label>
         </FloatLabel>
         <small v-if="stateProduct.nameError" class="error-msg">
           {{ stateProduct.nameError }}
@@ -75,7 +76,7 @@ const cancelUpdate = () => {
               v-model="stateProduct.descriptionProduct"
               class="w-full custom-input"
           />
-          <label for="name">Descripción del Producto</label>
+          <label for="name">{{ t("formsGeneric.description") }}</label>
         </FloatLabel>
       </div>
 
@@ -87,7 +88,7 @@ const cancelUpdate = () => {
               class="w-full custom-input"
               :class="{ 'p-invalid:': stateProduct.priceError }"
           />
-          <label for="name">Precio del Producto</label>
+          <label for="name">{{ t("formsGeneric.product.price") }}</label>
         </FloatLabel>
         <small v-if="stateProduct.priceError" class="error-msg">
           {{ stateProduct.priceError }}
@@ -101,7 +102,7 @@ const cancelUpdate = () => {
               class="w-full custom-input"
               :class="{ 'p-invalid:': stateProduct.quantityError }"
           />
-          <label for="name">Cantidad del Producto</label>
+          <label for="name">{{ t("formsGeneric.product.qty") }}</label>
         </FloatLabel>
         <small v-if="stateProduct.quantityError" class="error-msg">
           {{ stateProduct.quantityError }}
@@ -109,7 +110,7 @@ const cancelUpdate = () => {
       </div>
       <div class="field">
         <FloatLabel>
-          <label for="category">Categoría</label>
+          <label for="category">{{ t("entityName.category") }}</label>
 
           <Select
               v-model="stateProduct.idCategory"
@@ -118,7 +119,7 @@ const cancelUpdate = () => {
               optionValue="idCategory"
               placeholder="Selecciona una categoría"
               class="w-full md:w-14rem"
-              :loading="categoryStore.categoryUiState.isLoading"
+              :loading="stateCategory.isLoading"
           />
         </FloatLabel>
         <small v-if="stateProduct.idCategoryError" class="error-msg">
@@ -129,7 +130,7 @@ const cancelUpdate = () => {
       <div class="actions-group">
         <Button
             type="button"
-            :label="stateProduct.isEdit ? 'Actualizar' : 'Guardar Producto'"
+            :label="stateProduct.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
             :icon="stateProduct.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
             :disabled="stateProduct.isLoading"
             @click="handleByStateAction"
@@ -137,7 +138,7 @@ const cancelUpdate = () => {
         />
         <Button
             v-if="stateProduct.isEdit"
-            label="Cancelar"
+            :label="t('formsGeneric.delete')"
             icon="pi pi-times"
             severity="secondary"
             text
