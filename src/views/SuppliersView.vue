@@ -5,9 +5,11 @@ import TableDataComponent from "@/components/suppliers/TableDataComponent.vue";
 import FormComponent from "@/components/suppliers/FormComponent.vue";
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
+import {useI18n} from "vue-i18n";
 
 const supplierStore = useSupplierStore()
 const supplierState = supplierStore.supplierUiState
+const {t} = useI18n()
 
 watch(() => supplierState.success, (isSuccess) => {
   if (isSuccess) {
@@ -17,6 +19,7 @@ watch(() => supplierState.success, (isSuccess) => {
 
 onMounted(() => {
   supplierStore.getAllSuppliers()
+  console.log("onMounted value allSuppliers: "+supplierStore.allSuppliers.toString())
 })
 
 onUnmounted(() => {
@@ -26,18 +29,17 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <h1>Lista de Proveedores</h1>
+    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.supplier")}) }}</h1>
     <Button
-      label="Nuevo Proveedor"
+      :label="t('formsGeneric.new_m', {item: t('entityName.supplier')})"
       icon="pi pi-plus"
       @click="supplierStore.openNewSupplier()"
     />
     <Dialog
         v-model:visible="supplierState.isModalVisible"
         modal
-        :header="supplierState.isEdit ? 'Editar Proveedor' : 'Nuevo Proveedor'"
     >
-      <section class="form-section">
+      <section>
         <FormComponent/>
       </section>
     </Dialog>

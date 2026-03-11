@@ -15,8 +15,8 @@ export const useSupplierStore = defineStore("SupplierStore", () => {
         isEdit: false,
         errorMessage: '' as string | null,
         success: false,
-        idSupplier: '' as string | null,
 
+        idSupplier: '' as string | null,
         name: '' as string | null,
         phone: '' as string | null,
         identifierAccount: '' as string | null,
@@ -100,7 +100,6 @@ export const useSupplierStore = defineStore("SupplierStore", () => {
         try {
 
             const entity = await SupplierRepository.getSupplierById(id)
-
             if (entity) {
                 currentState.idSupplier = entity.idSupplier;
                 currentState.isEdit = true;

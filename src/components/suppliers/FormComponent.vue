@@ -2,12 +2,13 @@
 import InputText from "primevue/inputtext";
 import Button from "primevue/button"
 import FloatLabel from "primevue/floatlabel";
+import {useI18n} from "vue-i18n";
 
 import { useSupplierStore } from "@/store/SupplierStore";
 
 const supplierStore = useSupplierStore();
 const supplierState = supplierStore.supplierUiState;
-
+const {t} = useI18n();
 const handleByStateAction = async () => {
   if (supplierState.isEdit) {
     await handleUpdate()
@@ -41,7 +42,7 @@ const cancelUpdate = () => {
     <div class="form-header">
       <div class="title-wrapper">
         <i :class="supplierState.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
-        <h2>{{supplierState.isEdit ? 'Editar Proveedor' : 'Nuevo Proveedor'}}</h2>
+        <h2>{{supplierState.isEdit ? t('formsGeneric.edit', {item: t('entityName.supplier')}) : t('formsGeneric.new_m', {item: t('entityName.supplier')})}}</h2>
       </div>
     </div>
 
@@ -54,7 +55,7 @@ const cancelUpdate = () => {
             class="w-full custom-input"
             :class="{ 'p-invalid': supplierState.nameError }"
           />
-          <label for="name">Nombre del Proveedor</label>
+          <label for="name">{{ t('formsGeneric.name') }}</label>
         </FloatLabel>
         <small class="error-msg" v-if="supplierState.nameError">{{supplierState.nameError}}</small>
       </div>
@@ -66,7 +67,7 @@ const cancelUpdate = () => {
             class="w-full custom-input"
             :class="{ 'p-invalid': supplierState.phoneError }"
           />
-          <label for="phone">Teléfono del Proveedor</label>
+          <label for="phone">{{ t('formsGeneric.supplier.phone') }}</label>
         </FloatLabel>
         <small class="error-msg" v-if="supplierState.phoneError">{{supplierState.phoneError}}</small>
       </div>
@@ -78,7 +79,7 @@ const cancelUpdate = () => {
             class="w-full custom-input"
             :class="{ 'p-invalid': supplierState.identifierAccountError }"
           />
-          <label for="identifierAccount">Nombre del Proveedor</label>
+          <label for="identifierAccount">{{ t('formsGeneric.supplier.idAccount')}}</label>
         </FloatLabel>
         <small class="error-msg" v-if="supplierState.identifierAccountError">{{supplierState.identifierAccountError}}</small>
       </div>
@@ -90,7 +91,7 @@ const cancelUpdate = () => {
             class="w-full custom-input"
             :class="{ 'p-invalid': supplierState.idBankError }"
           />
-          <label for="idBank">Nombre del Proveedor</label>
+          <label for="idBank">{{ t('formsGeneric.supplier.bank') }}</label>
         </FloatLabel>
         <small class="error-msg" v-if="supplierState.idBankError">{{supplierState.idBankError}}</small>
       </div>
@@ -98,7 +99,7 @@ const cancelUpdate = () => {
       <div class="actions-group">
         <Button
             type="button"
-            :label="supplierState.isEdit ? 'Actualizar' : 'Crear Proveedor'"
+            :label="supplierState.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.supplier')})"
             :icon="supplierState.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
             :disabled="supplierState.isLoading"
             @click="handleByStateAction"
@@ -106,7 +107,7 @@ const cancelUpdate = () => {
         />
         <Button
             v-if="supplierState.isEdit"
-            label="Cancelar"
+            :label="t('formsGeneric.cancel')"
             icon="pi pi-times"
             severity="secondary"
             text

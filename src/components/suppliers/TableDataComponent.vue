@@ -3,9 +3,11 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import {useSupplierStore} from '@/store/SupplierStore'
+import {useI18n} from "vue-i18n";
 
 const supplierStore = useSupplierStore()
 const supplierState = supplierStore.supplierUiState
+const {t} = useI18n()
 const props = defineProps({
   datos: {
     type: Array,
@@ -16,9 +18,10 @@ const props = defineProps({
 
 const handleEdit = async (id: string) => {
   supplierState.success = false
+  supplierState.isEdit = true
   supplierState.isModalVisible = true
   const supplier = await supplierStore.supplierById(id)
-
+  console.log("valor supplier handleEdit", supplier)
   if (supplier) {
     supplierState.idSupplier = supplier.idSupplier
     supplierState.name = supplier.name
@@ -40,10 +43,10 @@ const handleDelete = async (id: string) => {
       <div class="header-section">
         <div class="title-wrapper">
           <i class="pi pi-tags icon-magenta"></i>
-          <h2>Gestión de Proveedores</h2>
+          <h2>{{ t('tableGeneric.management', {item: t('entityName.supplier')}) }}</h2>
         </div>
         <div class="stats-badge">
-          {{ props.datos.length }} Registros
+          {{ `${props.datos.length} ${t('tableGeneric.records')}` }}
         </div>
       </div>
 
@@ -58,48 +61,48 @@ const handleDelete = async (id: string) => {
           removableSort
           :rowsPerPageOptions="[5, 10, 20, 50]"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
       >
         <template #empty>
-          <div class="empty-state">No hay Proveedores registrados.</div>
+          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
         </template>
 
-        <Column field="name" header="Nombre" sortable style="width: 50%">
+        <Column field="name" :header="t('formsGeneric.name')" sortable style="width: 50%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.name }}</span>
           </template>
         </Column>
 
-        <Column field="phone" header="Teléfono" style="width: 20%">
+        <Column field="phone" :header="t('formsGeneric.supplier.phone')" style="width: 20%">
           <template #body="slotProps">
-            <span class="text-description">{{ slotProps.data.phone || 'Sin descripción disponible' }}</span>
+            <span class="text-description">{{ slotProps.data.phone || t('tableGeneric.emptyState') }}</span>
           </template>
         </Column>
 
-        <Column field="identifierAccount" header="Teléfono" style="width: 20%">
+        <Column field="identifierAccount" :header="t('formsGeneric.supplier.idAccount')" style="width: 20%">
           <template #body="slotProps">
-            <span class="text-description">{{ slotProps.data.identifierAccount || 'Sin CLABE/No. Tarjeta disponible' }}</span>
+            <span class="text-description">{{ slotProps.data.identifierAccount || t('tableGeneric.emptyState') }}</span>
           </template>
         </Column>
 
-        <Column field="idBank" header="Teléfono" style="width: 20%">
+        <Column field="idBank" :header="t('formsGeneric.supplier.bank')" style="width: 20%">
           <template #body="slotProps">
-            <span class="text-description">{{ slotProps.data.idBank || 'Sin Banco disponible' }}</span>
+            <span class="text-description">{{ slotProps.data.idBank || t('tableGeneric.emptyState') }}</span>
           </template>
         </Column>
 
-        <Column header="Acciones" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
           <template #body="slotProps">
             <div class="actions-wrapper">
               <Button
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-text p-button-secondary edit-btn"
-                  @click="handleEdit(slotProps.data.idCategory)"
+                  @click="handleEdit(slotProps.data.idSupplier)"
               />
               <Button
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-text p-button-danger"
-                  @click="handleDelete(slotProps.data.idCategory)"
+                  @click="handleDelete(slotProps.data.idSupplier)"
               />
             </div>
           </template>

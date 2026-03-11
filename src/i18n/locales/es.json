@@ -27,6 +27,11 @@
       "price": "Precio",
       "qty": "Cantidad",
       "selectCategory": "Selecciona {entity}"
+    },
+    "supplier": {
+      "phone": "Teléfono",
+      "idAccount": "CLABE/No. de Tarjeta",
+      "bank": "Banco"
     }
   },
   "tableGeneric": {
@@ -44,6 +49,7 @@
   "entityName": {
     "category": "Categoría",
     "client": "Cliente",
-    "product": "Producto"
+    "product": "Producto",
+    "supplier": "Proveedor"
   }
 }

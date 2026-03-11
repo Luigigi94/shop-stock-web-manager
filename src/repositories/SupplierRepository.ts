@@ -11,7 +11,7 @@ export const SupplierRepository = {
         return onSnapshot(query(suppliersCollection), (snapshot) => {
             const list = snapshot.docs.map(doc => ({
                 idSupplier: doc.id,
-                ...doc.data
+                ...doc.data()
             })) as Suppliers[];
 
             onUpdate(list);
