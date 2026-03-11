@@ -94,7 +94,7 @@ const cancelUpdate = () => {
         />
         <Button
             v-if="stateCategory.isEdit"
-            label="Cancelar"
+            :label="t('formsGeneric.cancel')"
             icon="pi pi-times"
             severity="secondary"
             text

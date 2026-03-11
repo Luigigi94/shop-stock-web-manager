@@ -17,7 +17,12 @@
     "update": "Actualizar",
     "cancel": "Cancelar",
     "name": "Nombre",
-    "description": "Descripción (Opcional)"
+    "description": "Descripción (Opcional)",
+    "client": {
+      "lastName": "Apellido Paterno",
+      "secondLastName": "Apellido Materno",
+      "phone": "Teléfono"
+    }
   },
   "tableGeneric": {
     "management": "Gestion de {item}",
@@ -32,6 +37,7 @@
     "list": "Lista de {entity}"
   },
   "entityName": {
-    "category": "Categoría"
+    "category": "Categoría",
+    "client": "Cliente"
   }
 }

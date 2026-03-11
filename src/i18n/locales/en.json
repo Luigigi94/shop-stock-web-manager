@@ -3,7 +3,7 @@
     "home": "Home",
     "management": "Management",
     "categories": "Categories",
-    "clients": "Cliente",
+    "clients": "Clients",
     "products": "Products",
     "suppliers": "Suppliers",
     "logOut": "Logout"
@@ -17,13 +17,18 @@
     "update": "Update",
     "cancel": "Cancel",
     "name": "Name",
-    "description": "Description (Optional)"
+    "description": "Description (Optional)",
+    "client": {
+      "lastName": "Last Name",
+      "secondLastName": "Second Last Name",
+      "phone": "Phone"
+    }
   },
   "tableGeneric": {
     "management": "{item} Management",
     "records": "Records",
     "emptyState": "No Records Available",
-    "currentPageReportTemplate": "Show {'{'}first{'}'} to {'{'}last{'}'} of {'{'}totalRecords{'}'}",
+    "currentPageReportTemplate": "Showing {'{'}first{'}'} to {'{'}last{'}'} of {'{'}totalRecords{'}'}",
     "noDescAvailable": "No description available",
     "descHeader": "Description",
     "actions": "Actions"
@@ -32,6 +37,7 @@
     "list": "{entity} List"
   },
   "entityName": {
-    "category": "Category"
+    "category": "Category",
+    "client": "Client"
   }
 }

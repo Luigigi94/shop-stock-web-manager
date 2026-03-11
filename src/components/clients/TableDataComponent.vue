@@ -2,8 +2,10 @@
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
+import {useI18n} from "vue-i18n";
 import { useClientStore } from "@/store/ClientStore";
 
+const {t} = useI18n();
 const clientStore = useClientStore();
 const currentState = clientStore.clientUiState
 
@@ -42,10 +44,10 @@ const handleDelete = async (id: string) => {
       <div class="header-section">
         <div class="title-wrapper">
           <i class="pi pi-tags icon-magenta"></i>
-          <h2>Gestión de Clientes</h2>
+          <h2>{{ t("tableGeneric.management", {item: t("entityName.client")}) }}</h2>
         </div>
         <div class="stats-badge">
-          {{ props.datos.length }} Registros
+          {{ `${props.datos.length} ${t("tableGeneric.records")}` }}
         </div>
       </div>
 
@@ -60,28 +62,33 @@ const handleDelete = async (id: string) => {
           removableSort
           :rowsPerPageOptions="[5, 10, 20, 50]"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
       >
         <template #empty>
-          <div class="empty-state">No hay clientes registrados.</div>
+          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
         </template>
 
-        <Column field="nameClient" header="Cliente" sortable style="width: 50%">
+        <Column field="nameClient" :header="t('formsGeneric.name')"  sortable style="width: 30%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.nameClient }}</span>
           </template>
         </Column>
-        <Column field="apePClient" header="Apellido Paterno" style="width: 25%">
+        <Column field="apePClient" :header="t('formsGeneric.client.lastName')" style="width: 25%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.apePClient }}</span>
           </template>
         </Column>
-        <Column field="apePClient" header="Apellido Materno" style="width: 25%">
+        <Column field="apePClient" :header="t('formsGeneric.client.secondLastName')" style="width: 25%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.apeMClient }}</span>
           </template>
         </Column>
-        <Column header="Acciones" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <Column field="telephone" :header="t('formsGeneric.client.phone')" style="width: 25%">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.telephone }}</span>
+          </template>
+        </Column>
+        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
           <template #body="slotProps">
             <div class="actions-wrapper">
               <Button

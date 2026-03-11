@@ -3,9 +3,11 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
 import { useClientStore } from "@/store/ClientStore";
+import {useI18n} from "vue-i18n";
 
 const clientStore = useClientStore();
 const stateClient = clientStore.clientUiState
+const {t} = useI18n();
 
 const handleByStateAction = async () => {
   if (stateClient.isEdit){
@@ -41,7 +43,7 @@ const cancelUpdate = () => {
     <div class="form-header">
       <div class="title-wrapper">
         <i :class="stateClient.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
-        <h2>{{ stateClient.isEdit ? 'Editar Cliente' : 'Crear Cliente' }}</h2>
+        <h2>{{ stateClient.isEdit ? t("formsGeneric.edit", {item: t("entityName.client")}) : t('formsGeneric.new_m', {item: t('entityName.client')}) }}</h2>
       </div>
     </div>
 
@@ -54,7 +56,7 @@ const cancelUpdate = () => {
               class="w-full custom-input"
               :class="{ 'p-invalid': stateClient.nameError }"
           />
-          <label for="name">Nombre del Cliente</label>
+          <label for="name">{{ t("formsGeneric.name")}}</label>
         </FloatLabel>
         <small v-if="stateClient.nameError" class="error-msg">
           {{ stateClient.nameError }}
@@ -69,7 +71,7 @@ const cancelUpdate = () => {
             class="w-full custom-input"
             :class="{ 'p-invalid': stateClient.apePError }"
           />
-          <label for="apePClient">Apellido Paterno</label>
+          <label for="apePClient">{{ t("formsGeneric.client.lastName")}}</label>
         </FloatLabel>
         <small class="error-msg" v-if="stateClient.apePError">
           {{ stateClient.apePError }}
@@ -82,7 +84,7 @@ const cancelUpdate = () => {
             v-model="stateClient.apeMClient"
             class="w-full custom-input"
           />
-          <label for="apeMClient">Apellido Materno</label>
+          <label for="apeMClient">{{ t("formsGeneric.client.secondLastName")}}</label>
         </FloatLabel>
       </div>
 
@@ -94,7 +96,7 @@ const cancelUpdate = () => {
               class="w-full custom-input"
               :class="{ 'p-invalid': stateClient.telephoneError }"
           />
-          <label for="telephone">Telefono</label>
+          <label for="telephone">{{ t("formsGeneric.client.phone")}}</label>
         </FloatLabel>
         <small class="error-msg" v-if="stateClient.telephoneError">
           {{ stateClient.telephoneError }}
@@ -104,7 +106,7 @@ const cancelUpdate = () => {
       <div class="actions-group">
         <Button
             type="button"
-            :label="stateClient.isEdit ? 'Actualizar' : 'Guardar Cliente'"
+            :label="stateClient.isEdit ? t('formsGeneric.update') :  t('formsGeneric.save', {item:  t('entityName.client')})"
             :icon="stateClient.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
             :disabled="stateClient.isLoading"
             @click="handleByStateAction"
@@ -112,7 +114,7 @@ const cancelUpdate = () => {
         />
         <Button
             v-if="stateClient.isEdit"
-            label="Cancelar"
+            :label="t('formsGeneric.cancel')"
             icon="pi pi-times"
             severity="secondary"
             text
@@ -125,100 +127,5 @@ const cancelUpdate = () => {
 </template>
 
 <style scoped>
-/* Estructura del Card similar a la tabla */
-.form-card {
-  max-width: 500px;
-  width: 100%;
-  margin: 0 auto;
-  background: var(--surface-card, #ffffff);
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--surface-border, #ececec);
-}
 
-.form-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.title-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #4b5563;
-}
-
-/* Colores de iconos homologados */
-.icon-add {
-  color: #d946ef;
-  font-size: 1.5rem;
-}
-
-/* Magenta */
-.icon-edit {
-  color: #8b5cf6;
-  font-size: 1.5rem;
-}
-
-/* Morado */
-
-.form-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Inputs con el toque de la marca */
-.custom-input{
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-}
-
-.custom-input:focus{
-  border-color: #d946ef !important; /* Magenta al foco */
-  box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.1) !important;
-}
-
-/* Botones */
-.actions-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-direction: column;
-}
-
-.btn-submit {
-  flex: 1;
-  background: #d946ef; /* Magenta principal */
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: transform 0.2s;
-}
-
-.btn-submit:hover {
-  background: #c026d3 !important;
-  transform: translateY(-1px);
-}
-
-.error-msg {
-  color: #ef4444;
-  font-size: 0.8rem;
-  margin-top: 0.4rem;
-  margin-left: 0.2rem;
-}
 </style>
