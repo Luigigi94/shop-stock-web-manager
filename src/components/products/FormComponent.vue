@@ -117,7 +117,7 @@ const cancelUpdate = () => {
               :options="categoryStore.allCategories"
               optionLabel="nameCategory"
               optionValue="idCategory"
-              placeholder="Selecciona una categoría"
+              :placeholder="t('formsGeneric.product.selectCategory', {entity: t('entityName.category')})"
               class="w-full md:w-14rem"
               :loading="stateCategory.isLoading"
           />

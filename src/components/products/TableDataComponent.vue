@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import { useProductStore  } from "@/store/ProductStore";
+import {useProductStore} from "@/store/ProductStore";
+import {useI18n} from "vue-i18n";
+import Button from "primevue/button";
 
 const productStore = useProductStore();
 const currentState = productStore.productUiState
@@ -13,6 +15,7 @@ const props = defineProps({
   }
 })
 
+const {t} = useI18n();
 const handleEdit = async (id: string) => {
   currentState.success = false;
   const product = await productStore.productById(id)
@@ -36,74 +39,74 @@ const handleDelete = async (id: string) => {
 </script>
 
 <template>
-<div class="card">
-  <h2>Productos</h2>
-  <DataTable
-      :value="props.datos"
-      paginator
-      :rows="10"
-      responsiveLayout="stack"
-      breakpoint="960px"
-      class="p-datatable-customers custom-table"
-      stripedRows
-      removableSort
-      :rowsPerPageOptions="[5, 10, 20, 50]"
-      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-  >
-    <template #empty>
-      <div class="empty-state">No hay productos registrados</div>
-    </template>
-
-    <Column field="nameProduct" header="Nombre" sortable style="width: 25%">
-      <template #body="slotProps">
-        <span class="font-bold text-magenta">{{ slotProps.data.nameProduct }}</span>
+  <div class="card">
+    <h2>Productos</h2>
+    <DataTable
+        :value="props.datos"
+        paginator
+        :rows="10"
+        responsiveLayout="stack"
+        breakpoint="960px"
+        class="p-datatable-customers custom-table"
+        stripedRows
+        removableSort
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
+    >
+      <template #empty>
+        <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
       </template>
-    </Column>
 
-    <Column field="descriptionProduct" header="Descripción" style="width: 50%">
-      <template #body="slotProps">
-        <span class="font-bold text-magenta">{{ slotProps.data.descriptionProduct || 'Sin descripción' }}</span>
-      </template>
-    </Column>
+      <Column field="nameProduct" :header="t('formsGeneric.name')" sortable style="width: 20%">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.nameProduct }}</span>
+        </template>
+      </Column>
 
-    <Column field="priceProduct" header="Precio">
-      <template #body="slotProps">
-        <span class="font-bold text-magenta">{{ slotProps.data.priceProduct }}</span>
-      </template>
-    </Column>
+      <Column field="descriptionProduct" :header="t('tableGeneric.descHeader')" style="width: 25%">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{
+              slotProps.data.descriptionProduct || t('tableGeneric.emptyState')
+            }}</span>
+        </template>
+      </Column>
 
-    <Column field="stock" header="Stock">
-      <template #body="slotProps">
-        <span class="font-bold text-magenta">{{ slotProps.data.stock }}</span>
-      </template>
-    </Column>
+      <Column field="priceProduct" :header="t('formsGeneric.product.price')">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.priceProduct }}</span>
+        </template>
+      </Column>
 
-    <Column field="categoryName" header="Categoria">
-      <template #body="slotProps">
-        <span class="font-bold text-magenta">{{ slotProps.data.categoryName }}</span>
-      </template>
-    </Column>
-    <Column header="Acciones">
-      <template #body="slotProps">
-        <div class="flex gap-2">
-          <Button
-            security="info"
-            rounded
-            @click="handleEdit(slotProps.data.idProduct)"
-          ><i class="pi pi-pencil"></i></Button>
-        </div>
-        <div class="flex gap-2">
-          <Button
-            security="danger"
-            rounded
-            @click="handleDelete(slotProps.data.idProduct)"
+      <Column field="stock" :header="t('formsGeneric.product.qty')">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.stock }}</span>
+        </template>
+      </Column>
+
+      <Column field="categoryName" :header="t('entityName.category')">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.categoryName }}</span>
+        </template>
+      </Column>
+      <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <template #body="slotProps">
+          <div class="actions-wrapper">
+            <Button
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-secondary edit-btn"
+                @click="handleEdit(slotProps.data.idProduct)"
+            ><i class="pi pi-pencil"></i></Button>
+            <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-danger"
+                @click="handleDelete(slotProps.data.idProduct)"
             ><i class="pi pi-trash"></i></Button>
-        </div>
-      </template>
-    </Column>
-  </DataTable>
-</div>
+          </div>
+        </template>
+      </Column>
+    </DataTable>
+  </div>
 </template>
 
 <style scoped>

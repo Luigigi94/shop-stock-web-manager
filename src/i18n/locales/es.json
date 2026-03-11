@@ -25,7 +25,8 @@
     },
     "product": {
       "price": "Precio",
-      "qty": "Cantidad"
+      "qty": "Cantidad",
+      "selectCategory": "Selecciona {entity}"
     }
   },
   "tableGeneric": {

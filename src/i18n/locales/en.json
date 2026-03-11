@@ -22,6 +22,11 @@
       "lastName": "Last Name",
       "secondLastName": "Second Last Name",
       "phone": "Phone"
+    },
+    "product": {
+      "price": "Price",
+      "qty": "Quantity",
+      "selectCategory": "Select {entity}"
     }
   },
   "tableGeneric": {
@@ -38,6 +43,7 @@
   },
   "entityName": {
     "category": "Category",
-    "client": "Client"
+    "client": "Client",
+    "product": "Product"
   }
 }
