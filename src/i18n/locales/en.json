@@ -1,12 +1,9 @@
 {
   "menu": {
-    "home": "Home",
-    "management": "Management",
-    "categories": "Categories",
-    "clients": "Clients",
-    "products": "Products",
-    "suppliers": "Suppliers",
-    "logOut": "Logout"
+    "pos": "Sales",
+    "catalog": "Catalogs",
+    "stock": "Inventory",
+    "management": "Management"
   },
   "formsGeneric": {
     "new_m": "New {item}",
@@ -47,9 +44,20 @@
     "list": "{entity} List"
   },
   "entityName": {
+    "dashBoard": "DashBoard",
     "category": "Category",
-    "client": "Client",
     "product": "Product",
-    "supplier": "Supplier"
+    "inventory": "Inventory",
+    "inventoryDetails": "Detalle de Inventory",
+    "inventoryListed": "Listado de Inventories",
+    "invoice": "Sales Invoice",
+    "reserves": "Reserve",
+    "login": "Login",
+    "cart": "Cart",
+    "sales": "Sale",
+    "purchase": "Purchase",
+    "client": "Client",
+    "supplier": "Supplier",
+    "supplierPurchases": "Supplier Purchase"
   }
 }

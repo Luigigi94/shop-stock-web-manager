@@ -1,8 +1,8 @@
-export interface OptionsMenu{
-    label: number
-    icon: string
-    route:  string
-    role?:  string
-    state: boolean
-    contentDescription: string
+export interface OptionsMenu {
+    label: string;
+    icon: string;
+    route: string;
+    role: string | null;
+    state: boolean;
+    contentDescription: string;
 }

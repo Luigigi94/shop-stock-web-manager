@@ -1,12 +1,9 @@
 {
   "menu": {
-    "home": "Inicio",
-    "management": "Gestion",
-    "categories": "Categorías",
-    "clients": "Clientes",
-    "products": "Productos",
-    "suppliers": "Proveedores",
-    "logOut": "Cerrar Sesión"
+    "pos": "Ventas",
+    "catalog": "Catálogos",
+    "stock": "Inventario",
+    "management": "Gestión"
   },
   "formsGeneric": {
     "new_m": "Nuevo {item}",
@@ -47,9 +44,21 @@
     "list": "Lista de {entity}"
   },
   "entityName": {
+    "dashBoard": "DashBoard",
     "category": "Categoría",
-    "client": "Cliente",
     "product": "Producto",
-    "supplier": "Proveedor"
+    "inventory": "Inventario",
+    "inventoryDetails": "Detalle de Inventario",
+    "inventoryListed": "Listado de Inventarios",
+    "invoice": "Recibo de Compra",
+    "reserves": "Apartados",
+    "login": "Login",
+    "cart": "Carrito",
+    "sales": "Ventas",
+    "purchase": "Compras",
+    "client": "Cliente",
+    "supplier": "Proveedor",
+    "supplierPurchases": "Compras a Proveedores"
   }
 }
+
