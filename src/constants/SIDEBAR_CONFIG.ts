@@ -4,6 +4,14 @@ import {NAVIGATE_MENU} from "@/constants/NavigateMenus";
 export const SIDEBAR_CONFIG: Record<string, OptionsMenu[]> = {
     POS: [
         {
+          label: "entityName.newSale",
+          icon: 'pi pi-cart-plus',
+          route: NAVIGATE_MENU.SALES,
+          role: null,
+          state: true,
+          contentDescription: 'icon new sale'
+        },
+        {
             label: 'entityName.cart',
             icon: 'pi pi-shopping-cart',
             route: NAVIGATE_MENU.PURCHASE,

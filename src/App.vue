@@ -1,11 +1,11 @@
 <script setup>
-import DrawerMenu from "@/components/DrawerMenu.vue";
+import SideBarMenu from "@/components/layout/SideBarMenu.vue";
 </script>
 
 <template>
 
   <div class="layout-wrapper">
-    <DrawerMenu />
+    <SideBarMenu />
     <div class="main-layout">
       <main class="main-content">
         <router-view />

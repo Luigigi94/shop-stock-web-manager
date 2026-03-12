@@ -3,6 +3,7 @@ export const NAVIGATE_MENU = {
     HOME: '/',
 
     // POS_OPTIONS
+    SALES: '/pos/new-sale',
     PURCHASE: '/pos/purchase',
     RESERVES: '/pos/reserves',
     SALESBYUSER: '/pos/sales-by-user',

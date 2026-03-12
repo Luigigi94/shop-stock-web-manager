@@ -58,7 +58,8 @@
     "purchase": "Compras",
     "client": "Cliente",
     "supplier": "Proveedor",
-    "supplierPurchases": "Compras a Proveedores"
+    "supplierPurchases": "Compras a Proveedores",
+    "newSale": "Venta Nueva"
   }
 }
 

@@ -1,24 +1,16 @@
 <script setup>
 import Menu from 'primevue/menu';
-import {computed, onMounted, ref} from "vue";
-import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
+import {computed} from "vue";
+import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 import ToggleSwitch from 'primevue/toggleswitch';
-import { SIDEBAR_CONFIG } from "@/constants/SIDEBAR_CONFIG.ts";
+import {SIDEBAR_CONFIG} from "@/constants/SIDEBAR_CONFIG.ts";
 
-const { t, locale } = useI18n();
+const {t, locale} = useI18n();
 const router = useRouter();
-
-const isDark = ref(false);
 
 const toggleLanguage = () => {
   locale.value = locale.value === 'es' ? 'en' : 'es';
-};
-
-const toggleDarkMode = () => {
-  isDark.value = !isDark.value;
-  document.documentElement.classList.toggle('my-app-dark'); // Usa siempre este
-  localStorage.setItem('darkMode', isDark.value ? 'enabled' : 'disabled');
 };
 
 const menuItems = computed(() => {
@@ -31,13 +23,6 @@ const menuItems = computed(() => {
       command: () => router.push(item.route)
     }))
   }));
-});
-
-onMounted(() => {
-  if (localStorage.getItem('darkMode') === 'enabled') {
-    isDark.value = true;
-    document.documentElement.classList.add('my-app-dark'); // Cambia p-dark por my-app-dark
-  }
 });
 </script>
 
@@ -52,20 +37,12 @@ onMounted(() => {
               @update:modelValue="toggleLanguage"
           />
           <span :class="{ 'active-lang': locale === 'en' }">EN</span>
-          <Divider layout="vertical" /> <Button
-            @click="toggleDarkMode"
-            variant="text"
-            rounded
-            class="dark-toggle-btn"
-        >
-          <i class="pi" :class="isDark ? 'pi-moon' : 'pi-sun'"></i>
-        </Button>
         </div>
       </template>
 
       <template #item="{ item, props }">
         <a v-ripple class="flex items-center p-menuitem-link" v-bind="props.action">
-          <span :class="[item.icon, 'mr-2']" />
+          <span :class="[item.icon, 'mr-2']"/>
           <span class="ml-2">{{ item.label }}</span>
         </a>
       </template>

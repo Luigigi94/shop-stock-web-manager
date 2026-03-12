@@ -58,6 +58,7 @@
     "purchase": "Purchase",
     "client": "Client",
     "supplier": "Supplier",
-    "supplierPurchases": "Supplier Purchase"
+    "supplierPurchases": "Supplier Purchase",
+    "newSale": "New Sale"
   }
 }
