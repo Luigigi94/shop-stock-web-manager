@@ -3,7 +3,8 @@
     "pos": "Ventas",
     "catalog": "Catálogos",
     "stock": "Inventario",
-    "management": "Gestión"
+    "management": "Gestión",
+    "home": "home"
   },
   "formsGeneric": {
     "new_m": "Nuevo {item}",

@@ -2,6 +2,16 @@ import {OptionsMenu} from "@/models/OptionsMenu";
 import {NAVIGATE_MENU} from "@/constants/NavigateMenus";
 
 export const SIDEBAR_CONFIG: Record<string, OptionsMenu[]> = {
+    HOME:[
+        {
+            label: "entityName.dashBoard",
+            icon: 'pi pi-home',
+            route: NAVIGATE_MENU.HOME,
+            role: null,
+            state: true,
+            contentDescription: 'icon new sale'
+        }
+    ],
     POS: [
         {
           label: "entityName.newSale",
