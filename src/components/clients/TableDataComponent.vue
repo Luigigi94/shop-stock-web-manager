@@ -68,22 +68,22 @@ const handleDelete = async (id: string) => {
           <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
         </template>
 
-        <Column field="nameClient" :header="t('formsGeneric.name')"  sortable style="width: 30%">
+        <Column field="nameClient" :header="t('formsGeneric.name')"  sortable style="calc(55% - 15rem)">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.nameClient }}</span>
           </template>
         </Column>
-        <Column field="apePClient" :header="t('formsGeneric.client.lastName')" style="width: 25%">
+        <Column field="apePClient" :header="t('formsGeneric.client.lastName')"  style="width: 16%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.apePClient }}</span>
           </template>
         </Column>
-        <Column field="apePClient" :header="t('formsGeneric.client.secondLastName')" style="width: 25%">
+        <Column field="apePClient" :header="t('formsGeneric.client.secondLastName')"  style="width: 16%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.apeMClient }}</span>
           </template>
         </Column>
-        <Column field="telephone" :header="t('formsGeneric.client.phone')" style="width: 25%">
+        <Column field="telephone" :header="t('formsGeneric.client.phone')"  style="width: 16%">
           <template #body="slotProps">
             <span class="font-bold text-magenta">{{ slotProps.data.telephone }}</span>
           </template>

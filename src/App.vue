@@ -16,13 +16,16 @@ import DrawerMenu from "@/components/DrawerMenu.vue";
 </template>
 
 <style>
-/* Estilos globales para asegurar que no haya scrolls fantasmas */
+/* Estilos globales */
 html, body {
   margin: 0;
   padding: 0;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Evita scroll en el body, lo manejamos internamente */
+  overflow: hidden;
+  /* Usamos variables de texto y fondo globales de PrimeVue */
+  background-color: var(--p-content-background);
+  color: var(--p-text-color);
 }
 
 .layout-wrapper {
@@ -38,33 +41,34 @@ html, body {
   flex: 1;
   min-width: 0;
   height: 100vh;
-  background-color: #f9fafb; /* Un gris muy ligero para contrastar con el blanco */
+  /* CAMBIO: Usamos surface-950 para un fondo negro profundo profesional en dark */
+  background-color: var(--p-surface-100);
+  transition: background-color 0.3s ease;
 }
 
 .top-nav {
-  height: 60px; /* Altura fija para el nav para mejor control */
+  height: 60px;
   padding: 0 1.5rem;
-  background: #ffffff;
+  /* CAMBIO: De #ffffff a fondo de contenido del tema */
+  background: var(--p-content-background);
   display: flex;
   align-items: center;
   gap: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  /* CAMBIO: Borde variable */
+  border-bottom: 1px solid var(--p-content-border-color);
 }
 
 .main-content {
   flex: 1;
-  overflow-y: auto; /* El scroll ocurre solo aquí */
+  overflow-y: auto;
   padding: 2rem;
+  /* Aseguramos que no haya fondos blancos heredados */
+  background-color: transparent;
 }
 
-/* Estilo para los links activos (opcional pero recomendado) */
+/* Estilo para los links activos usando tu color primario del MyPreset */
 .router-link-active {
-  color: var(--primary-color, #3b82f6);
+  color: var(--p-primary-500);
   font-weight: bold;
 }
-/*.sidebar {
-  width: 260px;
-  height: 100vh;
-  flex-shrink: 0;
-}*/
 </style>

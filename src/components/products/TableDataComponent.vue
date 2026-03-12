@@ -39,73 +39,84 @@ const handleDelete = async (id: string) => {
 </script>
 
 <template>
-  <div class="card">
-    <h2>Productos</h2>
-    <DataTable
-        :value="props.datos"
-        paginator
-        :rows="10"
-        responsiveLayout="stack"
-        breakpoint="960px"
-        class="p-datatable-customers custom-table"
-        stripedRows
-        removableSort
-        :rowsPerPageOptions="[5, 10, 20, 50]"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
-    >
-      <template #empty>
-        <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
-      </template>
-
-      <Column field="nameProduct" :header="t('formsGeneric.name')" sortable style="width: 20%">
-        <template #body="slotProps">
-          <span class="font-bold text-magenta">{{ slotProps.data.nameProduct }}</span>
+  <div class="inventory-container">
+    <div class="inventory-card">
+      <div class="header-section">
+        <div class="title-wrapper">
+          <i class="pi pi-tags icon-magenta"></i>
+          <h2>{{ t("tableGeneric.management", {item: t("entityName.product")}) }}</h2>
+        </div>
+        <div class="stats-badge">
+          {{ `${props.datos.length} ${t("tableGeneric.records")}` }}
+        </div>
+      </div>
+      <DataTable
+          :value="props.datos"
+          paginator
+          :rows="10"
+          responsiveLayout="stack"
+          breakpoint="960px"
+          class="p-datatable-customers custom-table"
+          stripedRows
+          removableSort
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
+      >
+        <template #empty>
+          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
         </template>
-      </Column>
 
-      <Column field="descriptionProduct" :header="t('tableGeneric.descHeader')" style="width: 25%">
-        <template #body="slotProps">
+        <Column field="nameProduct" :header="t('formsGeneric.name')" sortable style="calc(55% - 15rem)">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.nameProduct }}</span>
+          </template>
+        </Column>
+
+        <Column field="descriptionProduct" :header="t('tableGeneric.descHeader')" style="width: 16%">
+          <template #body="slotProps">
           <span class="font-bold text-magenta">{{
               slotProps.data.descriptionProduct || t('tableGeneric.emptyState')
             }}</span>
-        </template>
-      </Column>
+          </template>
+        </Column>
 
-      <Column field="priceProduct" :header="t('formsGeneric.product.price')">
-        <template #body="slotProps">
-          <span class="font-bold text-magenta">{{ slotProps.data.priceProduct }}</span>
-        </template>
-      </Column>
+        <Column field="priceProduct" :header="t('formsGeneric.product.price')" style="width: 16%">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.priceProduct }}</span>
+          </template>
+        </Column>
 
-      <Column field="stock" :header="t('formsGeneric.product.qty')">
-        <template #body="slotProps">
-          <span class="font-bold text-magenta">{{ slotProps.data.stock }}</span>
-        </template>
-      </Column>
+        <Column field="stock" :header="t('formsGeneric.product.qty')" style="width: 16%">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.stock }}</span>
+          </template>
+        </Column>
 
-      <Column field="categoryName" :header="t('entityName.category')">
-        <template #body="slotProps">
-          <span class="font-bold text-magenta">{{ slotProps.data.categoryName }}</span>
-        </template>
-      </Column>
-      <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
-        <template #body="slotProps">
-          <div class="actions-wrapper">
-            <Button
-                icon="pi pi-pencil"
-                class="p-button-rounded p-button-text p-button-secondary edit-btn"
-                @click="handleEdit(slotProps.data.idProduct)"
-            ><i class="pi pi-pencil"></i></Button>
-            <Button
-                icon="pi pi-trash"
-                class="p-button-rounded p-button-text p-button-danger"
-                @click="handleDelete(slotProps.data.idProduct)"
-            ><i class="pi pi-trash"></i></Button>
-          </div>
-        </template>
-      </Column>
-    </DataTable>
+        <Column field="categoryName" :header="t('entityName.category')" style="width: 16%">
+          <template #body="slotProps">
+            <span class="font-bold text-magenta">{{ slotProps.data.categoryName }}</span>
+          </template>
+        </Column>
+        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center"
+                bodyStyle="text-align: center">
+          <template #body="slotProps">
+            <div class="actions-wrapper">
+              <Button
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text p-button-secondary edit-btn"
+                  @click="handleEdit(slotProps.data.idProduct)"
+              ><i class="pi pi-pencil"></i></Button>
+              <Button
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  @click="handleDelete(slotProps.data.idProduct)"
+              ><i class="pi pi-trash"></i></Button>
+            </div>
+          </template>
+        </Column>
+      </DataTable>
+    </div>
   </div>
 </template>
 
@@ -177,11 +188,6 @@ h2 {
 
 .text-magenta {
   color: #c026d3;
-}
-
-.text-description {
-  color: #6b7280;
-  line-height: 1.5;
 }
 
 .actions-wrapper {

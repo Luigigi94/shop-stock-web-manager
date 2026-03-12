@@ -1,19 +1,22 @@
-    /* Estructura del Card similar a la tabla */
+/* Estructura del Card compatible con Dark Mode */
 .form-card {
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    background: var(--surface-card, #ffffff);
+    /* CAMBIO: Usamos las variables de superficie de PrimeVue */
+    background: var(--p-content-background);
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--surface-border, #ececec);
+    /* CAMBIO: Sombra adaptativa (se vuelve más sutil en dark) */
+    box-shadow: var(--p-card-shadow);
+    border: 1px solid var(--p-content-border-color);
 }
 
 .form-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f1f1f1;
+    /* CAMBIO: Línea divisoria dinámica */
+    border-bottom: 1px solid var(--p-content-border-color);
 }
 
 .title-wrapper {
@@ -26,22 +29,20 @@ h2 {
     margin: 0;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #4b5563;
+    /* CAMBIO: Texto que se vuelve blanco en dark mode */
+    color: var(--p-text-color);
 }
 
 /* Colores de iconos homologados */
 .icon-add {
-    color: #d946ef;
+    color: #d946ef; /* Magenta principal */
     font-size: 1.5rem;
 }
 
-/* Magenta */
 .icon-edit {
-    color: #8b5cf6;
+    color: var(--p-primary-500); /* Usamos tu morado del MyPreset */
     font-size: 1.5rem;
 }
-
-/* Morado */
 
 .form-body {
     display: flex;
@@ -57,13 +58,18 @@ h2 {
 /* Inputs con el toque de la marca */
 .custom-input, .custom-textarea {
     border-radius: 8px;
-    border: 1px solid #ddd;
+    /* CAMBIO: El borde del input debe ser el del tema */
+    border: 1px solid var(--p-content-border-color);
+    background: var(--p-content-background);
+    color: var(--p-text-color);
     padding: 0.75rem;
 }
 
 .custom-input:focus, .custom-textarea:focus {
-    border-color: #d946ef !important; /* Magenta al foco */
-    box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.1) !important;
+    /* CAMBIO: Usamos magenta pero con variable si es posible */
+    border-color: #d946ef !important;
+    box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.2) !important;
+    outline: none;
 }
 
 /* Botones */
@@ -76,11 +82,12 @@ h2 {
 
 .btn-submit {
     flex: 1;
-    background: #d946ef; /* Magenta principal */
+    background: #d946ef;
     border: none;
+    color: #ffffff; /* El texto del botón suele quedar mejor blanco siempre */
     border-radius: 8px;
     font-weight: 600;
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
 
 .btn-submit:hover {
@@ -90,11 +97,13 @@ h2 {
 
 .btn-cancel {
     border-radius: 8px;
-    color: #6b7280;
+    /* CAMBIO: Color de texto secundario del tema */
+    color: var(--p-text-muted-color);
 }
 
 .error-msg {
-    color: #ef4444;
+    /* CAMBIO: Usamos el rojo semántico de PrimeVue */
+    color: var(--p-red-500);
     font-size: 0.8rem;
     margin-top: 0.4rem;
     margin-left: 0.2rem;
@@ -102,5 +111,5 @@ h2 {
 
 /* Espaciado extra */
 .mt-5 {
-    margin-top: 2rem; /* Espacio extra para que el FloatLabel no choque */
+    margin-top: 2rem;
 }

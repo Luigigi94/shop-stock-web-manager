@@ -1,4 +1,4 @@
-    /* Contenedor externo para dar aire en la página */
+/* Contenedor externo para dar aire en la página */
 .inventory-container {
     width: 100%;
     padding: 1rem;
@@ -8,13 +8,15 @@
 
 /* El Card que contiene todo */
 .inventory-card {
-    background: var(--surface-card, #ffffff);
+    /* CAMBIO: Variable de fondo de superficie */
+    background: var(--p-content-background);
     width: 100%;
-    max-width: 1400px; /* Evita que se estire infinito en monitores ultra-wide */
+    max-width: 1400px;
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--surface-border, #ececec);
+    /* CAMBIO: Sombra adaptativa */
+    box-shadow: var(--p-card-shadow);
+    border: 1px solid var(--p-content-border-color);
 }
 
 /* Header estilizado */
@@ -24,7 +26,8 @@
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f1f1f1;
+    /* CAMBIO: Borde dinámico */
+    border-bottom: 1px solid var(--p-content-border-color);
 }
 
 .title-wrapper {
@@ -35,32 +38,42 @@
 
 .icon-magenta {
     font-size: 1.5rem;
-    color: #d946ef; /* Magenta */
+    color: #d946ef; /* Mantenemos color de marca */
 }
 
 h2 {
     margin: 0;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #4b5563;
+    /* CAMBIO: Color de texto que cambia solo */
+    color: var(--p-text-color);
 }
 
 .stats-badge {
-    background: #f5f3ff;
-    color: #7c3aed; /* Morado */
+    /* CAMBIO: Usamos colores semánticos de tu MyPreset (Purple) */
+    background: var(--p-primary-50);
+    color: var(--p-primary-600);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.85rem;
 }
 
-/* Estilos de la tabla */
+/* Estilos de la tabla - ELIMINAMOS EL FONDO BLANCO DEL THEAD */
 .custom-table :deep(.p-datatable-thead > tr > th) {
-    background: #f9fafb;
+    /* CAMBIO: Fondo neutro que varía según el tema */
+    background: var(--p-surface-50);
     padding: 1rem;
-    color: #6b7280;
+    /* CAMBIO: Texto muted para el header */
+    color: var(--p-text-muted-color);
     font-size: 0.85rem;
     text-transform: uppercase;
+}
+
+/* Estilo para las filas */
+.custom-table :deep(.p-datatable-tbody > tr) {
+    background: var(--p-content-background);
+    color: var(--p-text-color);
 }
 
 .text-magenta {
@@ -68,7 +81,8 @@ h2 {
 }
 
 .text-description {
-    color: #6b7280;
+    /* CAMBIO: Texto secundario legible en ambos modos */
+    color: var(--p-text-muted-color);
     line-height: 1.5;
 }
 
@@ -79,14 +93,14 @@ h2 {
 }
 
 .edit-btn:hover {
-    color: #8b5cf6 !important; /* Morado al pasar el mouse */
-    background: #f5f3ff !important;
+    color: var(--p-primary-500) !important;
+    background: var(--p-primary-50) !important;
 }
 
 .empty-state {
     padding: 3rem;
     text-align: center;
-    color: #9ca3af;
+    color: var(--p-text-muted-color);
     font-style: italic;
 }
 
@@ -101,4 +115,41 @@ h2 {
         align-items: flex-start;
         gap: 1rem;
     }
+}
+
+/* Fuerza el fondo oscuro en la tarjeta de inventario */
+.my-app-dark .inventory-card {
+    background: var(--p-content-background) !important;
+    border-color: var(--p-content-border-color) !important;
+}
+
+/* Corrige el color del título que se ve borroso en la captura */
+.my-app-dark h2 {
+    color: var(--p-text-color) !important;
+}
+
+.my-app-dark .custom-table :deep(.p-datatable-thead > tr > th) {
+    background: var(--p-surface-900) !important; /* Un gris más oscuro que la card */
+    color: var(--p-text-muted-color) !important;
+    border-color: var(--p-content-border-color) !important;
+}
+
+/* Forzar el paginador oscuro */
+.my-app-dark .custom-table :deep(.p-datatable-paginator-bottom) {
+    background: var(--p-surface-900) !important;
+    border-color: var(--p-content-border-color) !important;
+}
+
+/* Ajuste de los botones del paginador para que no se pierdan */
+.my-app-dark .custom-table :deep(.p-paginator-page),
+.my-app-dark .custom-table :deep(.p-paginator-next),
+.my-app-dark .custom-table :deep(.p-paginator-last),
+.my-app-dark .custom-table :deep(.p-paginator-first),
+.my-app-dark .custom-table :deep(.p-paginator-prev) {
+    color: var(--p-text-color) !important;
+}
+
+.my-app-dark .custom-table :deep(.p-highlight) {
+    background: var(--p-primary-900) !important;
+    color: var(--p-primary-100) !important;
 }

@@ -7,37 +7,58 @@
     margin-left: auto;
     margin-right: auto;
     padding: 1.5rem;
-    background: #fdfdfd;
+    /* CAMBIO: De #fdfdfd a fondo de superficie sutil */
+    background: var(--p-surface-50);
     border-radius: 8px;
-    border: 1px solid #eee;
+    /* CAMBIO: Borde dinámico del tema */
+    border: 1px solid var(--p-content-border-color);
+    color: var(--p-text-color);
 }
 
 input {
     padding: 10px;
-    border: 1px solid #ddd;
+    /* CAMBIO: Borde y colores adaptativos */
+    border: 1px solid var(--p-content-border-color);
+    background: var(--p-content-background);
+    color: var(--p-text-color);
     border-radius: 6px;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
 }
 
 input:focus {
+    /* Mantenemos tu magenta de marca para el foco */
     border-color: #d946ef;
     outline: none;
+    box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.2);
 }
 
+/* Estilo para los botones de PrimeVue */
 .p-button {
     padding: 12px;
-    background: #8b5cf6;
-    color: white;
+    /* CAMBIO: Usamos el morado de tu MyPreset directamente */
+    background: var(--p-primary-500);
+    color: var(--p-primary-contrast-color); /* Asegura contraste blanco/negro según el fondo */
     border: none;
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
 .p-button:hover {
-    background: #7c3aed;
+    background: var(--p-primary-600);
 }
 
 .p-button:disabled {
-    background: #ccc;
+    /* CAMBIO: Gris semántico del tema */
+    background: var(--p-surface-300);
+    color: var(--p-surface-500);
+    cursor: not-allowed;
+}
+
+/* Tipografía de ayuda o etiquetas dentro de la vista */
+label {
+    color: var(--p-text-color);
+    font-weight: 500;
+    font-size: 0.9rem;
 }
