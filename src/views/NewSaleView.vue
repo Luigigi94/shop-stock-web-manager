@@ -26,9 +26,9 @@ onUnmounted(() => {
 <template>
   <div class="card">
     <div class="flex gap-2 justify-center">
-      <Button icon="pi pi-arrow-left" @click="cartStore.openCart()">
+<!--      <Button icon="pi pi-arrow-left" @click="cartStore.openCart()">
         open modal
-      </Button>
+      </Button>-->
     </div>
   </div>
   <CartDrawer v-model:visible="cartState.isCartOpen" header="Right Drawer" position="right" />
