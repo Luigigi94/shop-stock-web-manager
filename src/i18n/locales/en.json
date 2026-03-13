@@ -60,5 +60,9 @@
     "supplier": "Supplier",
     "supplierPurchases": "Supplier Purchase",
     "newSale": "New Sale"
+  },
+  "listsGeneric": {
+    "search": "Search product",
+    "buttonAdd": "Add"
   }
 }

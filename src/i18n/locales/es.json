@@ -61,6 +61,10 @@
     "supplier": "Proveedor",
     "supplierPurchases": "Compras a Proveedores",
     "newSale": "Venta Nueva"
+  },
+  "listsGeneric": {
+    "search": "Buscar producto",
+    "buttonAdd": "Agregar"
   }
 }
 

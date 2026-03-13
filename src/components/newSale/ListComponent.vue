@@ -105,32 +105,29 @@ function getStatus(stock: number) {
 <template>
   <div class="inventory-container">
     <div class="inventory-card">
-      <div class="header-section">
-        <div class="title-wrapper">
-          <i class="pi pi-tags icon-magenta"></i>
-          <h2>Ventas</h2>
-        </div>
-      </div>
 
       <DataView :value="filteredItems" :layout="layout">
 <!--      <DataView :value="props.datos" :layout="layout">-->
         <template #header>
-          <div class="header-toolbar">
-            <SelectButton v-model="layout" :options="options" :allowEmpty="false">
-              <template #option="{ option }">
-                <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']" />
-              </template>
-            </SelectButton>
-          </div>
-          <div class="flex justify-content-end">
-            <span class="p-input-icon-left">
-              <i class="pi pi-search" />
-              <InputText
-                  v-model="filters1['global'].value"
-                  @input="() => {}"
-                  placeholder="Buscar producto..."
-              />
-            </span>
+          <div class="header-custom-wrapper">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText
+                    v-model="filters1['global'].value"
+                    :placeholder="t('listsGeneric.search')"
+                    class="custom-input"
+                />
+              </span>
+            </div>
+
+            <div class="selector-container">
+              <SelectButton v-model="layout" :options="options" :allowEmpty="false">
+                <template #option="{ option }">
+                  <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']" />
+                </template>
+              </SelectButton>
+            </div>
           </div>
         </template>
 
@@ -150,7 +147,7 @@ function getStatus(stock: number) {
                   <span class="price">${{ item.priceProduct }}</span>
                   <div class="button-group">
                     <Button icon="pi pi-heart" outlined />
-                    <Button icon="pi pi-shopping-cart" label="Buy Now" :disabled="item.stock === 0" />
+                    <Button icon="pi pi-shopping-cart" :label="t('listsGeneric.buttonAdd')" :disabled="item.stock === 0" />
                   </div>
                 </div>
               </div>
@@ -186,12 +183,45 @@ function getStatus(stock: number) {
 
 <style scoped>
 /* Contenedores Generales */
-.header-toolbar {
+/*.header-toolbar {
   display: flex;
   justify-content: flex-end;
   padding: 1rem;
+}*/
+.header-custom-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important; /* EMPUJA LOS ELEMENTOS A LOS EXTREMOS */
+  align-items: center !important;
+  width: 100% !important;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
+/* Aseguramos que los contenedores hijos se porten bien */
+.search-container, .selector-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Reutilizamos tu estilo de input si quieres que combine con tu tema magenta */
+.custom-input {
+  border-radius: 8px;
+  border: 1px solid var(--p-content-border-color);
+  background: var(--p-content-background);
+  color: var(--p-text-color);
+}
+
+.custom-input:focus {
+  border-color: #d946ef !important; /* Tu magenta */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.2) !important;
+}
+
+/* --- Limpieza de tus clases anteriores para evitar ruidos --- */
+.header-toolbar {
+  display: none; /* Ya no la necesitamos */
+}
 /* --- ESTILOS DE LISTA --- */
 .list-container {
   display: flex;
