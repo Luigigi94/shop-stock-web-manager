@@ -31,22 +31,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-<!--  <div class="container">
-    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.product")}) }}</h1>-->
-    <Dialog
-        v-model:visible="productStore.productUiState.isModalVisible"
-        modal
-    >
+
+    <Dialog v-model:visible="productStore.productUiState.isModalVisible" :style="{ width: '450px' }" header="Product Details" :modal="true">
       <section>
         <FormComponent />
       </section>
     </Dialog>
-<!--    <hr>
-    <hr>-->
     <section>
       <TableDataComponent :datos="productStore.productsWithCategoryName" />
     </section>
-<!--  </div>-->
 </template>
 
 

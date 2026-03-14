@@ -13,9 +13,13 @@ import {FilterMatchMode, FilterOperator} from "@primevue/core/api";
 const productStore = useProductStore();
 const currentState = productStore.productUiState
 interface ProductFilter {
+  idProduct: string; // Añadido para los métodos de edición/borrado
   nameProduct?: string;
   categoryName?: string;
   stock?: number;
+  image?: string;
+  descriptionProduct?: string;
+  priceProduct?: number;
 }
 
 // 3. Tipar los filtros
@@ -139,6 +143,17 @@ const clearFilter = () => {
         <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
       </template>
 
+      <Column :header="t('formsGeneric.product.img')">
+        <template #body="slotProps">
+          <img
+              v-if="slotProps.data.imageProduct"
+              :src="`${slotProps.data.imageProduct}`"
+              :alt="slotProps.data.imageProduct"
+              class="w-16 shadow-md rounded-md"
+          />
+          <i v-else class="pi pi-image text-surface-400" style="font-size: 2rem"></i>
+        </template>
+      </Column>
       <Column field="nameProduct" :header="t('formsGeneric.name')" sortable style="calc(55% - 15rem)">
         <template #body="slotProps">
           <span class="font-bold text-magenta">{{ slotProps.data.nameProduct }}</span>

@@ -1,12 +1,23 @@
 import {collection, doc, onSnapshot, query, setDoc, Unsubscribe, getDoc, deleteDoc} from "firebase/firestore"
+import {ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage"
 import {COLLECTIONS} from "@/constants/collections";
-import {db} from "@/firebase/firebase"
+import {db, storage} from "@/firebase/firebase"
 
 import type { Products } from "@/models/Products";
 
 const productsCollection = collection(db,COLLECTIONS.PRODUCTS)
 
 export const ProductsRepository = {
+    async uploadProductImage(file: File, productId: string): Promise<string> {
+        // Guardamos la imagen en una carpeta 'products' usando el ID del producto
+        const storageRef = ref(storage, `${COLLECTIONS.PRODUCTS}/${productId}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+    },
+    async deleteProductImage(productId: string): Promise<void> {
+        const storageRef = ref(storage, `${COLLECTIONS.PRODUCTS}/${productId}`);
+        await deleteObject(storageRef);
+    },
     getAllProducts(onUpdate: (products: Products[]) => void): Unsubscribe {
         return onSnapshot(query(productsCollection), snapshot => {
             const list = snapshot.docs.map(doc => ({

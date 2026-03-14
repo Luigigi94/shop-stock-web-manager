@@ -24,6 +24,7 @@
     "product": {
       "price": "Precio",
       "qty": "Cantidad",
+      "img": "Imagen",
       "selectCategory": "Selecciona {entity}"
     },
     "supplier": {
@@ -65,6 +66,14 @@
   "listsGeneric": {
     "search": "Buscar producto",
     "buttonAdd": "Agregar"
+  },
+  "errorsGeneric": {
+    "required": "{field} es Obligatorio"
+  },
+  "toastOptions": {
+    "success": "Éxito",
+    "successSave": "{entity} Creado",
+    "successUpdate": "{entity} Actualizado"
   }
 }
 

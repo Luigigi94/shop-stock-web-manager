@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext';
+import {FileUpload} from "primevue";
+import { useToast } from 'primevue/usetoast';
+import { ref } from 'vue';
+
+const toast = useToast();
+const fileUpload = ref();
 import Select from 'primevue/select';
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
@@ -27,7 +33,10 @@ const handleUpdate = async () => {
   await productStore.updateProduct()
 
   if (stateProduct.success) {
+    // productStore.clearState()
+    toast.add({ severity: 'success', summary: t('toastOptions.success'), detail: t('toastOptions.successUpdate', {entity: t('entityName.product')}), life: 3000 });
     productStore.clearState()
+    fileUpload.value?.clear();
   }
 }
 
@@ -35,17 +44,103 @@ const handleSave = async () => {
   await productStore.addProduct()
 
   if (stateProduct.success) {
+    // productStore.clearState()
+    toast.add({ severity: 'success', summary: t('toastOptions.success'), detail: t('toastOptions.successSave', {entity: t('entityName.product')}), life: 3000 });
     productStore.clearState()
+    fileUpload.value?.clear();
   }
 }
 
 const cancelUpdate = () => {
+  // productDialog.value = false;
+  stateProduct.isModalVisible = false
   productStore.clearState()
 }
+
+function upload() {
+  fileUpload.value.upload();
+}
+
+function onUpload() {
+  toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
+}
+
+const onClearInternal = () => {
+  fileUpload.value.clear();
+  stateProduct.fileToUpload = null;
+  console.log("Imagen eliminada y contador reseteado");
+};
+const onSelect = (event: any) => {
+  // Manejo de archivo único
+  if (fileUpload.value.files.length > 1) {
+    fileUpload.value.files.shift();
+  }
+  // CONEXIÓN: Guardamos el archivo seleccionado en el UiState del store
+  stateProduct.fileToUpload = event.files[0];
+};
 </script>
 
 <template>
-  <div class="form-card">
+  <div class="flex flex-col gap-6">
+    <img
+        v-if="stateProduct.isEdit && stateProduct.imageProduct"
+        :src="stateProduct.imageProduct"
+        :alt="stateProduct.nameProduct ?? 'product-image'"
+        class="block m-auto pb-4 rounded-lg shadow-md object-cover border-2 border-magenta"
+        style="width: 300px; height: 300px;"
+    />
+    <div>
+      <label for="name" class="block font-bold mb-3">{{ t("formsGeneric.name") }}</label>
+      <InputText id="name" v-model.trim="stateProduct.nameProduct" required="true" autofocus :invalid="stateProduct.nameTouched && !stateProduct.nameProduct" fluid />
+      <small v-if="stateProduct.nameTouched && !stateProduct.nameProduct" class="text-red-500">{{ t("errorsGeneric.required", {field: t("formsGeneric.name")}) }}</small>
+    </div>
+    <div>
+      <label for="description" class="block font-bold mb-3">{{ t("formsGeneric.description") }}</label>
+      <InputText id="description" v-model.trim="stateProduct.descriptionProduct" required="false" fluid />
+    </div>
+    <div>
+      <div class="font-semibold text-xl mb-3">{{ t("formsGeneric.product.img") }}</div>
+      <FileUpload name="productImg" ref="fileUpload" accept="image/*" :maxFileSize="2000000" customUpload :multiple="false" @clear="onClearInternal" @select="onSelect">
+        <template #empty>
+          <p>Arrastra una imagen o haz clic para seleccionar.</p>
+        </template>
+      </FileUpload>
+    </div>
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-6">
+        <label for="price" class="block font-bold mb-3">{{ t("formsGeneric.product.price") }}</label>
+        <InputText id="price" v-model.trim="stateProduct.priceProduct" required="true" autofocus :invalid="stateProduct.priceTouched && !stateProduct.priceProduct" fluid />
+        <small v-if="stateProduct.priceTouched && !stateProduct.priceProduct" class="text-red-500">{{ t("errorsGeneric.required", {field: t("formsGeneric.product.price")}) }}</small>
+      </div>
+      <div class="col-span-6">
+        <label for="quantity" class="block font-bold mb-3">{{ t("formsGeneric.product.qty") }}</label>
+        <InputText id="quantity" v-model.trim="stateProduct.stock" required="true" autofocus :invalid="stateProduct.quantityTouched && !stateProduct.stock" fluid />
+        <small v-if="stateProduct.quantityTouched && !stateProduct.stock" class="text-red-500">{{ t("errorsGeneric.required", {field: t("formsGeneric.product.qty")}) }}</small>
+      </div>
+    </div>
+    <div>
+      <label for="categoryName" class="block font-bold mb-3">{{ t("entityName.category") }}</label>
+      <Select
+          id="categoryName"
+          v-model="stateProduct.idCategory"
+          :options="categoryStore.allCategories"
+          optionLabel="nameCategory"
+          optionValue="idCategory"
+          :placeholder="t('formsGeneric.product.selectCategory', {entity: t('entityName.category')})"
+          class="w-full md:w-14rem"
+          :loading="stateCategory.isLoading"
+      />
+    </div>
+
+    <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
+    <Button
+        :label="stateProduct.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
+        icon="pi pi-check"
+        @click="handleByStateAction"
+        :loading="stateProduct.isLoading"
+    />
+  </div>
+<!--  <div class="form-card">
     <div class="form-header">
       <div class="title-wrapper">
         <i :class="stateProduct.isEdit ? 'pi pi-pencil icon-edit' :'pi pi-plus-circle icon-add'"></i>
@@ -55,77 +150,6 @@ const cancelUpdate = () => {
 
     <div class="form-body">
       <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateProduct.nameProduct"
-              class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.nameError }"
-          />
-          <label for="name">{{ t("formsGeneric.name") }}</label>
-        </FloatLabel>
-        <small v-if="stateProduct.nameError" class="error-msg">
-          {{ stateProduct.nameError }}
-        </small>
-      </div>
-
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateProduct.descriptionProduct"
-              class="w-full custom-input"
-          />
-          <label for="name">{{ t("formsGeneric.description") }}</label>
-        </FloatLabel>
-      </div>
-
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateProduct.priceProduct"
-              class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.priceError }"
-          />
-          <label for="name">{{ t("formsGeneric.product.price") }}</label>
-        </FloatLabel>
-        <small v-if="stateProduct.priceError" class="error-msg">
-          {{ stateProduct.priceError }}
-        </small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateProduct.stock"
-              class="w-full custom-input"
-              :class="{ 'p-invalid:': stateProduct.quantityError }"
-          />
-          <label for="name">{{ t("formsGeneric.product.qty") }}</label>
-        </FloatLabel>
-        <small v-if="stateProduct.quantityError" class="error-msg">
-          {{ stateProduct.quantityError }}
-        </small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <label for="category">{{ t("entityName.category") }}</label>
-
-          <Select
-              v-model="stateProduct.idCategory"
-              :options="categoryStore.allCategories"
-              optionLabel="nameCategory"
-              optionValue="idCategory"
-              :placeholder="t('formsGeneric.product.selectCategory', {entity: t('entityName.category')})"
-              class="w-full md:w-14rem"
-              :loading="stateCategory.isLoading"
-          />
-        </FloatLabel>
-        <small v-if="stateProduct.idCategoryError" class="error-msg">
-          {{ stateProduct.idCategoryError }}
-        </small>
-      </div>
 
       <div class="actions-group">
         <Button
@@ -147,114 +171,15 @@ const cancelUpdate = () => {
         />
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <style scoped>
-/*!* Estructura del Card similar a la tabla *!
-.form-card {
-  max-width: 500px;
-  width: 100%;
-  margin: 0 auto;
-  background: var(--surface-card, #ffffff);
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--surface-border, #ececec);
+:deep(.p-fileupload-upload-button) {
+  display: none !important;
 }
 
-.form-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f1f1;
+:deep(.p-fileupload-basic) {
+  justify-content: center;
 }
-
-.title-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #4b5563;
-}
-
-!* Colores de iconos homologados *!
-.icon-add {
-  color: #d946ef;
-  font-size: 1.5rem;
-}
-
-!* Magenta *!
-.icon-edit {
-  color: #8b5cf6;
-  font-size: 1.5rem;
-}
-
-!* Morado *!
-
-.form-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-!* Inputs con el toque de la marca *!
-.custom-input, .custom-textarea {
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-}
-
-.custom-input:focus, .custom-textarea:focus {
-  border-color: #d946ef !important; !* Magenta al foco *!
-  box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.1) !important;
-}
-
-!* Botones *!
-.actions-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-direction: column;
-}
-
-.btn-submit {
-  flex: 1;
-  background: #d946ef; !* Magenta principal *!
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: transform 0.2s;
-}
-
-.btn-submit:hover {
-  background: #c026d3 !important;
-  transform: translateY(-1px);
-}
-
-.btn-cancel {
-  border-radius: 8px;
-  color: #6b7280;
-}
-
-.error-msg {
-  color: #ef4444;
-  font-size: 0.8rem;
-  margin-top: 0.4rem;
-  margin-left: 0.2rem;
-}
-
-!* Espaciado extra *!
-.mt-5 {
-  margin-top: 2rem; !* Espacio extra para que el FloatLabel no choque *!
-}*/
 </style>

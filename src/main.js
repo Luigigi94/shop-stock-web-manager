@@ -10,9 +10,7 @@ import i18n from "@/i18n/index.ts";
 import 'primeicons/primeicons.css';
 import '@/assets/tailwind.css';
 import '@/assets/styles.scss';
-/*import '@/assets/formsStyles/formStyles.css'
-import '@/assets/formsStyles/viewStyles.css'
-import '@/assets/formsStyles/tableStyles.css'*/
+import ToastService from 'primevue/toastservice';
 
 
 import { definePreset } from '@primevue/themes';
@@ -49,9 +47,11 @@ app.use(i18n)
 app.use(PrimeVue,{
     theme: {
         preset: MyPreset, // Aquí aplicas el estilo
+        ripple: true,
         options: {
             darkModeSelector: '.app-dark', // Opcional: para modo oscuro
         }
     }
 })
+app.use(ToastService)
 app.mount('#app')

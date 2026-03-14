@@ -44,6 +44,7 @@ export const useProductStore = defineStore("ProductStore", () => {
         idCategory: '' as string | null,
         createdAt: null as Timestamp | null,
         updatedAt: null as Timestamp | null,
+        fileToUpload: null as File | null,
 
         nameError: null as string | null,
         quantityError: null as string | null,
@@ -95,10 +96,28 @@ export const useProductStore = defineStore("ProductStore", () => {
         currentState.success = false
 
         try {
-            await ProductsRepository.addProduct(product)
-            currentState.isLoading = false
-            currentState.success = true
-            currentState.isModalVisible = false
+            let imageUrl = null;
+
+            if (currentState.fileToUpload) {
+                imageUrl = await ProductsRepository.uploadProductImage(
+                    currentState.fileToUpload,
+                    idProdGenerated
+                );
+            }
+
+            if (imageUrl) {
+                const prodWithImage = {
+                    imageProduct: imageUrl,
+                    ...product,
+                }
+
+                await ProductsRepository.addProduct(prodWithImage)
+                currentState.isLoading = false
+                currentState.success = true
+                currentState.isModalVisible = false
+            } else {
+                new Error(`Product not found: ${currentState.errorMessage}`)
+            }
         } catch (error: any) {
             currentState.isLoading = false
             currentState.errorMessage = error.message || "Error adding product"
@@ -110,6 +129,7 @@ export const useProductStore = defineStore("ProductStore", () => {
         currentState.isLoading = true
         try {
             const product = await ProductsRepository.getProductById(id)
+            console.log("validating: "+product)
 
             if (product) {
                 currentState.isLoading = false
@@ -120,6 +140,7 @@ export const useProductStore = defineStore("ProductStore", () => {
                 currentState.descriptionProduct = product.descriptionProduct ?? '';
                 currentState.priceProduct = product.priceProduct.toString();
                 currentState.idCategory = product.idCategory;
+                currentState.imageProduct = product.imageProduct ?? '';
 
                 return product
             }
@@ -148,7 +169,21 @@ export const useProductStore = defineStore("ProductStore", () => {
         currentState.success = false
 
         try {
-            await ProductsRepository.updateProduct(product)
+            let imageUrl = currentState.imageProduct;
+
+            if (currentState.fileToUpload && currentState.idProduct) {
+                // Esto sobrescribirá el archivo en Storage y nos dará la misma o una nueva URL
+                imageUrl = await ProductsRepository.uploadProductImage(
+                    currentState.fileToUpload,
+                    currentState.idProduct
+                );
+                const prodWithImage = {
+                    imageProduct: imageUrl,
+                    ...product,
+                }
+
+                await ProductsRepository.updateProduct(prodWithImage)
+            }
 
             currentState.isLoading = false
             currentState.success = true
@@ -164,6 +199,7 @@ export const useProductStore = defineStore("ProductStore", () => {
         currentState.errorMessage = null
         currentState.success = false
         try {
+            await ProductsRepository.deleteProductImage(id);
             await ProductsRepository.deleteProduct(id)
             currentState.isLoading = false
             currentState.success = true

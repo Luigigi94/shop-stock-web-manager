@@ -22,6 +22,7 @@
     },
     "product": {
       "price": "Price",
+      "img": "Imagen",
       "qty": "Quantity",
       "selectCategory": "Select {entity}"
     },
@@ -64,5 +65,13 @@
   "listsGeneric": {
     "search": "Search product",
     "buttonAdd": "Add"
+  },
+  "errorsGeneric": {
+    "required": "{field} is Required"
+  },
+  "toastOptions": {
+    "success": "Success",
+    "successSave": "{entity} Save",
+    "successUpdate": "{entity} Updated"
   }
 }

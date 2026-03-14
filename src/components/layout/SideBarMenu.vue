@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { SIDEBAR_CONFIG } from "@/constants/SIDEBAR_CONFIG.ts";
+import { useLayout } from '@/layout/composables/layout';
+const { onMenuToggle } = useLayout();
 
 const { t } = useI18n();
 const router = useRouter();
@@ -20,7 +22,10 @@ const model = computed(() => {
 });
 
 const onMenuItemClick = (item) => {
-  if (item.to) router.push(item.to);
+  if (item.to) {
+    router.push(item.to);
+    onMenuToggle()
+  }
 };
 </script>
 

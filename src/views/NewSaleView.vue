@@ -24,21 +24,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-<!--  <div class="card">
-    <div class="flex gap-2 justify-center">
-      <Button icon="pi pi-arrow-left" @click="cartStore.openCart()">
-        open modal
-      </Button>
-    </div>
-  </div>-->
   <CartDrawer v-model:visible="cartState.isCartOpen" header="Right Drawer" position="right" />
-<!--  <div class="container">
-    <h1>Productos Para Vender</h1>
-  </div>
-  <hr>
-  <hr>-->
   <section>
-<!--    <TableDataComponent :datos="productStore.productsWithCategoryName" />-->
     <ListComponent :datos="productStore.productsWithCategoryName"/>
   </section>
 </template>
