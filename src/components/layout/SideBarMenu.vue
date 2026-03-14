@@ -1,126 +1,47 @@
 <script setup>
-import Menu from 'primevue/menu';
-import {computed} from "vue";
-import {useRouter} from "vue-router";
-import {useI18n} from "vue-i18n";
-import ToggleSwitch from 'primevue/toggleswitch';
-import {SIDEBAR_CONFIG} from "@/constants/SIDEBAR_CONFIG.ts";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { SIDEBAR_CONFIG } from "@/constants/SIDEBAR_CONFIG.ts";
 
-const {t, locale} = useI18n();
+const { t } = useI18n();
 const router = useRouter();
 
-const toggleLanguage = () => {
-  locale.value = locale.value === 'es' ? 'en' : 'es';
-};
-
-const menuItems = computed(() => {
+const model = computed(() => {
   return Object.entries(SIDEBAR_CONFIG).map(([section, items]) => ({
     label: t(`menu.${section.toLowerCase()}`),
     items: items.map(item => ({
       label: t(item.label),
       icon: item.icon,
-      visible: item.state,
-      command: () => router.push(item.route)
+      to: item.route,
+      visible: item.state
     }))
   }));
 });
+
+const onMenuItemClick = (item) => {
+  if (item.to) router.push(item.to);
+};
 </script>
 
 <template>
-  <div class="sidebar">
-    <Menu :model="menuItems" class="w-full border-none h-full">
-      <template #start>
-        <div class="lang-wrapper">
-          <span :class="{ 'active-lang': locale === 'es' }">ES</span>
-          <ToggleSwitch
-              :modelValue="locale === 'en'"
-              @update:modelValue="toggleLanguage"
-          />
-          <span :class="{ 'active-lang': locale === 'en' }">EN</span>
-        </div>
+  <div class="layout-sidebar">
+    <ul class="layout-menu">
+      <template v-for="(item, i) in model" :key="item.label">
+        <li class="layout-root-menuitem">
+          <div class="layout-menuitem-root-text">{{ item.label }}</div>
+          <ul>
+            <li v-for="(child, j) in item.items" :key="child.label" :class="{ 'hidden': child.visible === false }">
+              <a @click="onMenuItemClick(child)"
+                 class="layout-menuitem-link"
+                 :class="{ 'active-route': router.currentRoute.value.path === child.to }">
+                <i :class="[child.icon, 'layout-menuitem-icon']"></i>
+                <span class="layout-menuitem-text">{{ child.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </li>
       </template>
-
-      <template #item="{ item, props }">
-        <a v-ripple class="flex items-center p-menuitem-link" v-bind="props.action">
-          <span :class="[item.icon, 'mr-2']"/>
-          <span class="ml-2">{{ item.label }}</span>
-        </a>
-      </template>
-    </Menu>
+    </ul>
   </div>
 </template>
-
-<style scoped>
-.sidebar {
-  width: 260px;
-  height: 100vh;
-  flex-shrink: 0;
-  padding: 0;
-  background-color: var(--p-content-background);
-  border-right: 1px solid var(--p-content-border-color);
-  transition: background-color 0.3s, border-color 0.3s;
-}
-
-:deep(.p-menu) {
-  height: 100% !important;
-  width: 100% !important;
-  border: none;
-  border-radius: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-:deep(.p-menu-list) {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  margin: 0;
-  padding: 0;
-}
-
-/* Empujamos el último bloque (Settings/Logout) al fondo */
-:deep(.p-menu-item-content:has(.logout-item)),
-:deep(.p-menu-list > .p-focus:last-child),
-:deep(.p-menuitem:last-child) {
-  margin-top: auto !important;
-}
-
-/* Estilo para los encabezados de grupo */
-:deep(.p-submenu-header) {
-  background: transparent;
-  color: #94a3b8;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 1.5rem 1rem 0.5rem 1rem;
-}
-
-.lang-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px 10px;
-  background-color: var(--p-content-hover-background);
-  border-bottom: 1px solid var(--p-content-border-color);
-  margin-bottom: 10px;
-}
-
-.lang-wrapper span {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #94a3b8;
-  transition: color 0.3s ease;
-}
-
-.lang-wrapper .active-lang {
-  color: #3b82f6;
-}
-
-:deep(.p-toggleswitch) {
-  transform: scale(0.8);
-}
-
-
-</style>

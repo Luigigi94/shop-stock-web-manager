@@ -151,7 +151,7 @@ const cancelUpdate = () => {
 </template>
 
 <style scoped>
-/* Estructura del Card similar a la tabla */
+/*!* Estructura del Card similar a la tabla *!
 .form-card {
   max-width: 500px;
   width: 100%;
@@ -182,19 +182,19 @@ h2 {
   color: #4b5563;
 }
 
-/* Colores de iconos homologados */
+!* Colores de iconos homologados *!
 .icon-add {
   color: #d946ef;
   font-size: 1.5rem;
 }
 
-/* Magenta */
+!* Magenta *!
 .icon-edit {
   color: #8b5cf6;
   font-size: 1.5rem;
 }
 
-/* Morado */
+!* Morado *!
 
 .form-body {
   display: flex;
@@ -207,7 +207,7 @@ h2 {
   flex-direction: column;
 }
 
-/* Inputs con el toque de la marca */
+!* Inputs con el toque de la marca *!
 .custom-input, .custom-textarea {
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -215,11 +215,11 @@ h2 {
 }
 
 .custom-input:focus, .custom-textarea:focus {
-  border-color: #d946ef !important; /* Magenta al foco */
+  border-color: #d946ef !important; !* Magenta al foco *!
   box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.1) !important;
 }
 
-/* Botones */
+!* Botones *!
 .actions-group {
   display: flex;
   gap: 1rem;
@@ -229,7 +229,7 @@ h2 {
 
 .btn-submit {
   flex: 1;
-  background: #d946ef; /* Magenta principal */
+  background: #d946ef; !* Magenta principal *!
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -253,8 +253,8 @@ h2 {
   margin-left: 0.2rem;
 }
 
-/* Espaciado extra */
+!* Espaciado extra *!
 .mt-5 {
-  margin-top: 2rem; /* Espacio extra para que el FloatLabel no choque */
-}
+  margin-top: 2rem; !* Espacio extra para que el FloatLabel no choque *!
+}*/
 </style>

@@ -113,7 +113,7 @@ const handleDelete = async (id: string) => {
 </template>
 
 <style scoped>
-/* Contenedor externo para dar aire en la página */
+/*!* Contenedor externo para dar aire en la página *!
 .inventory-container {
   width: 100%;
   padding: 1rem;
@@ -121,18 +121,18 @@ const handleDelete = async (id: string) => {
   justify-content: center;
 }
 
-/* El Card que contiene todo */
+!* El Card que contiene todo *!
 .inventory-card {
   background: var(--surface-card, #ffffff);
   width: 100%;
-  max-width: 1400px; /* Evita que se estire infinito en monitores ultra-wide */
+  max-width: 1400px; !* Evita que se estire infinito en monitores ultra-wide *!
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--surface-border, #ececec);
 }
 
-/* Header estilizado */
+!* Header estilizado *!
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -150,7 +150,7 @@ const handleDelete = async (id: string) => {
 
 .icon-magenta {
   font-size: 1.5rem;
-  color: #d946ef; /* Magenta */
+  color: #d946ef; !* Magenta *!
 }
 
 h2 {
@@ -162,14 +162,14 @@ h2 {
 
 .stats-badge {
   background: #f5f3ff;
-  color: #7c3aed; /* Morado */
+  color: #7c3aed; !* Morado *!
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.85rem;
 }
 
-/* Estilos de la tabla */
+!* Estilos de la tabla *!
 .custom-table :deep(.p-datatable-thead > tr > th) {
   background: #f9fafb;
   padding: 1rem;
@@ -189,7 +189,7 @@ h2 {
 }
 
 .edit-btn:hover {
-  color: #8b5cf6 !important; /* Morado al pasar el mouse */
+  color: #8b5cf6 !important; !* Morado al pasar el mouse *!
   background: #f5f3ff !important;
 }
 
@@ -200,7 +200,7 @@ h2 {
   font-style: italic;
 }
 
-/* Responsividad */
+!* Responsividad *!
 @media screen and (max-width: 960px) {
   .inventory-card {
     padding: 1rem;
@@ -211,5 +211,5 @@ h2 {
     align-items: flex-start;
     gap: 1rem;
   }
-}
+}*/
 </style>

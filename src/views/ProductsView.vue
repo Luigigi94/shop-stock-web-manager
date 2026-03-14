@@ -31,38 +31,25 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="container">
-    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.product")}) }}</h1>
-    <Button
-        :label="t('formsGeneric.new_m', {item: t('entityName.product')})"
-        icon="pi pi-plus"
-        @click="productStore.openNewProduct()"
-        class="btn-new"
-    />
+<!--  <div class="container">
+    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.product")}) }}</h1>-->
     <Dialog
         v-model:visible="productStore.productUiState.isModalVisible"
         modal
-        :header="stateProduct.isEdit ? t('formsGeneric.edit', {entity: t('entityName.product')}) : t('formsGeneric.new_m', {item: t('entityName.product')})"
     >
-      <section class="form-section">
+      <section>
         <FormComponent />
       </section>
     </Dialog>
-    <hr>
-    <hr>
-    <section class="data-section">
+<!--    <hr>
+    <hr>-->
+    <section>
       <TableDataComponent :datos="productStore.productsWithCategoryName" />
     </section>
-  </div>
+<!--  </div>-->
 </template>
 
 
 <style scoped>
-button {
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
+
 </style>

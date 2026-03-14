@@ -3,14 +3,16 @@
 import { createApp } from 'vue'
 import { createPinia } from "pinia";
 import router from './router'
-import Primevue from 'primevue/config'
+import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
 import App from './App.vue'
 import i18n from "@/i18n/index.ts";
 import 'primeicons/primeicons.css';
-import '@/assets/formsStyles/formStyles.css'
+import '@/assets/tailwind.css';
+import '@/assets/styles.scss';
+/*import '@/assets/formsStyles/formStyles.css'
 import '@/assets/formsStyles/viewStyles.css'
-import '@/assets/formsStyles/tableStyles.css'
+import '@/assets/formsStyles/tableStyles.css'*/
 
 
 import { definePreset } from '@primevue/themes';
@@ -44,11 +46,11 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(i18n)
-app.use(Primevue,{
+app.use(PrimeVue,{
     theme: {
         preset: MyPreset, // Aquí aplicas el estilo
         options: {
-            darkModeSelector: '.my-app-dark', // Opcional: para modo oscuro
+            darkModeSelector: '.app-dark', // Opcional: para modo oscuro
         }
     }
 })

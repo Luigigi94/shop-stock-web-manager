@@ -52,11 +52,11 @@ onUnmounted(() => {
   </div>
 </template>
 <style scoped>
-button {
+/*button {
   padding: 12px;
   border: none;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-}
+}*/
 </style>
