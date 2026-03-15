@@ -3,13 +3,23 @@ import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import FloatLabel from 'primevue/floatlabel';
-import i18n from "@/i18n";
 import {useCategoryStore} from "@/store/CategoryStore";
 import {useI18n} from "vue-i18n";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const categoryStore = useCategoryStore();
 const stateCategory = categoryStore.categoryUiState
 const {t} = useI18n();
+
+function successToast(isEdit: boolean) {
+  toast.add({
+    severity: 'success',
+    summary: t('toastOptions.success'),
+    detail: isEdit ? t('toastOptions.successUpdate', {entity: t('entityName.category')}) : t('toastOptions.successSave', {entity: t('entityName.category')}),
+    life: 3000
+  });
+}
 
 const handleByStateAction = async () => {
   if (stateCategory.isEdit) {
@@ -22,11 +32,9 @@ const handleByStateAction = async () => {
 const handleUpdate = async () => {
   await categoryStore.updateCategory()
 
-  if (stateCategory.success) {
-    stateCategory.idCategory = ""
-    stateCategory.nameCategory = ""
-    stateCategory.descriptionCategory = ""
-    stateCategory.isEdit = false
+  if (stateCategory.success){
+    successToast(stateCategory.isEdit);
+    categoryStore.clearForm()
   }
 }
 
@@ -34,9 +42,8 @@ const handleSave = async () => {
   await categoryStore.addCategory()
 
   if (stateCategory.success) {
-    stateCategory.nameCategory = ""
-    stateCategory.descriptionCategory = ""
-    stateCategory.isEdit = false
+    successToast(stateCategory.isEdit);
+    categoryStore.clearForm()
   }
 }
 
@@ -46,63 +53,23 @@ const cancelUpdate = () => {
 </script>
 
 <template>
-  <div class="form-card">
-    <div class="form-header">
-      <div class="title-wrapper">
-        <i :class="stateCategory.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
-        <h2>{{ stateCategory.isEdit ? t("formsGeneric.edit", {item: t("entityName.category")}) : t("formsGeneric.new_f", {item: t("entityName.category")}) }}</h2>
-      </div>
+  <div class="flex flex-col gap-6">
+    <div>
+      <label for="name" class="block font-bold mb-3">{{t("formsGeneric.name")}}</label>
+      <InputText  id="name"  v-model.trim="stateCategory.nameCategory" required="true" autofocus :invalid="stateCategory.nameTouched && !stateCategory.nameCategory" fluid/>
+      <small v-if="stateCategory.nameTouched && !stateCategory.nameCategory" class="text-red-500">{{ t("errorsGeneric.required", {field: t("formsGeneric.name")}) }}</small>
     </div>
-
-    <div class="form-body">
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateCategory.nameCategory"
-              class="w-full custom-input"
-              :class="{ 'p-invalid': stateCategory.nameError }"
-          />
-          <label for="name">{{t("formsGeneric.name")}}</label>
-        </FloatLabel>
-        <small v-if="stateCategory.nameError" class="error-msg">
-          {{ stateCategory.nameError }}
-        </small>
-      </div>
-
-      <div class="field mt-5">
-        <FloatLabel>
-          <Textarea
-              id="description"
-              v-model="stateCategory.descriptionCategory"
-              rows="3"
-              class="w-full custom-textarea"
-              autoResize
-          />
-          <label for="description">{{ t("formsGeneric.description") }}</label>
-        </FloatLabel>
-      </div>
-
-      <div class="actions-group">
-        <Button
-            type="button"
-            :label="stateCategory.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.category')})"
-            :icon="stateCategory.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            :disabled="stateCategory.isLoading"
-            @click="handleByStateAction"
-            class="btn-submit w-full"
-        />
-        <Button
-            v-if="stateCategory.isEdit"
-            :label="t('formsGeneric.cancel')"
-            icon="pi pi-times"
-            severity="secondary"
-            text
-            @click="cancelUpdate"
-            class="w-full mt-2"
-        />
-      </div>
+    <div>
+      <label for="description" class="block font-bold mb-3">{{ t("formsGeneric.description") }}</label>
+      <InputText id="description" v-model.trim="stateCategory.descriptionCategory" required="false" fluid />
     </div>
+    <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
+    <Button
+        :label="stateCategory.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.category')})"
+        icon="pi pi-check"
+        @click="handleByStateAction"
+        :loading="stateCategory.isLoading"
+    />
   </div>
 </template>
 

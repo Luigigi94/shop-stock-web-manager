@@ -3,14 +3,13 @@ import InputText from 'primevue/inputtext';
 import {FileUpload} from "primevue";
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
+import Select from 'primevue/select';
+import Button from "primevue/button";
+import {useI18n} from "vue-i18n";
+import {useProductStore} from "@/store/ProductStore";
 
 const toast = useToast();
 const fileUpload = ref();
-import Select from 'primevue/select';
-import Button from "primevue/button";
-import FloatLabel from "primevue/floatlabel";
-import {useI18n} from "vue-i18n";
-import {useProductStore} from "@/store/ProductStore";
 
 const productStore = useProductStore();
 const stateProduct = productStore.productUiState;
@@ -29,12 +28,20 @@ const handleByStateAction = async () => {
   }
 }
 
+function successToast(isEdit: boolean) {
+  toast.add({
+    severity: 'success',
+    summary: t('toastOptions.success'),
+    detail: isEdit ? t('toastOptions.successUpdate', {entity: t('entityName.product')}) : t('toastOptions.successSave', {entity: t('entityName.product')}),
+    life: 3000
+  });
+}
+
 const handleUpdate = async () => {
   await productStore.updateProduct()
 
   if (stateProduct.success) {
-    // productStore.clearState()
-    toast.add({ severity: 'success', summary: t('toastOptions.success'), detail: t('toastOptions.successUpdate', {entity: t('entityName.product')}), life: 3000 });
+    successToast(stateProduct.isEdit);
     productStore.clearState()
     fileUpload.value?.clear();
   }
@@ -44,8 +51,7 @@ const handleSave = async () => {
   await productStore.addProduct()
 
   if (stateProduct.success) {
-    // productStore.clearState()
-    toast.add({ severity: 'success', summary: t('toastOptions.success'), detail: t('toastOptions.successSave', {entity: t('entityName.product')}), life: 3000 });
+    successToast(stateProduct.isEdit);
     productStore.clearState()
     fileUpload.value?.clear();
   }
@@ -56,11 +62,6 @@ const cancelUpdate = () => {
   stateProduct.isModalVisible = false
   productStore.clearState()
 }
-
-function upload() {
-  fileUpload.value.upload();
-}
-
 function onUpload() {
   toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
 }
@@ -140,38 +141,6 @@ const onSelect = (event: any) => {
         :loading="stateProduct.isLoading"
     />
   </div>
-<!--  <div class="form-card">
-    <div class="form-header">
-      <div class="title-wrapper">
-        <i :class="stateProduct.isEdit ? 'pi pi-pencil icon-edit' :'pi pi-plus-circle icon-add'"></i>
-        <h2> {{ stateProduct.isEdit ? t("formsGeneric.edit", {item: t("entityName.product")}) : t("formsGeneric.new_m", {item: t("entityName.product")}) }} </h2>
-      </div>
-    </div>
-
-    <div class="form-body">
-      <div class="field">
-
-      <div class="actions-group">
-        <Button
-            type="button"
-            :label="stateProduct.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
-            :icon="stateProduct.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            :disabled="stateProduct.isLoading"
-            @click="handleByStateAction"
-            class="btn-submit w-full"
-        />
-        <Button
-            v-if="stateProduct.isEdit"
-            :label="t('formsGeneric.delete')"
-            icon="pi pi-times"
-            severity="secondary"
-            text
-            @click="cancelUpdate"
-            class="w-full mt-2"
-        />
-      </div>
-    </div>
-  </div>-->
 </template>
 
 <style scoped>

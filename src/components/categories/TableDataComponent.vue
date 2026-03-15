@@ -13,9 +13,9 @@ import {FilterMatchMode, FilterOperator} from "@primevue/core/api";
 const categoryStore = useCategoryStore();
 const { t } = useI18n();
 interface CategoryFilter {
-  idCategory: string;
-  categoryName: string;
-  description: string;
+  idCategory?: string;
+  nameCategory?: string;
+  descriptionCategory?: string;
 }
 const props = defineProps<{
   datos: CategoryFilter[]
@@ -47,7 +47,7 @@ const filteredItems = computed(() => {
 
   return props.datos.filter((dato: CategoryFilter) => {
     return (
-        dato.categoryName?.toLowerCase().includes(lowSearch)
+        dato.nameCategory?.toLowerCase().includes(lowSearch)
     )
   })
 })
@@ -67,71 +67,90 @@ const handleDelete = async (id: string) => {
   categoryStore.categoryUiState.success = false;
   const category = await categoryStore.deleteCategory(id)
 }
+const clearFilter = () => {
+  filters1.value = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 
+  }
+}
 </script>
 
 <template>
-  <div class="inventory-container">
-    <div class="inventory-card">
-      <div class="header-section">
-        <div class="title-wrapper">
-          <i class="pi pi-tags icon-magenta"></i>
-          <h2>{{ t("tableGeneric.management", {item: t("entityName.category")}) }}</h2>
-        </div>
-        <div class="stats-badge">
-          {{ `${props.datos.length} ${t('tableGeneric.records')}` }}
-        </div>
+  <div class="card">
+    <div class="flex flex-warp items-center justify-between gap-3 mb-6 w-full">
+      <div class="flex items-center">
+        <i class="pi pi-tags mr-3 text-primary" style="font-size: 2rem"></i>
+        <h2 class="m-0 text-2xl font-semibold text-surface-900 dark:text-surface-0">{{ t("tableGeneric.management", {item: t("entityName.category")}) }}</h2>
       </div>
+      <Button
+          :label="t('formsGeneric.new_f', {item: t('entityName.category')})"
+          icon="pi pi-plus"
+          @click="categoryStore.openNewCategory()"
+          class="p-button-primary w-auto"
+      />
+    </div>
+    <div class="stats-badge">
+      {{ `${props.datos.length} ${t('tableGeneric.records')}` }}
+    </div>
+    <DataTable
+        :value="filteredItems"
+        paginator
+        :rows="10"
+        responsiveLayout="stack"
+        breakpoint="960px"
+        class="p-datatable-customers custom-table"
+        stripedRows
+        removableSort
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
+    >
+      <template #header>
+        <div class="flex justify-between">
+          <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter()" />
+          <IconField>
+            <InputIcon>
+              <i class="pi pi-search"/>
+            </InputIcon>
+            <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search')" />
+          </IconField>
+        </div>
+      </template>
+      <template #empty>
+        <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
+      </template>
 
-      <DataTable
-          :value="props.datos"
-          paginator
-          :rows="10"
-          responsiveLayout="stack"
-          breakpoint="960px"
-          class="p-datatable-customers custom-table"
-          stripedRows
-          removableSort
-          :rowsPerPageOptions="[5, 10, 20, 50]"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
-      >
-        <template #empty>
-          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
+      <Column field="nameCategory" :header="t('entityName.category')" sortable style="calc(70% - 15rem)">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.nameCategory }}</span>
         </template>
+      </Column>
 
-        <Column field="nameCategory" :header="t('entityName.category')" sortable style="calc(70% - 15rem)">
-          <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.nameCategory }}</span>
-          </template>
-        </Column>
-
-        <Column field="descriptionCategory" :header="t('tableGeneric.descHeader')" style="width: 30%">
-          <template #body="slotProps">
+      <Column field="descriptionCategory" :header="t('tableGeneric.descHeader')" style="width: 30%">
+        <template #body="slotProps">
             <span class="font-bold text-magenta">{{
                 slotProps.data.descriptionCategory || t('tableGeneric.emptyState')
               }}</span>
-          </template>
-        </Column>
+        </template>
+      </Column>
 
-        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
-          <template #body="slotProps">
-            <div class="actions-wrapper">
-              <Button
-                  icon="pi pi-pencil"
-                  class="p-button-rounded p-button-text p-button-secondary edit-btn"
-                  @click="handleEdit(slotProps.data.idCategory)"
-              />
-              <Button
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-text p-button-danger"
-                  @click="handleDelete(slotProps.data.idCategory)"
-              />
-            </div>
-          </template>
-        </Column>
-      </DataTable>
-    </div>
+      <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <template #body="slotProps">
+          <div class="actions-wrapper">
+            <Button
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-secondary edit-btn"
+                @click="handleEdit(slotProps.data.idCategory)"
+            />
+            <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-danger"
+                @click="handleDelete(slotProps.data.idCategory)"
+            />
+          </div>
+        </template>
+      </Column>
+    </DataTable>
   </div>
 </template>
 
