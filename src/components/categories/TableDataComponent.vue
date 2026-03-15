@@ -1,21 +1,56 @@
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
+import DataTable, {DataTableFilterMeta} from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import InputText from "primevue/inputtext";
 import {useCategoryStore} from "@/store/CategoryStore";
 import {useI18n} from "vue-i18n";
+import {computed, onBeforeMount, ref} from "vue";
+import {FilterMatchMode, FilterOperator} from "@primevue/core/api";
 
 const categoryStore = useCategoryStore();
 const { t } = useI18n();
+interface CategoryFilter {
+  idCategory: string;
+  categoryName: string;
+  description: string;
+}
+const props = defineProps<{
+  datos: CategoryFilter[]
+}>();
 
-const props = defineProps({
-  datos: {
-    type: Array,
-    required: true,
-    default: () => []
+const filters1 = ref<DataTableFilterMeta>({
+  global: {value: null, matchMode: FilterMatchMode.CONTAINS}
+})
+
+onBeforeMount(() =>{
+  initFilters1()
+})
+
+function initFilters1() {
+  filters1.value = {
+    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    nameCategory: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
   }
-});
+}
 
+const filteredItems = computed(() => {
+  const globalFilter = filters1.value['global'] as {value: any};
+  const search = globalFilter?.value
+
+  if(!search){
+    return props.datos
+  }
+  const lowSearch = search.toLowerCase()
+
+  return props.datos.filter((dato: CategoryFilter) => {
+    return (
+        dato.categoryName?.toLowerCase().includes(lowSearch)
+    )
+  })
+})
 const handleEdit = async (id: string) => {
   categoryStore.categoryUiState.success = false;
   categoryStore.categoryUiState.isModalVisible = true;

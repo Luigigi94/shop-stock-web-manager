@@ -31,7 +31,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-
     <Dialog v-model:visible="productStore.productUiState.isModalVisible" :style="{ width: '450px' }" header="Product Details" :modal="true">
       <section>
         <FormComponent />
