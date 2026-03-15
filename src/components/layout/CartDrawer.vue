@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { Drawer } from "primevue";
+import { useCartStore } from "@/store/CartStore";
+const cartStore = useCartStore();
+const cartState = cartStore.cartUiState
 
 const props = defineProps({
   visible: {
     type: Boolean,
     required: true
-  }
+  },
 })
 
 const emit = defineEmits(["update:visible"])

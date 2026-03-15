@@ -28,27 +28,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="container">
-    <h1>{{ t("viewsGeneric.list", {entity: t("entityName.supplier")}) }}</h1>
-    <Button
-      :label="t('formsGeneric.new_m', {item: t('entityName.supplier')})"
-      icon="pi pi-plus"
-      @click="supplierStore.openNewSupplier()"
-    />
-    <Dialog
-        v-model:visible="supplierState.isModalVisible"
-        modal
-    >
-      <section>
-        <FormComponent/>
-      </section>
-    </Dialog>
-    <hr>
-    <hr>
-    <section class="data-section">
-      <TableDataComponent :datos="supplierStore.allSuppliers"/>
+  <Dialog
+      v-model:visible="supplierState.isModalVisible" :style="{ width: '450px' }" header="Supplier Details" :modal="true">
+    <section>
+      <FormComponent/>
     </section>
-  </div>
+  </Dialog>
+  <section>
+    <TableDataComponent :datos="supplierStore.allSuppliers"/>
+  </section>
 </template>
 
 <style scoped>

@@ -64,7 +64,7 @@
     "newSale": "Venta Nueva"
   },
   "listsGeneric": {
-    "search": "Buscar producto",
+    "search": "Buscar {entity}",
     "buttonAdd": "Agregar"
   },
   "errorsGeneric": {

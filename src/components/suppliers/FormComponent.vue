@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
+import { useToast } from 'primevue/usetoast';
 import Button from "primevue/button"
 import FloatLabel from "primevue/floatlabel";
 import {useI18n} from "vue-i18n";
 
 import { useSupplierStore } from "@/store/SupplierStore";
+const toast = useToast();
 
 const supplierStore = useSupplierStore();
 const supplierState = supplierStore.supplierUiState;
@@ -16,11 +18,19 @@ const handleByStateAction = async () => {
     await handleSave()
   }
 }
-
+function successToast(isEdit: boolean) {
+  toast.add({
+    severity: 'success',
+    summary: t('toastOptions.success'),
+    detail: isEdit ? t('toastOptions.successUpdate', {entity: t('entityName.supplier')}) : t('toastOptions.successSave', {entity: t('entityName.supplier')}),
+    life: 3000
+  });
+}
 const handleUpdate = async () => {
   await supplierStore.updateSupplier()
 
   if (supplierState.success) {
+    successToast(supplierState.isEdit);
     supplierStore.clearForm()
   }
 }
@@ -28,6 +38,7 @@ const handleUpdate = async () => {
 const handleSave = async () => {
   await supplierStore.addSupplier()
   if (supplierState.success) {
+    successToast(supplierState.isEdit);
     supplierStore.clearForm()
   }
 }
@@ -38,84 +49,50 @@ const cancelUpdate = () => {
 </script>
 
 <template>
-  <div class="form-card">
-    <div class="form-header">
-      <div class="title-wrapper">
-        <i :class="supplierState.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
-        <h2>{{supplierState.isEdit ? t('formsGeneric.edit', {item: t('entityName.supplier')}) : t('formsGeneric.new_m', {item: t('entityName.supplier')})}}</h2>
-      </div>
+  <div class="flex flex-col gap-6">
+  <div>
+      <label for="name" class="block font-bold mb-3">{{ t('formsGeneric.name') }}</label>
+      <InputText
+          id="name"
+          v-model.trim="supplierState.name"
+          required="true"
+          autofocus
+          fluid
+      />
+<!--      <small class="text-red-500" v-if="supplierState.nameError">{{ t("errorsGeneric.required", {field: t("formsGeneric.name")}) }}</small>-->
     </div>
-
-    <div class="form-body">
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="name"
-            v-model="supplierState.name"
-            class="w-full custom-input"
-            :class="{ 'p-invalid': supplierState.nameError }"
-          />
-          <label for="name">{{ t('formsGeneric.name') }}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="supplierState.nameError">{{supplierState.nameError}}</small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="phone"
-            v-model="supplierState.phone"
-            class="w-full custom-input"
-            :class="{ 'p-invalid': supplierState.phoneError }"
-          />
-          <label for="phone">{{ t('formsGeneric.supplier.phone') }}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="supplierState.phoneError">{{supplierState.phoneError}}</small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="identifierAccount"
-            v-model="supplierState.identifierAccount"
-            class="w-full custom-input"
-            :class="{ 'p-invalid': supplierState.identifierAccountError }"
-          />
-          <label for="identifierAccount">{{ t('formsGeneric.supplier.idAccount')}}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="supplierState.identifierAccountError">{{supplierState.identifierAccountError}}</small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="idBank"
-            v-model="supplierState.idBank"
-            class="w-full custom-input"
-            :class="{ 'p-invalid': supplierState.idBankError }"
-          />
-          <label for="idBank">{{ t('formsGeneric.supplier.bank') }}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="supplierState.idBankError">{{supplierState.idBankError}}</small>
-      </div>
-
-      <div class="actions-group">
-        <Button
-            type="button"
-            :label="supplierState.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.supplier')})"
-            :icon="supplierState.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            :disabled="supplierState.isLoading"
-            @click="handleByStateAction"
-            class="btn-submit w-full"
-        />
-        <Button
-            v-if="supplierState.isEdit"
-            :label="t('formsGeneric.cancel')"
-            icon="pi pi-times"
-            severity="secondary"
-            text
-            @click="cancelUpdate"
-            class="w-full mt-2"
-        />
-      </div>
+    <div>
+      <label for="phone" class="block font-bold mb-3">{{ t('formsGeneric.supplier.phone') }}</label>
+      <InputText
+        id="phone"
+        v-model.trim="supplierState.phone"
+        required="true"
+        fluid
+      />
     </div>
+    <div>
+      <label for="identifierAccount" class="block font-bold mb-3">{{ t('formsGeneric.supplier.idAccount')}}</label>
+      <InputText
+        id="identifierAccount"
+        v-model.trim="supplierState.identifierAccount"
+        fluid
+      />
+    </div>
+    <div>
+      <label for="idBank" class="block font-bold mb-3">{{ t('formsGeneric.supplier.bank') }}</label>
+      <InputText
+        id="idBank"
+        v-model.trim="supplierState.idBank"
+        fluid
+      />
+    </div>
+    <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
+    <Button
+        :label="supplierState.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
+        icon="pi pi-check"
+        @click="handleByStateAction"
+        :loading="supplierState.isLoading"
+    />
   </div>
 </template>
 

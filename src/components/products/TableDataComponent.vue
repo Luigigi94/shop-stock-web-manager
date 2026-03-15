@@ -134,7 +134,7 @@ const clearFilter = () => {
             <InputIcon>
               <i class="pi pi-search" />
             </InputIcon>
-            <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search')" />
+            <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search', {entity: t('entityName.product')})" />
 
           </IconField>
         </div>

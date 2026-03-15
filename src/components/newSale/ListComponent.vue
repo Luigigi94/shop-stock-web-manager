@@ -8,7 +8,9 @@ import SelectButton from 'primevue/selectbutton';
 import Tag from 'primevue/tag';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import type { DataTableFilterMeta } from 'primevue/datatable';
-import InputText from 'primevue/inputtext'; // ¡No olvides esta importación!
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 
 const cartStore = useCartStore();
 const currentState = cartStore.cartUiState
@@ -16,6 +18,7 @@ interface ProductFilter {
   nameProduct?: string;
   categoryName?: string;
   stock?: number;
+  imageProduct?: string;
 }
 
 // 3. Tipar los filtros
@@ -102,9 +105,11 @@ function getStatus(stock: number) {
       <DataView :value="filteredItems" :layout="layout">
         <template #header>
           <div class="flex flex-col md:flex-row md:justify-between gap-4">
-            <IconField iconPosition="left">
-              <InputIcon class="pi pi-search" />
-              <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search')" />
+            <IconField>
+              <InputIcon>
+                <i class="pi pi-search"/>
+              </InputIcon>
+              <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search', {entity: t('entityName.product')})" />
             </IconField>
 
             <div class="flex justify-end">
@@ -122,7 +127,7 @@ function getStatus(stock: number) {
             <div v-for="(item, index) in slotProps.items" :key="index">
               <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" :class="{ 'border-t border-surface': index !== 0 }">
                 <div class="md:w-40 relative">
-                  <img class="block xl:block mx-auto rounded w-full" src="@/assets/images/bamboo-watch.jpg" :alt="item.nameProduct" />
+                  <img class="block xl:block mx-auto rounded w-full" :src="item.imageProduct" :alt="item.nameProduct" />
                   <Tag :value="getStatus(item.stock)" :severity="getSeverity(item.stock)" class="absolute dark:bg-surface-900!" style="left: 4px; top: 4px"></Tag>
                 </div>
                 <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6">
@@ -156,7 +161,7 @@ function getStatus(stock: number) {
               <div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded flex flex-col">
                 <div class="bg-surface-50 flex justify-center rounded p-4">
                   <div class="relative mx-auto">
-                    <img class="rounded w-full" src="@/assets/images/bamboo-watch.jpg" :alt="item.nameProduct" style="max-width: 300px" />
+                    <img class="rounded w-full" :src="item.imageProduct" :alt="item.nameProduct" style="max-width: 300px" />
                     <Tag :value="getStatus(item.stock)" :severity="getSeverity(item.stock)" class="absolute dark:bg-surface-900!" style="left: 4px; top: 4px"></Tag>
                   </div>
                 </div>
