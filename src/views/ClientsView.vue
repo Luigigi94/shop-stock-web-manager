@@ -26,35 +26,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-<div class="container">
-  <h1>{{ t('viewsGeneric.list', {entity: t("entityName.client")})}}</h1>
-  <Button
-      :label="t('formsGeneric.new_m', {item: t('entityName.client')})"
-      icon="pi pi-plus"
-      @click="clientStore.openNewClient()"
-  />
-  <Dialog
-  v-model:visible="stateClient.isModalVisible"
-  modal
-  >
+  <Dialog v-model:visible="stateClient.isModalVisible" :style="{width: '450px'}" header="Client Details" :modal="true">
     <section>
       <FormComponent />
     </section>
   </Dialog>
-  <hr>
-  <hr>
-  <section class="data-section">
+  <section>
     <TableDataComponent :datos="clientStore.allClients"/>
   </section>
-</div>
 </template>
 
 <style scoped>
-/*button {
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}*/
 </style>

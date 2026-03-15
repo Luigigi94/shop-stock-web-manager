@@ -58,14 +58,9 @@ const handleSave = async () => {
 }
 
 const cancelUpdate = () => {
-  // productDialog.value = false;
   stateProduct.isModalVisible = false
   productStore.clearState()
 }
-function onUpload() {
-  toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-}
-
 const onClearInternal = () => {
   fileUpload.value.clear();
   stateProduct.fileToUpload = null;

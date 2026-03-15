@@ -6,7 +6,6 @@ import {useI18n} from "vue-i18n";
 
 import FormComponent from "@/components/products/FormComponent.vue";
 import TableDataComponent from "@/components/products/TableDataComponent.vue";
-import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 
 const productStore = useProductStore();

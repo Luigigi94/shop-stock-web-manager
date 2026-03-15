@@ -1,20 +1,65 @@
 <script setup lang="ts">
-import DataTable from "primevue/datatable";
+import DataTable, {type DataTableFilterMeta} from "primevue/datatable";
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 import Column from "primevue/column";
 import Button from "primevue/button";
 import {useI18n} from "vue-i18n";
 import { useClientStore } from "@/store/ClientStore";
+import {computed, onBeforeMount, ref} from "vue";
+import {FilterMatchMode, FilterOperator} from "@primevue/core/api";
 
 const {t} = useI18n();
 const clientStore = useClientStore();
 const currentState = clientStore.clientUiState
 
-const props = defineProps({
-  datos: {
-    type: Array,
-    required: true,
-    default: () => []
+interface ClientFilter {
+  idClient?: string,
+  nameClient?: string,
+  apePClient?: string,
+  apeMClient?: string,
+  telephone?: string,
+}
+
+const filters1 = ref<DataTableFilterMeta>({
+  global: {value: null, matchMode: FilterMatchMode.CONTAINS}
+})
+
+const props = defineProps<{
+  datos: ClientFilter[]
+}>()
+
+onBeforeMount(() => {
+  initFilters1()
+})
+
+function initFilters1() {
+  filters1.value = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    nameClient: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    apePClient: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    apeMClient: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
   }
+}
+
+const filteredItems = computed( () =>{
+  const globalFilter = filters1.value['global'] as { value: any };
+  const search = globalFilter?.value;
+
+  if (!search) {
+    return props.datos
+  }
+
+  const lowSearch = search.toLowerCase();
+
+  return props.datos.filter( (dato: ClientFilter) => {
+    return (
+        dato.nameClient?.toLocaleLowerCase().includes(lowSearch) ||
+        dato.apePClient?.toLocaleLowerCase().includes(lowSearch) ||
+        dato.apeMClient?.toLocaleLowerCase().includes(lowSearch)
+    )
+  })
 })
 
 const handleEdit = async (id: string) => {
@@ -36,76 +81,100 @@ const handleDelete = async (id: string) => {
   currentState.success = false
   const client = await clientStore.clientById(id)
 }
+
+const clearFilter = () => {
+  filters1.value = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+
+  }
+}
 </script>
 
 <template>
-  <div class="inventory-container">
-    <div class="inventory-card">
-      <div class="header-section">
-        <div class="title-wrapper">
-          <i class="pi pi-tags icon-magenta"></i>
-          <h2>{{ t("tableGeneric.management", {item: t("entityName.client")}) }}</h2>
-        </div>
-        <div class="stats-badge">
-          {{ `${props.datos.length} ${t("tableGeneric.records")}` }}
-        </div>
+  <div class="card">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 w-full">
+
+      <div class="flex items-center">
+        <i class="pi pi-tags mr-3 text-primary" style="font-size: 2rem"/>
+        <h2 class="m-0 text-2xl font-semibold text-surface-900 dark:text-surface-0">
+          {{ t("tableGeneric.management", {item: t("entityName.client")}) }}
+        </h2>
       </div>
-
-      <DataTable
-          :value="props.datos"
-          paginator
-          :rows="10"
-          responsiveLayout="stack"
-          breakpoint="960px"
-          class="p-datatable-customers custom-table"
-          stripedRows
-          removableSort
-          :rowsPerPageOptions="[5, 10, 20, 50]"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
-      >
-        <template #empty>
-          <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
-        </template>
-
-        <Column field="nameClient" :header="t('formsGeneric.name')"  sortable style="calc(55% - 15rem)">
-          <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.nameClient }}</span>
-          </template>
-        </Column>
-        <Column field="apePClient" :header="t('formsGeneric.client.lastName')"  style="width: 16%">
-          <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.apePClient }}</span>
-          </template>
-        </Column>
-        <Column field="apePClient" :header="t('formsGeneric.client.secondLastName')"  style="width: 16%">
-          <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.apeMClient }}</span>
-          </template>
-        </Column>
-        <Column field="telephone" :header="t('formsGeneric.client.phone')"  style="width: 16%">
-          <template #body="slotProps">
-            <span class="font-bold text-magenta">{{ slotProps.data.telephone }}</span>
-          </template>
-        </Column>
-        <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
-          <template #body="slotProps">
-            <div class="actions-wrapper">
-              <Button
-                  icon="pi pi-pencil"
-                  class="p-button-rounded p-button-text p-button-secondary edit-btn"
-                  @click="handleEdit(slotProps.data.idClient)"
-              />
-              <Button
-                  icon="pi pi-trash"
-                  class="p-button-rounded p-button-text p-button-danger"
-                  @click="handleDelete(slotProps.data.idClient)"
-              />
-            </div>
-          </template>
-        </Column>
-      </DataTable>
+      <Button
+          :label="t('formsGeneric.new_m', {item: t('entityName.client')})"
+          icon="pi pi-plus"
+          @click="clientStore.openNewClient()"
+          class="p-button-primary w-auto"
+        />
     </div>
+    <div class="stats-badge">
+      {{ `${props.datos.length} ${t("tableGeneric.records")}` }}
+    </div>
+    <DataTable
+        :value="filteredItems"
+        paginator
+        :rows="10"
+        responsiveLayout="stack"
+        breakpoint="960px"
+        class="p-datatable-customers custom-table"
+        stripedRows
+        removableSort
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :currentPageReportTemplate="t('tableGeneric.currentPageReportTemplate')"
+    >
+      <template #header>
+        <div class="flex justify-between">
+          <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter()" />
+          <IconField>
+            <InputIcon>
+              <i class="pi pi-search" />
+            </InputIcon>
+            <InputText v-model="filters1.global.value" :placeholder="t('listsGeneric.search')" />
+
+          </IconField>
+        </div>
+      </template>
+      <template #empty>
+        <div class="empty-state">{{ t("tableGeneric.emptyState") }}</div>
+      </template>
+      <Column field="nameClient" :header="t('formsGeneric.name')"  sortable style="calc(55% - 15rem)">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.nameClient }}</span>
+        </template>
+      </Column>
+      <Column field="apePClient" :header="t('formsGeneric.client.lastName')"  style="width: 16%">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.apePClient }}</span>
+        </template>
+      </Column>
+      <Column field="apePClient" :header="t('formsGeneric.client.secondLastName')"  style="width: 16%">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.apeMClient }}</span>
+        </template>
+      </Column>
+      <Column field="telephone" :header="t('formsGeneric.client.phone')"  style="width: 16%">
+        <template #body="slotProps">
+          <span class="font-bold text-magenta">{{ slotProps.data.telephone }}</span>
+        </template>
+      </Column>
+      <Column :header="t('tableGeneric.actions')" headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center">
+        <template #body="slotProps">
+          <div class="actions-wrapper">
+            <Button
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-secondary edit-btn"
+                @click="handleEdit(slotProps.data.idClient)"
+            />
+            <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-danger"
+                @click="handleDelete(slotProps.data.idClient)"
+            />
+          </div>
+        </template>
+      </Column>
+    </DataTable>
   </div>
 </template>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
+import { useToast } from 'primevue/usetoast';
 import Button from "primevue/button";
 import FloatLabel from "primevue/floatlabel";
 import { useClientStore } from "@/store/ClientStore";
@@ -8,6 +9,7 @@ import {useI18n} from "vue-i18n";
 const clientStore = useClientStore();
 const stateClient = clientStore.clientUiState
 const {t} = useI18n();
+const toast = useToast();
 
 const handleByStateAction = async () => {
   if (stateClient.isEdit){
@@ -16,11 +18,19 @@ const handleByStateAction = async () => {
     await handleSave()
   }
 }
-
+function successToast(isEdit: boolean) {
+  toast.add({
+    severity: 'success',
+    summary: t('toastOptions.success'),
+    detail: isEdit ? t('toastOptions.successUpdate', {entity: t('entityName.client')}) : t('toastOptions.successSave', {entity: t('entityName.client')}),
+    life: 3000
+  });
+}
 const handleUpdate = async () => {
   await clientStore.updateClient()
 
   if (stateClient.success){
+    successToast(stateClient.isEdit)
     clientStore.clearForm()
   }
 }
@@ -29,6 +39,7 @@ const handleSave = async () => {
   await clientStore.createClient()
 
   if (stateClient.success){
+    successToast(stateClient.isEdit)
     clientStore.clearForm()
   }
 }
@@ -39,90 +50,64 @@ const cancelUpdate = () => {
 </script>
 
 <template>
-  <div class="form-card">
-    <div class="form-header">
-      <div class="title-wrapper">
-        <i :class="stateClient.isEdit ? 'pi pi-pencil icon-edit' : 'pi pi-plus-circle icon-add'"></i>
-        <h2>{{ stateClient.isEdit ? t("formsGeneric.edit", {item: t("entityName.client")}) : t('formsGeneric.new_m', {item: t('entityName.client')}) }}</h2>
-      </div>
+  <div class="flex flex-col gap-6">
+    <div>
+      <label for="name" class="block font-bold mb-3">{{ t("formsGeneric.name")}}</label>
+      <InputText
+          id="name"
+          v-model.trim="stateClient.nameClient"
+          required="true"
+          autofocus
+          :invalid="stateClient.nameTouched && !stateClient.nameClient"
+          fluid
+      />
+      <small v-if="stateClient.nameTouched && !stateClient.nameClient" class="text-red-500">
+        {{ t("errorsGeneric.required", {field: t("formsGeneric.name")}) }}
+      </small>
     </div>
-
-    <div class="form-body">
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="name"
-              v-model="stateClient.nameClient"
-              class="w-full custom-input"
-              :class="{ 'p-invalid': stateClient.nameError }"
-          />
-          <label for="name">{{ t("formsGeneric.name")}}</label>
-        </FloatLabel>
-        <small v-if="stateClient.nameError" class="error-msg">
-          {{ stateClient.nameError }}
-        </small>
-      </div>
-
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="apePClient"
-            v-model="stateClient.apePClient"
-            class="w-full custom-input"
-            :class="{ 'p-invalid': stateClient.apePError }"
-          />
-          <label for="apePClient">{{ t("formsGeneric.client.lastName")}}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="stateClient.apePError">
-          {{ stateClient.apePError }}
-        </small>
-      </div>
-      <div class="field">
-        <FloatLabel>
-          <InputText
-            id="apeMClient"
-            v-model="stateClient.apeMClient"
-            class="w-full custom-input"
-          />
-          <label for="apeMClient">{{ t("formsGeneric.client.secondLastName")}}</label>
-        </FloatLabel>
-      </div>
-
-      <div class="field">
-        <FloatLabel>
-          <InputText
-              id="telephone"
-              v-model="stateClient.telephone"
-              class="w-full custom-input"
-              :class="{ 'p-invalid': stateClient.telephoneError }"
-          />
-          <label for="telephone">{{ t("formsGeneric.client.phone")}}</label>
-        </FloatLabel>
-        <small class="error-msg" v-if="stateClient.telephoneError">
-          {{ stateClient.telephoneError }}
-        </small>
-      </div>
-
-      <div class="actions-group">
-        <Button
-            type="button"
-            :label="stateClient.isEdit ? t('formsGeneric.update') :  t('formsGeneric.save', {item:  t('entityName.client')})"
-            :icon="stateClient.isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            :disabled="stateClient.isLoading"
-            @click="handleByStateAction"
-            class="btn-submit w-full"
-        />
-        <Button
-            v-if="stateClient.isEdit"
-            :label="t('formsGeneric.cancel')"
-            icon="pi pi-times"
-            severity="secondary"
-            text
-            @click="cancelUpdate"
-            class="w-full mt-2"
-        />
-      </div>
+    <div>
+      <label for="apePClient" class="block font-bold mb-3">{{ t("formsGeneric.client.lastName")}}</label>
+      <InputText
+          id="apePClient"
+          v-model.trim="stateClient.apePClient"
+          required="true"
+          :invalid="stateClient.nameTouched && !stateClient.apePClient"
+          fluid
+      />
+      <small v-if="stateClient.nameTouched && !stateClient.apePClient" class="text-red-500">
+        {{ t("errorsGeneric.required", {field: t("formsGeneric.client.lastName")}) }}
+      </small>
     </div>
+    <div>
+      <label for="apeMClient" class="block font-bold mb-3">{{ t("formsGeneric.client.secondLastName")}}</label>
+      <InputText
+          id="apeMClient"
+          v-model.trim="stateClient.apeMClient"
+          required="false"
+          :invalid="stateClient.nameTouched && !stateClient.apeMClient"
+          fluid
+      />
+    </div>
+    <div>
+      <label for="telephone" class="block font-bold mb-3">{{ t("formsGeneric.client.phone")}}</label>
+      <InputText
+          id="telephone"
+          v-model.trim="stateClient.telephone"
+          required="true"
+          :invalid="stateClient.nameTouched && !stateClient.telephone"
+          fluid
+      />
+      <small v-if="stateClient.nameTouched && !stateClient.telephone" class="text-red-500">
+        {{ t("errorsGeneric.required", {field: t("formsGeneric.client.phone")}) }}
+      </small>
+    </div>
+    <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
+    <Button
+        :label="stateClient.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.client')})"
+        icon="pi pi-check"
+        @click="handleByStateAction"
+        :loading="stateClient.isLoading"
+    />
   </div>
 </template>
 
