@@ -145,7 +145,7 @@ const updateQuantity = (cart: Cart, item: PurchaseItem, change: number) => {
             <Button
                 class="flex-1 p-4 flex justify-between items-center"
                 severity="success"
-                @click="confirmarVenta(cart)"
+                @click="cartStore.confirmCart()"
             >
               <span class="flex items-center gap-2">
                 <i class="pi pi-check-circle text-xl"></i>

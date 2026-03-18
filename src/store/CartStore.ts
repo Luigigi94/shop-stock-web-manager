@@ -5,6 +5,9 @@ import { Cart }from "@/models/Cart";
 import {computed, ref} from "vue";
 import {PurchaseItem} from "@/models/PurchaseItem";
 import {useProductStore} from "@/store/ProductStore";
+import {Purchase} from "@/models/Purchase";
+import {InventoryMovement} from "@/models/InventoryMovements";
+import {MovementType} from "@/constants/MovementType";
 
 
 export const useCartStore = defineStore("CartStore", () => {
@@ -176,6 +179,51 @@ export const useCartStore = defineStore("CartStore", () => {
         }
     }
 
+    function buildMovements(cart: Cart, purchaseId: string): Array<InventoryMovement>{
+        return cart.items.map(item => ({
+            id: crypto.randomUUID(),
+            productId: item.productId,
+            quantity: item.quantity,
+            type: MovementType.SALE,
+            reason: "Venta",
+            referenceId: purchaseId,
+            userId: cart.userId ?? "",
+            createdAt: Timestamp.now(),
+            amount: 0
+        }))
+    }
+
+    async function confirmCart(): Promise<void> {
+        const currentCart = cartUiState.value
+        const purchaseId = crypto.randomUUID()
+        let transaction: string = ""
+
+        const purchase: Purchase = {
+            id: purchaseId,
+            clientId: currentCart.clientId ?? "",
+            clientName: currentCart.clientName ?? "",
+            createdAt: Timestamp.now(),
+            items: currentCart.items ?? [],
+            total: currentCart.total ?? 0,
+            userId: currentCart.userId ?? "Luis Hernández",
+
+        }
+
+        const movements = buildMovements(currentCart, purchaseId);
+        console.log("userId passed: "+purchase.userId)
+        transaction = await CartRepository.confirmCartSale(currentCart, purchase, movements, purchase.userId.length != 0 ? purchase.userId : "Luis Hernández")
+
+        if (transaction) {
+            try {
+                await cleanCart()
+            } catch (error) {
+                console.error("Error al borrar:", error);
+            } finally {
+            clearCartState()
+                }
+        }
+    }
+
     return {
         allCartProducts,
         getAllCartProducts,
@@ -184,6 +232,7 @@ export const useCartStore = defineStore("CartStore", () => {
         removeItem,
         addItemToCart,
         clearCartState,
-        cleanCart
+        cleanCart,
+        confirmCart,
     }
 })
