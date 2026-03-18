@@ -15,6 +15,7 @@ import InputIcon from 'primevue/inputicon';
 const cartStore = useCartStore();
 const currentState = cartStore.cartUiState
 interface ProductFilter {
+  idProduct: string;
   nameProduct?: string;
   categoryName?: string;
   stock?: number;
@@ -146,6 +147,7 @@ function getStatus(stock: number) {
                           :label="t('listsGeneric.buttonAdd')"
                           :disabled="item.stock === 0"
                           class="flex-auto md:flex-initial whitespace-nowrap"
+                          @click="cartStore.addItemToCart(item.idProduct)"
                       ></Button>
                     </div>
                   </div>

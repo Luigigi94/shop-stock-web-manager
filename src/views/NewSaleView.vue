@@ -4,6 +4,7 @@ import { useCartStore } from "@/store/CartStore";
 import { useProductStore } from "@/store/ProductStore";
 import {useCategoryStore} from "@/store/CategoryStore";
 import {Button} from "primevue";
+import {Badge} from "primevue";
 import {onMounted, onUnmounted} from "vue";
 import ListComponent from "@/components/newSale/ListComponent.vue";
 
@@ -22,10 +23,12 @@ onMounted(() => {
 onUnmounted(() => {
   productStore.clear()
 })
+console.log("revisanding: "+[cartStore.cartUiState].toString())
+console.log("revisanding2: "+categoryStore.allCategories)
 </script>
 
 <template>
-  <CartDrawer v-model:visible="cartState.isCartOpen" header="Right Drawer" position="right" />
+  <CartDrawer v-model:visible="cartStore.cartUiState.isCartOpen" position="right" :datos="cartStore.allCartProducts" class="w-full md:w-112.5 lg:w-137.5" :style="{ width: '30rem' }"/>
   <section class="p-4">
     <ListComponent :datos="productStore.productsWithCategoryName"/>
   </section>
@@ -33,7 +36,7 @@ onUnmounted(() => {
       rounded
       raised
       severity="primary"
-      @click="cartState.isCartOpen = true"
+      @click="cartStore.cartUiState.isCartOpen = true"
   class="fixed z-5 w-12 h-12 shadow-4 p-0"
   style="right: 2rem; bottom: 2rem; position: fixed !important;"
   >

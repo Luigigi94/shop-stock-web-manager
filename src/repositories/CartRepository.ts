@@ -19,5 +19,9 @@ export const CartRepository = {
         }, (error) =>{
             console.error("Error en CartRepository ",error);
         });
+    },
+    async saveCart(cart: Cart): Promise<void> {
+        const docRef = doc(cartCollection, cart.id);
+        await setDoc(docRef, cart);
     }
 }

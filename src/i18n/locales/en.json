@@ -63,7 +63,7 @@
     "newSale": "New Sale"
   },
   "listsGeneric": {
-    "search": "Search product",
+    "search": "Search {entity}",
     "buttonAdd": "Add"
   },
   "errorsGeneric": {

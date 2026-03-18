@@ -2,44 +2,161 @@ import {defineStore} from "pinia";
 import {CartRepository} from "@/repositories/CartRepository";
 import {Timestamp, Unsubscribe} from "firebase/firestore";
 import { Cart }from "@/models/Cart";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {PurchaseItem} from "@/models/PurchaseItem";
+import {useProductStore} from "@/store/ProductStore";
+
 
 export const useCartStore = defineStore("CartStore", () => {
+    const productStore = useProductStore();
 
     const allCartProducts = ref<Cart[]>([]);
-    const cartUiState = ref ({
-        id: '' as string | null,
-        userId: '' as string | null,
+
+    interface CartUiState extends Cart {
+        isCartOpen: boolean;
+    }
+
+    const cartUiState = ref<CartUiState>({
+        id: 'Luis Hernández' as string,
+        userId: 'Luis Hernández' as string | null,
         clientId: '' as string | null,
         clientName: '' as string | null,
-        items: [],
-        total: '' as string | null,
+        items: [] as PurchaseItem[],
+        total: 0 as number,
         updatedAt: null,
         createdAt: null,
         isCartOpen: false,
     })
 
-    const currentState = cartUiState.value;
-
     function openCart(){
-        currentState.isCartOpen = true;
+        cartUiState.value.isCartOpen = true;
     }
 
     let stopListener: Unsubscribe | null = null;
 
-    function getAllCartProducts(){
-        if(stopListener) stopListener();
+    function getAllCartProducts() {
+        if (stopListener) stopListener();
 
         stopListener = CartRepository.getAllCartProducts((newList) => {
+            // newList es Cart[], pero nosotros solo queremos el carrito de este usuario
+            // Supongamos que es el primero o lo filtramos por el ID del usuario
+            // const myCart = newList[0];
             allCartProducts.value = newList;
-        })
+            console.log("Valor de newList: "+newList.toString());
+            const myCart = newList.find(c => c.id === 'Luis Hernández');
+            console.log(myCart);
+
+            if (myCart) {
+                /*cartUiState.value = {
+                    ...cartUiState.value, // mantenemos valores por defecto como isCartOpen
+                    id: "Luis Hernández",
+                    userId: "Luis Hernández",
+                    clientId: myCart.clientId,
+                    clientName: myCart.clientName,
+                    items: myCart.items,
+                    total: myCart.total,
+                };*/
+                cartUiState.value.items = myCart.items;
+                cartUiState.value.total = myCart.total;
+                cartUiState.value.userId = myCart.userId;
+                cartUiState.value.id = myCart.id;
+            }
+        });
+        console.log("currentState", cartUiState.value);
+    }
+
+    async function removeItem(productId: string): Promise<void> {
+        // 1. Buscamos en el estado ACTUAL lo que queremos quitar
+        const currentItems = cartUiState.value.items;
+        const updatedItems = currentItems.filter(item => item.productId !== productId);
+
+        // LOG DE SEGURIDAD: Si esto sale 0, el ID enviado está mal
+        console.log("Items después del filtro:", updatedItems.length);
+
+        const nuevoTotal = updatedItems.reduce((acc, item) => acc + item.subtotal, 0);
+
+        const updatedCart: Cart = {
+            // Usa 'id' y 'userId' exactamente como están en el documento de Firebase
+            id: "Luis Hernández",
+            userId: "Luis Hernández",
+            clientId: cartUiState.value.clientId || '',
+            clientName: "Luis Hernández",
+            items: updatedItems,
+            total: nuevoTotal
+        };
+
+        try {
+            // Solo mandamos a Firebase.
+            // NO actualices cartUiState.value aquí manualmente,
+            // deja que getAllCartProducts (el listener) lo haga cuando Firebase responda.
+            await CartRepository.saveCart(updatedCart);
+            console.log("Firebase actualizado correctamente");
+        } catch (e: any) {
+            console.error("Error al borrar:", e.message);
+        }
+    }
+    async function addItemToCart(productId: string):Promise<void> {
+        const prodStock = productStore.allProducts.find((p) => p.idProduct === productId);
+        if (!prodStock) return
+        const existingItem = cartUiState.value.items.findIndex(item => item.productId === productId);
+        const currentQty = existingItem !== -1 ? cartUiState.value.items[existingItem].quantity : 0;
+        let currQty: number = 0
+        if (existingItem !== -1) {
+            currQty = cartUiState.value.items[existingItem].quantity
+        }
+
+        const newTotalQty = currentQty + 1;
+        console.log("Valor de newTotalQty "+newTotalQty);
+
+        if (newTotalQty > prodStock.stock){
+            console.log("Stock insuficiente")
+            return
+        }
+
+        if (existingItem !== -1) {
+            cartUiState.value.items = cartUiState.value.items.map((item, i) => {
+                if (i === existingItem) {
+                    const updatedQuantity = newTotalQty;
+                    return {
+                        ...item,
+                        quantity: updatedQuantity,
+                        subtotal: updatedQuantity * item.price, // Actualizamos subtotal
+                    };
+                }
+                return item;
+            });
+            cartUiState.value.updatedAt = Timestamp.now();
+
+        } else {
+            const addedItem: PurchaseItem = {
+                id: crypto.randomUUID(),
+                productId: productId,
+                productName: prodStock.nameProduct,
+                imageProduct: prodStock.imageProduct ?? 'assets/no-image.png',
+                price: prodStock.priceProduct,
+                quantity: newTotalQty,
+                subtotal: newTotalQty * prodStock.priceProduct,
+            }
+            cartUiState.value = {
+                ...cartUiState.value,
+                items: [addedItem],
+                total: cartUiState.value.total + addedItem.subtotal,
+                createdAt: Timestamp.now(),
+            }
+        }
+        try {
+            await CartRepository.saveCart(cartUiState.value);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return {
         allCartProducts,
         getAllCartProducts,
         cartUiState,
-        openCart
+        openCart,
+        removeItem,
+        addItemToCart,
     }
 })

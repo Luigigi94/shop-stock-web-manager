@@ -4,11 +4,11 @@ import {PurchaseItem} from "@/models/PurchaseItem";
 
 export interface Cart {
     id: string
-    userId: string
-    clientId: string
-    clientName: string
+    userId: string | null
+    clientId: string | null
+    clientName: string | null
     items: PurchaseItem[]
     total: number,
-    updatedAt?: Timestamp
-    createdAt?: Timestamp
+    updatedAt?: Timestamp | null
+    createdAt?: Timestamp | null
 }
