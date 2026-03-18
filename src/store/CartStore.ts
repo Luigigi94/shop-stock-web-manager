@@ -161,7 +161,7 @@ export const useCartStore = defineStore("CartStore", () => {
                 items: updatedItems,
                 // Recalculamos el total de forma segura
                 total: updatedItems.reduce((acc, item) => acc + item.subtotal, 0),
-                updatedAt: Timestamp.now(), // Usar updatedAt es mejor que createdAt al añadir items
+                createdAt: Timestamp.now(), // Usar updatedAt es mejor que createdAt al añadir items
             };
         }
         try {

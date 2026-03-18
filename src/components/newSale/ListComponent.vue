@@ -145,7 +145,7 @@ function getStatus(stock: number) {
                       <Button
                           icon="pi pi-shopping-cart"
                           :label="t('listsGeneric.buttonAdd')"
-                          :disabled="item.stock === 0"
+                          :disabled="Number(item.stock) <= 0"
                           class="flex-auto md:flex-initial whitespace-nowrap"
                           @click="cartStore.addItemToCart(item.idProduct)"
                       ></Button>
@@ -163,7 +163,7 @@ function getStatus(stock: number) {
               <div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded flex flex-col">
                 <div class="bg-surface-50 flex justify-center rounded p-4">
                   <div class="relative mx-auto">
-                    <img class="rounded w-full" :src="item.imageProduct" :alt="item.nameProduct" style="max-width: 300px" />
+                    <img class="rounded w-full h-48 object-cover alt-text-style" :src="item.imageProduct" :alt="item.nameProduct" style="max-width: 200px; min-width: 200px" />
                     <Tag :value="getStatus(item.stock)" :severity="getSeverity(item.stock)" class="absolute dark:bg-surface-900!" style="left: 4px; top: 4px"></Tag>
                   </div>
                 </div>
@@ -180,9 +180,9 @@ function getStatus(stock: number) {
                       <Button
                           icon="pi pi-shopping-cart"
                           :label="t('listsGeneric.buttonAdd')"
-                          :disabled="item.stock === 0"
+                          :disabled="Number(item.stock) <= 0"
                           class="flex-auto whitespace-nowrap"
-                      ></Button>
+                      />
                       <Button icon="pi pi-heart" outlined></Button>
                     </div>
                   </div>

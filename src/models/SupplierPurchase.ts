@@ -8,7 +8,7 @@ export interface SupplierPurchase {
     supplierName:  string
     items: SupplierPurchaseItem[]
     totalCost: number
-    createdAt: Timestamp
-    updatedAt: Timestamp
+    createdAt?: Timestamp
+    updatedAt?: Timestamp
     userId: string
 }
