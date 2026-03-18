@@ -73,7 +73,13 @@
   "toastOptions": {
     "success": "Éxito",
     "successSave": "{entity} Creado",
-    "successUpdate": "{entity} Actualizado"
+    "successUpdate": "{entity} Actualizado",
+    "messageClearCart": "¿Desea vaciar el carrito?",
+    "summaryConfirmed": "Éxito",
+    "confirmedOption": "Carrito vaciado correctamente."
+  },
+  "tooltipOptions": {
+    "cleanCart": "Limpiar Carrito"
   }
 }
 

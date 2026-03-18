@@ -32,6 +32,18 @@ export const useCartStore = defineStore("CartStore", () => {
         cartUiState.value.isCartOpen = true;
     }
 
+    function clearCartState(){
+        cartUiState.value.id = 'Luis Hernández' as string;
+        cartUiState.value.userId = 'Luis Hernández' as string | null;
+        cartUiState.value.clientId = '' as string | null;
+        cartUiState.value.clientName = '' as string | null;
+        cartUiState.value.items = [] as PurchaseItem[];
+        cartUiState.value.total = 0 as number;
+        cartUiState.value.updatedAt = null;
+        cartUiState.value.createdAt = null;
+        cartUiState.value.isCartOpen = false;
+    }
+
     let stopListener: Unsubscribe | null = null;
 
     function getAllCartProducts() {
@@ -67,32 +79,39 @@ export const useCartStore = defineStore("CartStore", () => {
 
     async function removeItem(productId: string): Promise<void> {
         // 1. Buscamos en el estado ACTUAL lo que queremos quitar
-        const currentItems = cartUiState.value.items;
-        const updatedItems = currentItems.filter(item => item.productId !== productId);
+        const lengthCart = cartUiState.value.items.length;
+        console.log("revisando longitud del carrito "+lengthCart)
+        if (lengthCart > 1) {
+            const currentItems = cartUiState.value.items;
+            const updatedItems = currentItems.filter(item => item.productId !== productId);
+            // LOG DE SEGURIDAD: Si esto sale 0, el ID enviado está mal
+            console.log("Items después del filtro:", updatedItems.length);
 
-        // LOG DE SEGURIDAD: Si esto sale 0, el ID enviado está mal
-        console.log("Items después del filtro:", updatedItems.length);
+            const nuevoTotal = updatedItems.reduce((acc, item) => acc + item.subtotal, 0);
 
-        const nuevoTotal = updatedItems.reduce((acc, item) => acc + item.subtotal, 0);
+            const updatedCart: Cart = {
+                // Usa 'id' y 'userId' exactamente como están en el documento de Firebase
+                id: "Luis Hernández",
+                userId: "Luis Hernández",
+                clientId: cartUiState.value.clientId || '',
+                clientName: "Luis Hernández",
+                items: updatedItems,
+                total: nuevoTotal
+            };
 
-        const updatedCart: Cart = {
-            // Usa 'id' y 'userId' exactamente como están en el documento de Firebase
-            id: "Luis Hernández",
-            userId: "Luis Hernández",
-            clientId: cartUiState.value.clientId || '',
-            clientName: "Luis Hernández",
-            items: updatedItems,
-            total: nuevoTotal
-        };
-
-        try {
-            // Solo mandamos a Firebase.
-            // NO actualices cartUiState.value aquí manualmente,
-            // deja que getAllCartProducts (el listener) lo haga cuando Firebase responda.
-            await CartRepository.saveCart(updatedCart);
-            console.log("Firebase actualizado correctamente");
-        } catch (e: any) {
-            console.error("Error al borrar:", e.message);
+            try {
+                await CartRepository.saveCart(updatedCart);
+                console.log("Firebase actualizado correctamente");
+            } catch (e: any) {
+                console.error("Error al borrar:", e.message);
+            }
+        } else {
+            try {
+                await CartRepository.deleteCart(cartUiState.value.id);
+                clearCartState()
+            } catch (error) {
+                console.error("Error al borrar:", error);
+            }
         }
     }
     async function addItemToCart(productId: string):Promise<void> {
@@ -100,10 +119,6 @@ export const useCartStore = defineStore("CartStore", () => {
         if (!prodStock) return
         const existingItem = cartUiState.value.items.findIndex(item => item.productId === productId);
         const currentQty = existingItem !== -1 ? cartUiState.value.items[existingItem].quantity : 0;
-        let currQty: number = 0
-        if (existingItem !== -1) {
-            currQty = cartUiState.value.items[existingItem].quantity
-        }
 
         const newTotalQty = currentQty + 1;
         console.log("Valor de newTotalQty "+newTotalQty);
@@ -134,20 +149,30 @@ export const useCartStore = defineStore("CartStore", () => {
                 productName: prodStock.nameProduct,
                 imageProduct: prodStock.imageProduct ?? 'assets/no-image.png',
                 price: prodStock.priceProduct,
-                quantity: newTotalQty,
-                subtotal: newTotalQty * prodStock.priceProduct,
+                quantity: 1,
+                subtotal: prodStock.priceProduct,
             }
+            const updatedItems = [...cartUiState.value.items, addedItem];
             cartUiState.value = {
                 ...cartUiState.value,
-                items: [addedItem],
-                total: cartUiState.value.total + addedItem.subtotal,
-                createdAt: Timestamp.now(),
-            }
+                items: updatedItems,
+                // Recalculamos el total de forma segura
+                total: updatedItems.reduce((acc, item) => acc + item.subtotal, 0),
+                updatedAt: Timestamp.now(), // Usar updatedAt es mejor que createdAt al añadir items
+            };
         }
         try {
             await CartRepository.saveCart(cartUiState.value);
         } catch (error) {
             console.error(error);
+        }
+    }
+    async function cleanCart(){
+        try {
+            await CartRepository.deleteCart(cartUiState.value.id);
+            clearCartState()
+        } catch (e: any) {
+            console.log("Error al borrar:", e.message);
         }
     }
 
@@ -158,5 +183,7 @@ export const useCartStore = defineStore("CartStore", () => {
         openCart,
         removeItem,
         addItemToCart,
+        clearCartState,
+        cleanCart
     }
 })

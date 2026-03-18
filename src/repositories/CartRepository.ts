@@ -23,5 +23,9 @@ export const CartRepository = {
     async saveCart(cart: Cart): Promise<void> {
         const docRef = doc(cartCollection, cart.id);
         await setDoc(docRef, cart);
+    },
+    async deleteCart(cartId: string): Promise<void> {
+        const docRef = doc(cartCollection, cartId);
+        await deleteDoc(docRef);
     }
 }

@@ -72,6 +72,12 @@
   "toastOptions": {
     "success": "Success",
     "successSave": "{entity} Save",
-    "successUpdate": "{entity} Updated"
+    "successUpdate": "{entity} Updated",
+    "messageClearCart": "Do you want to empty the Cart?",
+    "summaryConfirmed": "Succeeded",
+    "confirmedOption": "Cart cleared successfully."
+  },
+  "tooltipOptions": {
+    "cleanCart": "Clean Cart"
   }
 }

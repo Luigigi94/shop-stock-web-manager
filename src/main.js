@@ -11,6 +11,8 @@ import 'primeicons/primeicons.css';
 import '@/assets/tailwind.css';
 import '@/assets/styles.scss';
 import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 import { definePreset } from '@primevue/themes';
@@ -44,6 +46,8 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(i18n)
+app.directive('tooltip', Tooltip);
+app.use(ConfirmationService);
 app.use(PrimeVue,{
     theme: {
         preset: MyPreset, // Aquí aplicas el estilo

@@ -23,8 +23,7 @@ onMounted(() => {
 onUnmounted(() => {
   productStore.clear()
 })
-console.log("revisanding: "+[cartStore.cartUiState].toString())
-console.log("revisanding2: "+categoryStore.allCategories)
+
 </script>
 
 <template>
@@ -33,6 +32,7 @@ console.log("revisanding2: "+categoryStore.allCategories)
     <ListComponent :datos="productStore.productsWithCategoryName"/>
   </section>
   <Button
+      v-if="cartStore.allCartProducts.length > 0"
       rounded
       raised
       severity="primary"

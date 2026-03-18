@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { Drawer } from "primevue";
+import {Drawer, useConfirm} from "primevue";
 import { useCartStore } from "@/store/CartStore";
 const cartStore = useCartStore();
-const cartState = cartStore.cartUiState
 import {useI18n} from "vue-i18n";
-import Tag from "primevue/tag";
 import Button from "primevue/button";
 import DataView from 'primevue/dataview';
-import SelectButton from 'primevue/selectbutton';
-import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import {computed, PropType} from "vue";
+import {ref, PropType} from "vue";
 import {Cart} from "@/models/Cart";
 import {PurchaseItem} from "@/models/PurchaseItem";
+import { useToast } from 'primevue/usetoast';
+import ConfirmPopup from 'primevue/confirmpopup';
+const displayConfirmation = ref(false);
+import Tag from "primevue/tag";
+import SelectButton from 'primevue/selectbutton';
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 
-
+const toast = useToast();
 const {t} = useI18n();
-
+const confirmPopup = useConfirm();
 const props = defineProps({
   visible: {
     type: Boolean,
@@ -30,6 +32,7 @@ const props = defineProps({
     default: () => []
   }
 })
+
 
 const emit = defineEmits(["update:visible"])
 const updateQuantity = (cart: Cart, item: PurchaseItem, change: number) => {
@@ -50,6 +53,34 @@ const updateQuantity = (cart: Cart, item: PurchaseItem, change: number) => {
     cartStore.removeItem(item.productId)
   }
 };
+
+ function confirm(event: { target: any; }) {
+  confirmPopup.require({
+    target: event.target,
+    message: t('toastOptions.messageClearCart'),
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Save'
+    },
+    accept: () => {
+      try {
+        cartStore.cleanCart()
+      } catch (e: any) {
+        console.error(e)
+      } finally {
+        toast.add({ severity: 'info', summary: t('toastOptions.summaryConfirmed'), detail: t('toastOptions.confirmedOption'), life: 3000 });
+      }
+    }/*,
+    reject: () => {
+      toast.add({ severity: 'info', summary: t('toastOptions.summaryCanceled'), detail: 'You have rejected', life: 3000 });
+    }*/
+  });
+}
 </script>
 
 <template>
@@ -58,80 +89,85 @@ const updateQuantity = (cart: Cart, item: PurchaseItem, change: number) => {
       @update:visible="(value) => emit('update:visible', value)"
       :header="t('entityName.cart')"
       position="right"
-      :value="props.datos"
+      class="custom-drawer-width"
   >
-    <div class="flex-flex-col">
-      <div class="card">
-        <DataView :value="props.datos" :layout="'list'">
+    <div class="flex flex-col h-full">
+
+      <div class="flex-1 overflow-y-auto pr-2">
+        <DataView :value="props.datos" layout="list">
           <template #list="slotProps">
-            <div class="flex flex-col">
-              <div v-for="(cart, index) in (slotProps.items as Cart[])" :key="cart.id || index">
-                <div v-for="item in cart.items" :key="item.productId">
-                  <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" style="border: 2px solid red">
-                    <div class="relative">
-                      <img class="block mx-auto w-16 h-16 rounded-full object-cover" :src="item.imageProduct" :alt="item.productName" />
-                    </div>
-<!--                    <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6">-->
-                    <div class="flex flex-row items-center justify-between flex-1 gap-4">
-                      <div class="flex flex-col">
+            <div class="flex flex-col gap-6">
+              <div v-for="(cart, index) in (slotProps.items as Cart[])" :key="cart.id || index" class="flex flex-col">
+                <div class="flex flex-col gap-4">
+                  <div v-for="item in cart.items" :key="item.productId">
+                    <div class="flex flex-row items-center p-4 gap-4 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded-lg shadow-sm">
+                      <div class="shrink-0">
+                        <img class="w-16 h-16 rounded-full object-cover" :src="item.imageProduct" :alt="item.productName" />
+                      </div>
+                      <div class="flex flex-row items-center justify-between flex-1 gap-4">
                         <div class="flex flex-col gap-2">
-                          <div class="text-lg font-medium">{{ item.productName+" "+item.productId }}</div>
-
+                          <div class="text-lg font-medium leading-tight">{{ item.productName }}</div>
                           <div class="flex items-center gap-2">
-                            <Button
-                                icon="pi pi-minus"
-                                severity="secondary"
-                                raised
-                                class="w-8 h-8"
-                                @click="updateQuantity(cart, item, -1)"
-                              />
-
-                            <InputNumber
-                                v-model="item.quantity"
-                                :min="0"
-                                :allowEmpty="false"
-                                inputClass="w-12 text-center p-2"
-                                @update:model-value="item.subtotal = item.quantity * item.price"
-                            />
-
-                            <Button
-                                icon="pi pi-plus"
-                                severity="info"
-                                raised
-                                class="w-8 h-8"
-                                @click="updateQuantity(cart, item, 1)"
-                              />
+                            <Button icon="pi pi-minus" severity="secondary" raised class="w-8 h-8" @click="updateQuantity(cart, item, -1)" />
+                            <InputNumber v-model="item.quantity" :min="0" :allowEmpty="false" inputClass="w-12 text-center p-2" @update:model-value="updateQuantity(cart, item, 0)" />
+                            <Button icon="pi pi-plus" severity="info" raised class="w-8 h-8" @click="updateQuantity(cart, item, 1)" />
                           </div>
                         </div>
-                      </div>
-                      <div class="flex flex-col items-end">
-                        <span class="text-xl font-semibold text-primary">${{ item.subtotal }}</span>
-                        <span class="text-surface-500 dark:text-surface-400 text-sm">{{ item.price }}</span>
-<!--                        <div class="flex flex-row-reverse md:flex-row gap-2">
-                          <Button icon="pi pi-heart" outlined></Button>
-                          <Button
-                              icon="pi pi-shopping-cart"
-                              :label="t('listsGeneric.buttonAdd')"
-                              :disabled="item.stock === 0"
-                              class="flex-auto md:flex-initial whitespace-nowrap"
-                          ></Button>
-                        </div>-->
+                        <div class="flex flex-col items-end">
+                          <span class="text-xl font-semibold text-primary">${{ item.subtotal.toFixed(2) }}</span>
+                          <span class="text-surface-500 dark:text-surface-400 text-sm">${{ item.price }} c/u</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  Total: {{cart.total}}
                 </div>
               </div>
             </div>
           </template>
         </DataView>
       </div>
+
+      <div class="pt-6 border-t border-surface-200 dark:border-surface-700 mt-auto bg-surface-0 dark:bg-surface-900">
+        <div v-for="cart in props.datos" :key="cart.id" class="mb-4">
+
+          <div class="flex gap-3">
+            <ConfirmPopup></ConfirmPopup>
+            <Button
+                icon="pi pi-trash"
+                severity="danger"
+                outlined
+                class="w-16 h-16 shrink-0"
+                v-tooltip.top="t('tooltipOptions.cleanCart')"
+                ref="popup"
+                @click="confirm($event)"
+            />
+
+            <Button
+                class="flex-1 p-4 flex justify-between items-center"
+                severity="success"
+                @click="confirmarVenta(cart)"
+            >
+              <span class="flex items-center gap-2">
+                <i class="pi pi-check-circle text-xl"></i>
+                <span class="font-bold uppercase tracking-wider">Confirmar</span>
+              </span>
+              <span class="text-xl font-black bg-white/20 px-3 py-1 rounded">
+                ${{ cart.total.toFixed(2) }}
+              </span>
+            </Button>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </Drawer>
 </template>
 
 <style scoped>
-
+:deep(.p-drawer-content) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 </style>
