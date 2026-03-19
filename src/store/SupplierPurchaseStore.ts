@@ -1,152 +1,69 @@
 import {defineStore} from "pinia";
-import {SupplierPurchaseRepository} from "@/repositories/SupplierPurchaseRepository";
-import {Timestamp, Unsubscribe} from "firebase/firestore";
+import {computed, ref} from "vue";
 import {SupplierPurchase} from "@/types/models/SupplierPurchase";
-import {ref} from "vue"
-import {SupplierPurchaseItem} from "@/types/models/SupplierPurchaseItem";
+import {SupplierPurchaseRepository} from "@/repositories/SupplierPurchaseRepository";
 import {getInitialSupplierPurchaseState} from "@/types/ui/SupplierPurchaseUiState";
-import {Products} from "@/types/models/Products";
-import * as crypto from "node:crypto";
-import {SupplierCartRepository} from "@/repositories/SupplierCartRepository";
+
+import { useProductStore } from "./ProductStore";
+import { useCategoryStore } from "./CategoryStore";
 
 export const useSupplierPurchaseStore = defineStore("SupplierPurchaseStore", () =>{
-    const allSupplierPurchases = ref<SupplierPurchase[]>([])
-
     const state = ref(getInitialSupplierPurchaseState());
-
-    let stopListener: Unsubscribe | null = null
-
-    function openNewSupplierPurchase(){
-        clearForm();
-        state.value.isCartOpen = true
-    }
-
-    const clearForm = () => {
-        state.value = getInitialSupplierPurchaseState();
-    }
-
-    function getAllSupplierPurchases() {
-        state.value.isLoading = true
-        if (stopListener) stopListener()
-
-        stopListener = SupplierPurchaseRepository.getAllSupplierPurchases((newList) => {
-            allSupplierPurchases.value = newList
-            state.value.isLoading = false
-        })
-    }
-    function clear(){
-        if(stopListener) stopListener()
-    }
-
-    function cleanModelToSave() {
-        const {
-            isLoading, isEdit, errorMessage, success, isCartOpen,
-            ...dataToSave
-        } = state.value;
-        return dataToSave;
-    }
-
-    async function addSupplierPurchase(product: Products, quantity: number, cost: number): Promise<void> {
-        // 1. Referencia reactiva (opcional, pero ayuda a la legibilidad)
-        const currentState = state.value;
-
-        const existingIndex = currentState.items.findIndex(item => item.productId === product.idProduct);
-
-        if (existingIndex !== -1) {
-            // UPDATE: Si ya existe, actualizamos cantidad y subtotal
-            state.value.items = currentState.items.map((item, i) => {
-                if (i === existingIndex) {
-                    const newQty = item.quantity + quantity; // Ojo: ¿era + o -? En compra suele ser +
-                    return {
-                        ...item,
-                        quantity: newQty,
-                        subtotal: newQty * item.cost
-                    };
-                }
-                return item;
-            });
-        } else {
-            const newItem: SupplierPurchaseItem = {
-                id: crypto.randomUUID(),
-                productId: product.idProduct,
-                productName: product.nameProduct,
-                quantity: quantity,
-                cost: cost,
-                subtotal: quantity * cost,
-            };
-            state.value.items.push(newItem);
-        }
-
-        state.value.totalCost = state.value.items.reduce((acc, item) => acc + item.subtotal, 0);
-        state.value.updatedAt = Timestamp.now();
-
+    const allSupplierPurchases = ref<SupplierPurchase[]>([])
+    const productStore = useProductStore();
+    const categoryStore = useCategoryStore();
+    async function getAllSupplierPurchases() {
+        state.value.isLoading = true;
         try {
-            const dataToSave = cleanModelToSave();
-
-            // 4. Guardado en el Repo
-            // Aquí dataToSave ya no tiene los campos de UI
-            await SupplierCartRepository.saveCart(
-                dataToSave as unknown as SupplierPurchase,
-                state.value.userId || 'Luis Hernández'
-            );
-
-        } catch (e: any) {
-            console.error("Error al guardar el carrito:", e);
+            allSupplierPurchases.value = await SupplierPurchaseRepository.getAllSupplierPurchases();
+        } catch (error) {
+            console.error("Error al cargar el historial:", error);
+        } finally {
+            state.value.isLoading = false;
         }
     }
-    async function updateItemQuantity(productId: string, quantity: number): Promise<void>{
-        state.value.items = state.value.items.map (item => {
-            if (item.productId === productId) {
-                return {
-                    ...item,
-                    quantity: quantity,
-                    subtotal: quantity * item.cost
+    const purchasesGroupedBySupplier = computed(() => {
+        const products = productStore.allProducts;
+        const purchases = allSupplierPurchases.value;
+
+        // 1. Creamos un mapa para agrupar
+        const groups = purchases.reduce((acc, purchase) => {
+            const id = purchase.supplierId;
+            if (!acc[id]) {
+                acc[id] = {
+                    id: id, // Usamos el ID del proveedor como dataKey
+                    supplierName: purchase.supplierName,
+                    totalAccumulated: 0,
+                    purchaseHistory: [] // Aquí van las compras individuales
                 };
             }
-            return item;
-        })
-        state.value.totalCost = state.value.items.reduce((acc, i) => acc + i.subtotal, 0);
-        state.value.updatedAt = Timestamp.now();
-        const dataToSave = cleanModelToSave();
 
-        try {
-            await SupplierCartRepository.saveCart(
-                dataToSave as unknown as SupplierPurchase,
-                state.value.userId || 'Luis Hernández'
-            );
-        } catch (e) {
-            console.error("Fallo al sincronizar con Firebase", e);
-        }
-    }
+            // 2. Enriquecemos los items de esta compra (como ya lo hacíamos)
+            const enrichedItems = purchase.items.map(item => {
+                const pFound = products.find(p => p.idProduct === item.productId);
+                return {
+                    ...item,
+                    productImageUrl: pFound?.imageProduct || null
+                };
+            });
 
-    async function removeItem(productId: string): Promise<void> {
-        const updatedItems = state.value.items.filter(item => item.productId !== productId)
-        state.value.items = updatedItems;
-        state.value.totalCost = updatedItems.reduce((acc, item) => acc + (item.cost * item.quantity), 0);
-        state.value.updatedAt = Timestamp.now();
+            // 3. Empujamos la compra al historial de este proveedor
+            acc[id].purchaseHistory.push({
+                ...purchase,
+                items: enrichedItems
+            });
 
-        try {
-            const { isLoading, isEdit, errorMessage, success, isCartOpen, ...dataToSave } = state.value;
+            // 4. Sumamos al total acumulado del proveedor (opcional pero útil)
+            acc[id].totalAccumulated += purchase.totalCost;
 
-            await SupplierCartRepository.saveCart(
-                dataToSave as unknown as SupplierPurchase,
-                state.value.userId || 'Luis Hernández'
-            );
-        } catch (error) {
-            console.error("Error al sincronizar tras eliminar item:", error);
-        }
-    }
+            return acc;
+        }, {} as Record<string, any>);
 
+        return Object.values(groups); // Convertimos el objeto en Array para la DataTable
+    });
     return{
-        state,
-        stopListener,
-        clearForm,
-        addSupplierPurchase,
-        updateItemQuantity,
-        clear,
-        openNewSupplierPurchase,
         getAllSupplierPurchases,
         allSupplierPurchases,
-        removeItem,
+        purchasesGroupedBySupplier,
     }
 })

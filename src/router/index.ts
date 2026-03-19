@@ -8,6 +8,7 @@ import ProductsView from "@/views/ProductsView.vue";
 import ClientsView from "@/views/ClientsView.vue";
 import SuppliersView from "@/views/SuppliersView.vue";
 import NewSaleView from "@/views/NewSaleView.vue";
+import SupplierPurchaseView from "@/views/SupplierPurchaseView.vue";
 
 // Nota: Para las rutas nuevas, puedes usar "Lazy Loading" para no saturar la app al inicio
 const routes = [
@@ -53,12 +54,12 @@ const routes = [
         name: "Suppliers",
         component: SuppliersView,
     },
-    /*// --- GRUPO STOCK ---
+    // --- GRUPO STOCK ---
     {
         path: NAVIGATE_MENU.SUPPLIER_PURCHASES,
         name: "SupplierPurchases",
-        component: () => import("@/views/stock/SupplierPurchasesView.vue")
-    },
+        component: SupplierPurchaseView
+    }/*,
     {
         path: NAVIGATE_MENU.INVENTORY_LIST,
         name: "InventoryList",

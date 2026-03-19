@@ -11,4 +11,5 @@ export interface SupplierPurchase {
     createdAt?: Timestamp
     updatedAt?: Timestamp
     userId: string
+    isActive: boolean
 }

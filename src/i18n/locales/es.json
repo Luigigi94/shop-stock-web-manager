@@ -40,7 +40,15 @@
     "currentPageReportTemplate": "Mostrando {'{'}first{'}'} a {'{'}last{'}'} de {'{'}totalRecords{'}'}",
     "noDescAvailable": "Sin descripción disponible",
     "descHeader": "Descripción",
-    "actions": "Acciones"
+    "actions": "Acciones",
+    "expand": "Expandir Todo",
+    "collapse": "Contraer Todo",
+    "totalExpense": "Gasto Total con Proveedor",
+    "historyName": "Historial de {supplierName}",
+    "purchaseDate": "Fecha de Compra",
+    "amount": "Monto de esta compra",
+    "listedProd": "Productos del",
+    "subtotal": "Subtotal"
   },
   "viewsGeneric": {
     "list": "Lista de {entity}"

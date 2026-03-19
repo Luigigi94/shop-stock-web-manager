@@ -22,7 +22,7 @@
     },
     "product": {
       "price": "Price",
-      "img": "Imagen",
+      "img": "Image",
       "qty": "Quantity",
       "selectCategory": "Select {entity}"
     },
@@ -39,7 +39,15 @@
     "currentPageReportTemplate": "Showing {'{'}first{'}'} to {'{'}last{'}'} of {'{'}totalRecords{'}'}",
     "noDescAvailable": "No description available",
     "descHeader": "Description",
-    "actions": "Actions"
+    "actions": "Actions",
+    "expand": "Expand All",
+    "collapse": "Collapse All",
+    "totalExpense": "Total Expense With Supplier",
+    "historyName": "{supplierName}'s History",
+    "purchaseDate": "Purchase Date",
+    "amount": "Amount of this purchase",
+    "listedProd": "Products from",
+    "subtotal": "Subtotal"
   },
   "viewsGeneric": {
     "list": "{entity} List"
