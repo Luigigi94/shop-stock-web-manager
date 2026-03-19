@@ -1,6 +1,6 @@
 import firebase from "firebase/compat/app";
 import Timestamp = firebase.firestore.Timestamp;
-import {SupplierPurchaseItem} from "@/models/SupplierPurchaseItem";
+import {SupplierPurchaseItem} from "@/types/models/SupplierPurchaseItem";
 
 export interface SupplierPurchase {
     id:  string

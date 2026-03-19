@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore"
 import {COLLECTIONS} from "@/constants/collections";
 import {db} from "@/firebase/firebase"
-import type {SupplierPurchase} from "@/models/SupplierPurchase";
+import type {SupplierPurchase} from "@/types/models/SupplierPurchase";
 
 const supplierCartCollection = collection(db, COLLECTIONS.SUPPLIER_CART)
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ClientRepository } from "@/repositories/ClientRepository";
 import type { Unsubscribe } from "firebase/firestore";
-import { Clients } from '@/models/Clients'
+import { Clients } from '@/types/models/Clients'
 import { ref } from "vue"
 
 export const useClientStore = defineStore( "ClientStore", () => {

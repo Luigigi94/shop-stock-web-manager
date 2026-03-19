@@ -3,7 +3,7 @@ import {ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage"
 import {COLLECTIONS} from "@/constants/collections";
 import {db, storage} from "@/firebase/firebase"
 
-import type { Products } from "@/models/Products";
+import type { Products } from "@/types/models/Products";
 
 const productsCollection = collection(db,COLLECTIONS.PRODUCTS)
 

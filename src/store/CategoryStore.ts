@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { CategoryRepository } from "@/repositories/CategoryRepository";
 import type { Unsubscribe } from "firebase/firestore";
-import { Categories } from "@/models/Categories";
+import { Categories } from "@/types/models/Categories";
 import { ref } from "vue";
 
 export const useCategoryStore = defineStore("CategoryStore", () => {

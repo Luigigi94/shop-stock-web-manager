@@ -2,8 +2,8 @@ import {collection, doc, increment, onSnapshot, query, Timestamp, Unsubscribe, w
 import {COLLECTIONS} from "@/constants/collections";
 
 import {db} from "@/firebase/firebase";
-import type {SupplierPurchase} from "@/models/SupplierPurchase";
-import {InventoryMovement} from "@/models/InventoryMovements";
+import type {SupplierPurchase} from "@/types/models/SupplierPurchase";
+import {InventoryMovement} from "@/types/models/InventoryMovements";
 import {MovementType} from "@/constants/MovementType";
 
 const supplierPurchaseCollection = collection(db, COLLECTIONS.SUPPLIER_PURCHASES)

@@ -1,4 +1,4 @@
-import {OptionsMenu} from "@/models/OptionsMenu";
+import {OptionsMenu} from "@/types/models/OptionsMenu";
 import {NAVIGATE_MENU} from "@/constants/NavigateMenus";
 
 export const SIDEBAR_CONFIG: Record<string, OptionsMenu[]> = {

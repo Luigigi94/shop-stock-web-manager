@@ -2,7 +2,7 @@ import {collection, doc, onSnapshot, query, setDoc, Unsubscribe, getDoc, deleteD
 import { COLLECTIONS } from "@/constants/collections";
 
 import { db } from "@/firebase/firebase";
-import type { Suppliers } from "@/models/Suppliers";
+import type { Suppliers } from "@/types/models/Suppliers";
 
 const suppliersCollection = collection(db, COLLECTIONS.SUPPLIERS)
 

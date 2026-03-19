@@ -1,12 +1,12 @@
 import {defineStore} from "pinia";
 import {CartRepository} from "@/repositories/CartRepository";
 import {Timestamp, Unsubscribe} from "firebase/firestore";
-import { Cart }from "@/models/Cart";
+import { Cart }from "@/types/models/Cart";
 import {computed, ref} from "vue";
-import {PurchaseItem} from "@/models/PurchaseItem";
+import {PurchaseItem} from "@/types/models/PurchaseItem";
 import {useProductStore} from "@/store/ProductStore";
-import {Purchase} from "@/models/Purchase";
-import {InventoryMovement} from "@/models/InventoryMovements";
+import {Purchase} from "@/types/models/Purchase";
+import {InventoryMovement} from "@/types/models/InventoryMovements";
 import {MovementType} from "@/constants/MovementType";
 
 

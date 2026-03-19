@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { SupplierRepository } from "@/repositories/SupplierRepository";
 import type { Unsubscribe } from "firebase/firestore";
-import { Suppliers } from "@/models/Suppliers";
+import { Suppliers } from "@/types/models/Suppliers";
 import { ref } from "vue";
 import {Timestamp} from "firebase/firestore";
 

@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import {ProductsRepository} from "@/repositories/ProductRepository";
 import {useCategoryStore} from "@/store/CategoryStore";
 import type {Unsubscribe} from "firebase/firestore";
-import {Products} from "@/models/Products";
+import {Products} from "@/types/models/Products";
 import {ref, computed} from "vue";
 import {Timestamp} from "firebase/firestore";
 

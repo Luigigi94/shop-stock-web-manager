@@ -2,9 +2,9 @@ import {collection, doc, onSnapshot, query, setDoc, Unsubscribe, getDoc, deleteD
 import {COLLECTIONS} from "@/constants/collections";
 
 import {db} from "@/firebase/firebase"
-import type {Cart} from "@/models/Cart";
-import {Purchase} from "@/models/Purchase";
-import {InventoryMovement} from "@/models/InventoryMovements";
+import type {Cart} from "@/types/models/Cart";
+import {Purchase} from "@/types/models/Purchase";
+import {InventoryMovement} from "@/types/models/InventoryMovements";
 import firebase from "firebase/compat/app";
 
 const cartCollection = collection(db,COLLECTIONS.CART)

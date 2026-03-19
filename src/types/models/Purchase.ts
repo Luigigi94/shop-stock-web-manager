@@ -1,4 +1,4 @@
-import {PurchaseItem} from "@/models/PurchaseItem";
+import {PurchaseItem} from "@/types/models/PurchaseItem";
 import firebase from "firebase/compat/app";
 import Timestamp = firebase.firestore.Timestamp;
 
