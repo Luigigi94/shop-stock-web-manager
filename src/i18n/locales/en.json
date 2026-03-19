@@ -3,7 +3,8 @@
     "pos": "Sales",
     "catalog": "Catalogs",
     "stock": "Inventory",
-    "management": "Management"
+    "management": "Management",
+    "home": "home"
   },
   "formsGeneric": {
     "new_m": "New {item}",
@@ -29,7 +30,8 @@
     "supplier": {
       "phone": "Phone",
       "idAccount": "CLABE/Card Number",
-      "bank": "Bank"
+      "bank": "Bank",
+      "purchase": "Purchase"
     }
   },
   "tableGeneric": {

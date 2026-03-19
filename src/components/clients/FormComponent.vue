@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
-import { useToast } from 'primevue/usetoast';
+import {useToast} from 'primevue/usetoast';
 import Button from "primevue/button";
-import FloatLabel from "primevue/floatlabel";
-import { useClientStore } from "@/store/ClientStore";
+import {useClientStore} from "@/store/ClientStore";
 import {useI18n} from "vue-i18n";
 
 const clientStore = useClientStore();

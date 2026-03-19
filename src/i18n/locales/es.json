@@ -30,7 +30,8 @@
     "supplier": {
       "phone": "Teléfono",
       "idAccount": "CLABE/No. de Tarjeta",
-      "bank": "Banco"
+      "bank": "Banco",
+      "purchase": "Compra"
     }
   },
   "tableGeneric": {

@@ -4,11 +4,13 @@ import Button from "primevue/button";
 import {ref} from "vue";
 import {SupplierPurchaseUiState} from "@/types/ui/SupplierPurchaseUiState";
 import { SupplierPurchase } from "@/types/models/SupplierPurchase";
+import {useSupplierCartStore} from "@/store/SupplierCartStore";
 import {useI18n} from "vue-i18n";
 import Column from "primevue/column";
 
 const expandedSuppliers = ref<Record<string, boolean>>({});
 const expandedPurchases = ref<Record<string, boolean>>({});
+const cartStore = useSupplierCartStore();
 const {t} = useI18n();
 
 const props = defineProps<{
@@ -32,6 +34,14 @@ function formatCurrency(value: any) {
 </script>
 
 <template>
+  <div class="flex flex-wrap items-center justify-end gap-3 mb-6 w-full">
+    <Button
+        :label="t('formsGeneric.new_f', {item: t('formsGeneric.supplier.purchase')})"
+        icon="pi pi-plus"
+        @click="cartStore.openNewSupplierPurchase()"
+        class="p-button-primary w-auto"
+    />
+  </div>
   <DataTable
       :value="datos"
       v-model:expandedRows="expandedSuppliers"

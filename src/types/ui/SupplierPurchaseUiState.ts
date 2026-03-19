@@ -15,6 +15,7 @@ export interface SupplierPurchaseUiState {
     updatedAt: Timestamp | null;
     userId: string | null;
     isCartOpen: boolean;
+    editingItemId: string | null;
 }
 export const getInitialSupplierPurchaseState = (): SupplierPurchaseUiState => ({
     isLoading: false,
@@ -29,5 +30,6 @@ export const getInitialSupplierPurchaseState = (): SupplierPurchaseUiState => ({
     createdAt: null,
     updatedAt: null,
     userId: '',
-    isCartOpen: false
+    isCartOpen: false,
+    editingItemId: ""
 });

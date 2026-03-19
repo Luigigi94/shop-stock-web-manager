@@ -105,19 +105,17 @@ export const useProductStore = defineStore("ProductStore", () => {
                 );
             }
 
+            let prodWithImage = product
             if (imageUrl) {
-                const prodWithImage = {
+                prodWithImage = {
                     imageProduct: imageUrl,
                     ...product,
                 }
-
-                await ProductsRepository.addProduct(prodWithImage)
-                currentState.isLoading = false
-                currentState.success = true
-                currentState.isModalVisible = false
-            } else {
-                new Error(`Product not found: ${currentState.errorMessage}`)
             }
+            await ProductsRepository.addProduct(prodWithImage)
+            currentState.isLoading = false
+            currentState.success = true
+            currentState.isModalVisible = false
         } catch (error: any) {
             currentState.isLoading = false
             currentState.errorMessage = error.message || "Error adding product"

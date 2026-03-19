@@ -9,7 +9,14 @@ import { SupplierCartRepository } from "@/repositories/SupplierCartRepository";
 
 export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
     const state = ref(getInitialSupplierPurchaseState());
+    const editingItemId = ref<string | null>(null);
     const currentSupplierCart = ref<SupplierPurchase | null>(null);
+
+    function editItem(item: SupplierPurchaseItem) {
+        state.value.isEdit = true;
+        editingItemId.value = item.productId;
+    }
+
     let stopListener: Unsubscribe | null = null;
     function observeSupplierCart() {
 
@@ -47,9 +54,17 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
             stopListener = null;
         }
     }
-    function openNewSupplierPurchase(){
-        clearForm();
-        state.value.isCartOpen = true
+    function openNewSupplierPurchase(productId: string = ""){
+        console.log("Abriendo Formulario")
+        if (productId === "") {
+            state.value.isEdit = false;
+            state.value.editingItemId = "";
+        } else {
+            state.value.isEdit = true;
+            state.value.editingItemId = productId;
+        }
+
+        state.value.isCartOpen = true;
     }
 
     const clearForm = () => {
@@ -69,7 +84,8 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
                     return {
                         ...item,
                         quantity: newQty,
-                        subtotal: newQty * item.cost
+                        cost: cost,
+                        subtotal: newQty * cost
                     };
                 }
                 return item;
@@ -91,14 +107,13 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
 
         try {
             const dataToSave = cleanModelToSave();
-
-            // 4. Guardado en el Repo
-            // Aquí dataToSave ya no tiene los campos de UI
             await SupplierCartRepository.saveCart(
                 dataToSave as unknown as SupplierPurchase,
                 state.value.userId || 'Luis Hernández'
             );
 
+            state.value.isEdit = false;
+            state.value.isCartOpen = false;
         } catch (e: any) {
             console.error("Error al guardar el carrito:", e);
         }
@@ -162,5 +177,6 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
         openNewSupplierPurchase,
         observeSupplierCart,
         removeItem,
+        state
     }
 })
