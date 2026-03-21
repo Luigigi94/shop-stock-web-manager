@@ -13,27 +13,58 @@ import Button from "primevue/button";
 import {Toolbar} from "primevue";
 import {useI18n} from "vue-i18n";
 import {SupplierPurchaseUiState} from "@/types/ui/SupplierPurchaseUiState";
-import {useSupplierCartStore} from "@/store/SupplierCartStore";
+import useSupplierCartStore from "@/store/SupplierCartStore";
 import {ref} from "vue";
+import {useToast} from "primevue/usetoast";
 const cartStore = useSupplierCartStore();
 
 const {t} = useI18n();
 const dt = ref();
-const selectedProducts = ref();
+const selectedProducts = ref<any[]>([]);
+const toast = useToast();
 
 const props = defineProps<{
   datos: SupplierPurchaseUiState
 }>()
 
-function alertaEliminar(){
-  alert("Eliminar");
+const alertaEliminar = async() => {
+  const ids = selectedProducts.value.map(item => item.productId);
+  const succeededRemove = await cartStore.removeBatchItem(ids)
+
+  if (succeededRemove) {
+    toast.add({
+      severity: 'success',
+      summary: t('toastOptions.success'),
+      detail: 'Productos Eliminados',
+      life: 3000
+    });
+  }
+  cartStore.clearStatus()
+  selectedProducts.value = [];
 }
 
 const handleSingleDelete = async (id: string) => {
   cartStore.state.success = false
   const cartItems = await cartStore.removeItem(id)
+}
 
+const handleItemEdit = async (id: string) => {
+  cartStore.state.success = false
+  cartStore.state.isEdit = true
+  cartStore.openNewSupplierPurchase(id)
+}
 
+const handleConfirmPurchase = async () => {
+  const isConfirmed = await cartStore.confirmPurchase()
+  if (isConfirmed) {
+    toast.add({
+      severity: 'success',
+      summary: t('toastOptions.success'),
+      detail: 'Productos Actualizados',
+      life: 3000
+    })
+  }
+  cartStore.clearStatus()
 }
 </script>
 
@@ -45,10 +76,10 @@ const handleSingleDelete = async (id: string) => {
         <Toolbar class="mb-6">
           <template #start>
             <Button :label="t('formsGeneric.supplier.addProd')" icon="pi pi-plus" severity="secondary" class="mr-2" @click="cartStore.openNewSupplierPurchase()" />
-            <Button :label="t('formsGeneric.delete', {item: t('entityName.product')})" icon="pi pi-trash" severity="secondary" class="mr-2" @click="alertaEliminar()" />
+            <Button :label="t('formsGeneric.delete', {item: t('entityName.product')})" icon="pi pi-trash" severity="secondary" class="mr-2" @click="alertaEliminar()" :disabled="!selectedProducts || !selectedProducts.length"/>
           </template>
           <template #end>
-            <Button :label="t('cart.confirm')" icon="pi pi-check-circle" severity="primary" class="mr-2" @click="alertaEliminar()" />
+            <Button :label="t('cart.confirm')" icon="pi pi-check-circle" severity="primary" class="mr-2" @click="handleConfirmPurchase()" />
           </template>
         </Toolbar>
         <DataTable
@@ -83,7 +114,7 @@ const handleSingleDelete = async (id: string) => {
           <Column field="subtotal" :header="t('tableGeneric.subtotal')"></Column>
           <Column style="min-width: 12rem">
             <template #body="slotProps">
-              <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="console.log('Edit: ',slotProps.data.productId)" />
+              <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="handleItemEdit(slotProps.data.productId)" />
               <Button icon="pi pi-trash" outlined rounded severity="danger" @click="handleSingleDelete(slotProps.data.productId)" />
             </template>
           </Column>

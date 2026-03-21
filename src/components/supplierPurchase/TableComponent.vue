@@ -2,9 +2,8 @@
 import DataTable from "primevue/datatable";
 import Button from "primevue/button";
 import {ref} from "vue";
-import {SupplierPurchaseUiState} from "@/types/ui/SupplierPurchaseUiState";
 import { SupplierPurchase } from "@/types/models/SupplierPurchase";
-import {useSupplierCartStore} from "@/store/SupplierCartStore";
+import useSupplierCartStore from "@/store/SupplierCartStore";
 import {useI18n} from "vue-i18n";
 import Column from "primevue/column";
 

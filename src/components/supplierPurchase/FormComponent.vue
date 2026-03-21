@@ -4,7 +4,7 @@ import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
 import {useToast} from "primevue/usetoast";
 import {useI18n} from "vue-i18n";
-import {useSupplierCartStore} from "@/store/SupplierCartStore";
+import useSupplierCartStore from "@/store/SupplierCartStore";
 import {storeToRefs} from 'pinia';
 import { ref, watch } from 'vue';
 import type { Products } from "@/types/models/Products";
@@ -83,9 +83,6 @@ const handleQuickSupplierSave = async () => {
     });
     quickSupplierName.value = '';
     opSupplier.value.hide();
-
-    // Si tu store actualiza el supplierId en el carrito automáticamente:
-    // state.value.supplierId = ... (opcional)
   }
 };
 
@@ -118,6 +115,20 @@ watch(selectedProduct, (newVal) => {
     quantity.value = 1;
   }
 });
+
+const handleAddProduct = async (selectedProduct: Products, quantity: number, cost: number) => {
+  state.value.success = false
+  const isSucceeded = await cartSupplierStore.addSupplierPurchase(selectedProduct!, quantity, cost)
+  if (isSucceeded) {
+    toast.add({
+      severity: 'success',
+      summary: t('toastOptions.success'),
+      detail: state.value.isEdit ? 'Producto Actualizado' :'Producto creado',
+      life: 3000
+    });
+  }
+  cartSupplierStore.clearStatus()
+}
 </script>
 
 <template>
@@ -258,7 +269,7 @@ watch(selectedProduct, (newVal) => {
       <Button
           :label="state.isEdit ? 'Actualizar Item' : 'Agregar al Carrito'"
           icon="pi pi-shopping-cart"
-          @click="cartSupplierStore.addSupplierPurchase(selectedProduct!, quantity, cost)"
+          @click="handleAddProduct(selectedProduct!, quantity, cost)"
           :loading="state.isLoading"
           :disabled="!selectedProduct"
       />

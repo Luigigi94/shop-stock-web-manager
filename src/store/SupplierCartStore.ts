@@ -8,7 +8,7 @@ import { Products } from "@/types/models/Products";
 import { SupplierCartRepository } from "@/repositories/SupplierCartRepository";
 import { SupplierRepository } from "@/repositories/SupplierRepository";
 
-export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
+const useSupplierCartStore = defineStore("SupplierCartStore", () => {
     const state = ref(getInitialSupplierPurchaseState());
     const editingItemId = ref<string | null>(null);
     const currentSupplierCart = ref<SupplierPurchase | null>(null);
@@ -71,17 +71,17 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
     const clearForm = () => {
         state.value = getInitialSupplierPurchaseState();
     }
-    async function addSupplierPurchase(product: Products, quantity: number, cost: number): Promise<void> {
+    async function addSupplierPurchase(product: Products, quantity: number, cost: number): Promise<Boolean> {
         // 1. Referencia reactiva (opcional, pero ayuda a la legibilidad)
+        state.value.success = false;
         const currentState = state.value;
-
         const existingIndex = currentState.items.findIndex(item => item.productId === product.idProduct);
 
         if (existingIndex !== -1) {
             // UPDATE: Si ya existe, actualizamos cantidad y subtotal
             state.value.items = currentState.items.map((item, i) => {
                 if (i === existingIndex) {
-                    const newQty = item.quantity + quantity; // Ojo: ¿era + o -? En compra suele ser +
+                    const newQty = state.value.isEdit ? quantity : item.quantity + quantity; // Ojo: ¿era + o -? En compra suele ser +
                     return {
                         ...item,
                         quantity: newQty,
@@ -106,7 +106,7 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
                 const supplierDetails = await SupplierRepository.getSupplierById(state.value.supplierId);
                 state.value.supplierName = supplierDetails?.name!
             } else
-                return
+                return false;
         }
 
         state.value.totalCost = state.value.items.reduce((acc, item) => acc + item.subtotal, 0);
@@ -121,10 +121,13 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
                 state.value.userId || 'Luis Hernández'
             );
 
-            state.value.isEdit = false;
             state.value.isCartOpen = false;
+            state.value.success = true;
+
+            return true
         } catch (e: any) {
             console.error("Error al guardar el carrito:", e);
+            return false;
         }
     }
 
@@ -173,6 +176,30 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
             return 'error'
         }
     }
+    async function removeBatchItem(productId: string[]): Promise<Boolean> {
+        const removeIds = new Set(productId)
+
+        console.log("Ids to discriminate: ", productId)
+        console.log("Before discriminate: ", state.value.items)
+        const updatedItems = state.value.items.filter(item => !removeIds.has(item.productId))
+        state.value.items = updatedItems;
+        console.log("After discriminate: ", state.value.items)
+        state.value.totalCost = updatedItems.reduce((acc, item) => acc + (item.cost * item.quantity), 0);
+        state.value.updatedAt = Timestamp.now();
+
+        try {
+            const { isLoading, isEdit, errorMessage, success, isCartOpen, ...dataToSave } = state.value;
+            await SupplierCartRepository.saveCart(
+                dataToSave as unknown as SupplierPurchase,
+                state.value.userId || 'Luis Hernández'
+            );
+
+            return true
+        } catch (error) {
+            console.error("Error al sincronizar tras eliminar item:", error);
+            return false;
+        }
+    }
 
     function cleanModelToSave() {
         const {
@@ -182,6 +209,42 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
         return dataToSave;
     }
 
+    function clearStatus(){
+        state.value.isLoading = false;
+        state.value.isEdit = false;
+        state.value.errorMessage = '';
+        state.value.success = false;
+    }
+
+    async function confirmPurchase(): Promise<boolean> {
+        const currentState = state.value
+        const purchaseId = crypto.randomUUID()
+
+        const supplier: SupplierPurchase = {
+            id: purchaseId,
+            supplierId: currentState.supplierId!,
+            items: currentState.items,
+            totalCost: currentState.totalCost,
+            createdAt: Timestamp.now(),
+            userId: currentState.userId ?? 'Luis Hernández',
+            supplierName: currentState.supplierName!,
+            isActive: true
+        }
+
+        try {
+            console.log("before save: ",supplier.userId);
+            const result = await SupplierCartRepository.registerSupplierPurchase(supplier)
+            if (result) {
+                console.log("after save: ",supplier.userId);
+                await SupplierCartRepository.deleteCart(supplier.userId || 'Luis Hernández')
+            }
+            return !!result;
+        } catch (error: any) {
+            console.error("Error al sincronizar con Firebase", error.message);
+            return false;
+        }
+    }
+
     return {
         clearForm,
         addSupplierPurchase,
@@ -189,6 +252,10 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
         openNewSupplierPurchase,
         observeSupplierCart,
         removeItem,
-        state
+        state,
+        removeBatchItem,
+        clearStatus,
+        confirmPurchase,
     }
 })
+export default useSupplierCartStore

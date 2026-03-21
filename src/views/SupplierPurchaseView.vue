@@ -2,7 +2,7 @@
 import { useSupplierPurchaseStore } from "@/store/SupplierPurchaseStore";
 import {useProductStore} from "@/store/ProductStore";
 import {useCategoryStore} from "@/store/CategoryStore";
-import {useSupplierCartStore} from "@/store/SupplierCartStore";
+import useSupplierCartStore from "@/store/SupplierCartStore";
 import TableComponent from "@/components/supplierPurchase/TableComponent.vue";
 import {Accordion} from "primevue";
 import {onMounted, onUnmounted} from "vue";

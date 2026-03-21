@@ -17,6 +17,7 @@ import {MovementType} from "@/constants/MovementType";
 
 const supplierCartCollection = collection(db, COLLECTIONS.SUPPLIER_CART)
 const purchaseCollection = collection(db, COLLECTIONS.PURCHASES)
+const supplierPurchaseCollection = collection(db, COLLECTIONS.SUPPLIER_PURCHASES)
 const inventoryMovementsCollection = collection(db, COLLECTIONS.INVENTORY_MOVEMENTS)
 const productsCollection = collection(db, COLLECTIONS.PRODUCTS)
 
@@ -39,9 +40,14 @@ export const SupplierCartRepository = {
         await setDoc(docRef, supplierPurchase)
     },
     async deleteCart(supplierPurchaseId: string): Promise<void> {
-        const docRef = doc (supplierCartCollection, supplierPurchaseId)
-        await deleteDoc(docRef)
-    },async addSupplierPurchase(supplierPurchase: SupplierPurchase): Promise<string> {
+        try {
+            const docRef = doc(supplierCartCollection, supplierPurchaseId)
+            await deleteDoc(docRef)
+        } catch (error: any) {
+            console.error("Error en: ",error.message)
+        }
+    },
+    async addSupplierPurchase(supplierPurchase: SupplierPurchase): Promise<string> {
         try {
             const batch = writeBatch(db)
             const purchaseRef = doc(purchaseCollection, supplierPurchase.id)
@@ -71,4 +77,37 @@ export const SupplierCartRepository = {
             return ""
         }
     },
+    async registerSupplierPurchase(supplierPurchase: SupplierPurchase): Promise<Boolean>{
+        try{
+            const batch = writeBatch(db)
+            const purchaseRef = doc(supplierPurchaseCollection, supplierPurchase.id)
+            batch.set(purchaseRef, supplierPurchase);
+
+            supplierPurchase.items.forEach(item => {
+                const movement: InventoryMovement = {
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    type: MovementType.PURCHASE,
+                    referenceId: supplierPurchase.id,
+                    createdAt: supplierPurchase.createdAt,
+                    userId: supplierPurchase.userId,
+                    id: crypto.randomUUID(),
+                    amount: 0,
+                    reason: "Compra Proveedor"
+                }
+
+                const movRef = doc(inventoryMovementsCollection)
+                batch.set(movRef, movement)
+
+                const productRef = doc(productsCollection, item.productId)
+
+                batch.update(productRef, {stock: increment(item.quantity)})
+            })
+            await batch.commit()
+            return true
+        } catch (error: any) {
+            console.error("Fallando ",error.message);
+            return false;
+        }
+    }
 }
