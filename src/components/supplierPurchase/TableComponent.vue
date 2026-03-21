@@ -36,6 +36,7 @@ function formatCurrency(value: any) {
 <template>
   <div class="flex flex-wrap items-center justify-end gap-3 mb-6 w-full">
     <Button
+        v-if="cartStore.state.items.length === 0"
         :label="t('formsGeneric.new_f', {item: t('formsGeneric.supplier.purchase')})"
         icon="pi pi-plus"
         @click="cartStore.openNewSupplierPurchase()"

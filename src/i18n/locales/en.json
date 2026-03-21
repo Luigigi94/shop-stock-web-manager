@@ -25,13 +25,15 @@
       "price": "Price",
       "img": "Image",
       "qty": "Quantity",
-      "selectCategory": "Select {entity}"
+      "selectCategory": "Select {entity}",
+      "cost": "Cost"
     },
     "supplier": {
       "phone": "Phone",
       "idAccount": "CLABE/Card Number",
       "bank": "Bank",
-      "purchase": "Purchase"
+      "purchase": "Purchase",
+      "addProd": "Add Product"
     }
   },
   "tableGeneric": {
@@ -89,5 +91,8 @@
   },
   "tooltipOptions": {
     "cleanCart": "Clean Cart"
+  },
+  "cart": {
+    "confirm": "Confirm"
   }
 }

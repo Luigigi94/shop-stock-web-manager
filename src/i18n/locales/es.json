@@ -25,13 +25,15 @@
       "price": "Precio",
       "qty": "Cantidad",
       "img": "Imagen",
-      "selectCategory": "Selecciona {entity}"
+      "selectCategory": "Selecciona {entity}",
+      "cost": "Costo"
     },
     "supplier": {
       "phone": "Teléfono",
       "idAccount": "CLABE/No. de Tarjeta",
       "bank": "Banco",
-      "purchase": "Compra"
+      "purchase": "Compra",
+      "addProd": "Agregar Producto"
     }
   },
   "tableGeneric": {
@@ -89,6 +91,9 @@
   },
   "tooltipOptions": {
     "cleanCart": "Limpiar Carrito"
+  },
+  "cart": {
+    "confirm": "Confirmar"
   }
 }
 

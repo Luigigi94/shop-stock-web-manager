@@ -149,7 +149,7 @@ const updateQuantity = (cart: Cart, item: PurchaseItem, change: number) => {
             >
               <span class="flex items-center gap-2">
                 <i class="pi pi-check-circle text-xl"></i>
-                <span class="font-bold uppercase tracking-wider">Confirmar</span>
+                <span class="font-bold uppercase tracking-wider">{{ t("cart.confirm") }}</span>
               </span>
               <span class="text-xl font-black bg-white/20 px-3 py-1 rounded">
                 ${{ cart.total.toFixed(2) }}

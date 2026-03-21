@@ -6,6 +6,7 @@ import { SupplierPurchaseItem } from "@/types/models/SupplierPurchaseItem";
 import { getInitialSupplierPurchaseState } from "@/types/ui/SupplierPurchaseUiState";
 import { Products } from "@/types/models/Products";
 import { SupplierCartRepository } from "@/repositories/SupplierCartRepository";
+import { SupplierRepository } from "@/repositories/SupplierRepository";
 
 export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
     const state = ref(getInitialSupplierPurchaseState());
@@ -100,10 +101,18 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
                 subtotal: quantity * cost,
             };
             state.value.items.push(newItem);
+
+            if (state.value.supplierId) {
+                const supplierDetails = await SupplierRepository.getSupplierById(state.value.supplierId);
+                state.value.supplierName = supplierDetails?.name!
+            } else
+                return
         }
 
         state.value.totalCost = state.value.items.reduce((acc, item) => acc + item.subtotal, 0);
         state.value.updatedAt = Timestamp.now();
+
+
 
         try {
             const dataToSave = cleanModelToSave();
@@ -144,7 +153,7 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
         }
     }
 
-    async function removeItem(productId: string): Promise<void> {
+    async function removeItem(productId: string): Promise<string> {
         const updatedItems = state.value.items.filter(item => item.productId !== productId)
         state.value.items = updatedItems;
         state.value.totalCost = updatedItems.reduce((acc, item) => acc + (item.cost * item.quantity), 0);
@@ -157,8 +166,11 @@ export const useSupplierCartStore = defineStore("SupplierCartStore", () => {
                 dataToSave as unknown as SupplierPurchase,
                 state.value.userId || 'Luis Hernández'
             );
+
+            return 'confirmed'
         } catch (error) {
             console.error("Error al sincronizar tras eliminar item:", error);
+            return 'error'
         }
     }
 

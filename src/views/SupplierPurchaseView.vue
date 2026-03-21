@@ -4,10 +4,12 @@ import {useProductStore} from "@/store/ProductStore";
 import {useCategoryStore} from "@/store/CategoryStore";
 import {useSupplierCartStore} from "@/store/SupplierCartStore";
 import TableComponent from "@/components/supplierPurchase/TableComponent.vue";
+import {Accordion} from "primevue";
 import {onMounted, onUnmounted} from "vue";
 import FormComponent from "@/components/supplierPurchase/FormComponent.vue";
 import Dialog from "primevue/dialog";
 import {useSupplierStore} from "@/store/SupplierStore";
+import AccordionComponent from "@/components/supplierPurchase/AccordionComponent.vue";
 
 const supplierPurchaseStore = useSupplierPurchaseStore();
 const productStore = useProductStore();
@@ -31,13 +33,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Dialog v-model:visible="supplierCartStore.state.isCartOpen" :style="{ width: '450px' }">
+  <Dialog v-model:visible="supplierCartStore.state.isCartOpen" :style="{ width: '450px' }" header="Product Details" :modal="true">
     <section>
       <FormComponent :productsCatalog="productStore.productsWithCategoryName" :suppliersCatalog="supplierStore.allSuppliers" />
     </section>
   </Dialog>
   <div class="card">
-    <div v-if="supplierCartStore.state.items.length > 0" class="font-semibold text-xl mb-4">Accordion</div>
+    <div v-if="supplierCartStore.state.items.length > 0" class="font-semibold text-xl mb-4">
+      <AccordionComponent :datos="supplierCartStore.state" />
+    </div>
     <TableComponent :datos="supplierPurchaseStore.purchasesGroupedBySupplier" />
   </div>
 </template>
