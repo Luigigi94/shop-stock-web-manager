@@ -88,7 +88,7 @@ const cancelUpdate = () => {
     </div>
     <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
     <Button
-        :label="supplierState.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
+        :label="supplierState.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.supplier')})"
         icon="pi pi-check"
         @click="handleByStateAction"
         :loading="supplierState.isLoading"

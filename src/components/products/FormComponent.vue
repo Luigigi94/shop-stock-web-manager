@@ -38,6 +38,7 @@ function successToast(isEdit: boolean) {
 }
 
 const handleUpdate = async () => {
+  productStore.productUiState.isValid = true;
   await productStore.updateProduct()
 
   if (stateProduct.success) {
@@ -62,7 +63,7 @@ const cancelUpdate = () => {
   productStore.clearState()
 }
 const onClearInternal = () => {
-  fileUpload.value.clear();
+  // fileUpload.value.clear();
   stateProduct.fileToUpload = null;
   console.log("Imagen eliminada y contador reseteado");
 };
@@ -130,6 +131,7 @@ const onSelect = (event: any) => {
 
     <Button :label="t('formsGeneric.cancel')" icon="pi pi-times" text @click="cancelUpdate" />
     <Button
+        :disabled="Number(productStore.productUiState.priceProduct) === 0"
         :label="stateProduct.isEdit ? t('formsGeneric.update') : t('formsGeneric.save', {item: t('entityName.product')})"
         icon="pi pi-check"
         @click="handleByStateAction"

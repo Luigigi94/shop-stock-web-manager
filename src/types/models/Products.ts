@@ -12,4 +12,5 @@ export interface Products{
     createdAt?: Timestamp
     updatedAt?: Timestamp
     stock: number
+    isValid: boolean
 }

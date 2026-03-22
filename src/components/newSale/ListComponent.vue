@@ -20,6 +20,7 @@ interface ProductFilter {
   categoryName?: string;
   stock?: number;
   imageProduct?: string;
+  isValid: boolean;
 }
 
 // 3. Tipar los filtros
@@ -54,16 +55,17 @@ function initFilters1() {
   };
 }
 const filteredItems = computed(() => {
+  const dataValid = props.datos.filter(product => product.isValid);
   const globalFilter = filters1.value['global'] as { value: any };
   const search = globalFilter?.value;
 
   if (!search) {
-    return props.datos;
+    return dataValid;
   }
 
   const lowSearch = search.toLowerCase();
 
-  return props.datos.filter((dato: ProductFilter) => {
+  return dataValid.filter((dato: ProductFilter) => {
     return (
         dato.nameProduct?.toLowerCase().includes(lowSearch) ||
         dato.categoryName?.toLowerCase().includes(lowSearch)

@@ -5,7 +5,7 @@ import type {Unsubscribe} from "firebase/firestore";
 import {Products} from "@/types/models/Products";
 import {ref, computed} from "vue";
 import {Timestamp} from "firebase/firestore";
-
+import defaultImageProduct from '@/assets/images/no-image.svg';
 
 export const useProductStore = defineStore("ProductStore", () => {
     const allProducts = ref<Products[]>([]);
@@ -15,7 +15,6 @@ export const useProductStore = defineStore("ProductStore", () => {
             const category = useCategoryStore().allCategories.find(
                 (cat) => cat.idCategory === product.idCategory
             )
-
             return {
                 ...product,
                 categoryName: category ? category.nameCategory : "Sin Categories",
@@ -66,19 +65,27 @@ export const useProductStore = defineStore("ProductStore", () => {
         const currentState = productUiState.value
         currentState.isLoading = true
 
-        if (stopListener) stop()
-
+        // if (stopListener) stop()
+        if (stopListener) {
+            clear();
+        }
         stopListener = ProductsRepository.getAllProducts((newList) => {
-            allProducts.value = newList
+            allProducts.value = newList.map(product => ({
+                ...product,
+                imageProduct: product.imageProduct || defaultImageProduct
+            }))
             currentState.isLoading = false
         })
     }
 
     function clear() {
-        if (stopListener) stopListener()
+        if (stopListener) {
+            stopListener();
+            stopListener = null; // Limpieza total
+        }
     }
 
-    async function addProduct() {
+    /*async function addProduct() {
         const idProdGenerated = crypto.randomUUID();
         const currentState = productUiState.value
 
@@ -90,6 +97,7 @@ export const useProductStore = defineStore("ProductStore", () => {
             priceProduct: Number(currentState.priceProduct || 0),
             idCategory: currentState.idCategory ?? '',
             createdAt: Timestamp.now(),
+            isValid: currentState.isValid
         }
         currentState.isLoading = true
         currentState.errorMessage = null
@@ -119,6 +127,52 @@ export const useProductStore = defineStore("ProductStore", () => {
         } catch (error: any) {
             currentState.isLoading = false
             currentState.errorMessage = error.message || "Error adding product"
+        }
+    }*/
+
+    async function addProduct(): Promise<string> {
+        const idProdGenerated = crypto.randomUUID();
+        const currentState = productUiState.value
+
+        // 1. Preparamos la URL de la imagen primero
+        let imageUrl = '';
+        if (currentState.fileToUpload) {
+            imageUrl = await ProductsRepository.uploadProductImage(
+                currentState.fileToUpload,
+                idProdGenerated
+            );
+        }
+
+        // 2. Armamos el objeto final DE UN SOLO GOLPE
+        // Evitamos andar haciendo copias de copias
+        const productData: Products = {
+            idProduct: idProdGenerated,
+            nameProduct: currentState.nameProduct ?? '',
+            stock: Number(currentState.stock || 0),
+            descriptionProduct: currentState.descriptionProduct ?? '',
+            priceProduct: Number(currentState.priceProduct || 0),
+            idCategory: currentState.idCategory ?? '',
+            createdAt: Timestamp.now(),
+            isValid: currentState.isValid, // Directo del state
+            imageProduct: imageUrl || (currentState.imageProduct ?? '')
+        }
+
+        currentState.isLoading = true
+        currentState.errorMessage = null
+        currentState.success = false
+
+        try {
+            // 3. Enviamos el objeto completo
+            await ProductsRepository.addProduct(productData)
+
+            currentState.isLoading = false
+            currentState.success = true
+            currentState.isModalVisible = false
+            return idProdGenerated
+        } catch (error: any) {
+            currentState.isLoading = false
+            currentState.errorMessage = error.message || "Error adding product"
+            return ""
         }
     }
 
@@ -153,6 +207,7 @@ export const useProductStore = defineStore("ProductStore", () => {
 
     async function updateProduct(): Promise<void> {
         const currentState = productUiState.value
+        console.log("Valor al inicio: ",currentState.isValid)
         const product: Products = {
             idProduct: currentState.idProduct ?? '',
             nameProduct: currentState.nameProduct ?? '',
@@ -160,6 +215,7 @@ export const useProductStore = defineStore("ProductStore", () => {
             descriptionProduct: currentState.descriptionProduct ?? '',
             priceProduct: Number(currentState.priceProduct) ?? '',
             idCategory: currentState.idCategory ?? '',
+            isValid: currentState.isValid,
         }
 
         currentState.isLoading = true
@@ -168,6 +224,7 @@ export const useProductStore = defineStore("ProductStore", () => {
 
         try {
             let imageUrl = currentState.imageProduct;
+            let prodWithImage
 
             if (currentState.fileToUpload && currentState.idProduct) {
                 // Esto sobrescribirá el archivo en Storage y nos dará la misma o una nueva URL
@@ -175,13 +232,17 @@ export const useProductStore = defineStore("ProductStore", () => {
                     currentState.fileToUpload,
                     currentState.idProduct
                 );
-                const prodWithImage = {
+                prodWithImage = {
                     imageProduct: imageUrl,
                     ...product,
                 }
 
-                await ProductsRepository.updateProduct(prodWithImage)
+            } else {
+                prodWithImage = {
+                    ...product
+                }
             }
+            await ProductsRepository.updateProduct(prodWithImage)
 
             currentState.isLoading = false
             currentState.success = true

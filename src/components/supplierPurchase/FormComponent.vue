@@ -36,10 +36,18 @@ const handleQuickSave = async () => {
   // Ojo: asegúrate de setear valores por defecto mínimos si tu store los requiere
   productStore.productUiState.stock = "0";
   productStore.productUiState.priceProduct = "0";
+  productStore.productUiState.isValid = false;
 
-  await productStore.addProduct();
+  const idQuickAdd = await productStore.addProduct();
 
   if (productStore.productUiState.success) {
+    setTimeout(() => {
+      const newProduct = props.productsCatalog.find(p => p.idProduct === idQuickAdd);
+
+      if (newProduct) {
+        selectedProduct.value = newProduct;
+      }
+    }, 500);
     toast.add({
       severity: 'success',
       summary: t('toastOptions.success'),
