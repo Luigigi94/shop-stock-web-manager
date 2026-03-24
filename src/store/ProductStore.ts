@@ -81,60 +81,13 @@ export const useProductStore = defineStore("ProductStore", () => {
     function clear() {
         if (stopListener) {
             stopListener();
-            stopListener = null; // Limpieza total
+            stopListener = null;
         }
     }
-
-    /*async function addProduct() {
-        const idProdGenerated = crypto.randomUUID();
-        const currentState = productUiState.value
-
-        const product: Products = {
-            idProduct: idProdGenerated,
-            nameProduct: currentState.nameProduct ?? '',
-            stock: Number(currentState.stock || 0),
-            descriptionProduct: currentState.descriptionProduct ?? '',
-            priceProduct: Number(currentState.priceProduct || 0),
-            idCategory: currentState.idCategory ?? '',
-            createdAt: Timestamp.now(),
-            isValid: currentState.isValid
-        }
-        currentState.isLoading = true
-        currentState.errorMessage = null
-        currentState.success = false
-
-        try {
-            let imageUrl = null;
-
-            if (currentState.fileToUpload) {
-                imageUrl = await ProductsRepository.uploadProductImage(
-                    currentState.fileToUpload,
-                    idProdGenerated
-                );
-            }
-
-            let prodWithImage = product
-            if (imageUrl) {
-                prodWithImage = {
-                    imageProduct: imageUrl,
-                    ...product,
-                }
-            }
-            await ProductsRepository.addProduct(prodWithImage)
-            currentState.isLoading = false
-            currentState.success = true
-            currentState.isModalVisible = false
-        } catch (error: any) {
-            currentState.isLoading = false
-            currentState.errorMessage = error.message || "Error adding product"
-        }
-    }*/
-
     async function addProduct(): Promise<string> {
         const idProdGenerated = crypto.randomUUID();
         const currentState = productUiState.value
 
-        // 1. Preparamos la URL de la imagen primero
         let imageUrl = '';
         if (currentState.fileToUpload) {
             imageUrl = await ProductsRepository.uploadProductImage(
@@ -143,8 +96,6 @@ export const useProductStore = defineStore("ProductStore", () => {
             );
         }
 
-        // 2. Armamos el objeto final DE UN SOLO GOLPE
-        // Evitamos andar haciendo copias de copias
         const productData: Products = {
             idProduct: idProdGenerated,
             nameProduct: currentState.nameProduct ?? '',
@@ -153,7 +104,7 @@ export const useProductStore = defineStore("ProductStore", () => {
             priceProduct: Number(currentState.priceProduct || 0),
             idCategory: currentState.idCategory ?? '',
             createdAt: Timestamp.now(),
-            isValid: currentState.isValid, // Directo del state
+            isValid: currentState.isValid,
             imageProduct: imageUrl || (currentState.imageProduct ?? '')
         }
 
@@ -162,7 +113,6 @@ export const useProductStore = defineStore("ProductStore", () => {
         currentState.success = false
 
         try {
-            // 3. Enviamos el objeto completo
             await ProductsRepository.addProduct(productData)
 
             currentState.isLoading = false
@@ -227,7 +177,6 @@ export const useProductStore = defineStore("ProductStore", () => {
             let prodWithImage
 
             if (currentState.fileToUpload && currentState.idProduct) {
-                // Esto sobrescribirá el archivo en Storage y nos dará la misma o una nueva URL
                 imageUrl = await ProductsRepository.uploadProductImage(
                     currentState.fileToUpload,
                     currentState.idProduct
