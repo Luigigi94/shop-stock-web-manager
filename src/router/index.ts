@@ -9,6 +9,7 @@ import ClientsView from "@/views/ClientsView.vue";
 import SuppliersView from "@/views/SuppliersView.vue";
 import NewSaleView from "@/views/NewSaleView.vue";
 import SupplierPurchaseView from "@/views/SupplierPurchaseView.vue";
+import ReserveView from "@/views/ReserveView.vue";
 
 // Nota: Para las rutas nuevas, puedes usar "Lazy Loading" para no saturar la app al inicio
 const routes = [
@@ -22,12 +23,12 @@ const routes = [
         path: NAVIGATE_MENU.SALES,
         name: "Sales",
         component: NewSaleView
-    },/*
+    },
     {
         path: NAVIGATE_MENU.RESERVES,
         name: "Reserves",
-        component: () => import("@/views/pos/ReservesView.vue")
-    },
+        component: ReserveView
+    },/*
     {
         path: NAVIGATE_MENU.SALESBYUSER,
         name: "SalesByUser",
