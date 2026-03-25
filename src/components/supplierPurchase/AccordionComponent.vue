@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {SupplierPurchase} from "@/types/models/SupplierPurchase";
 import {Accordion} from "primevue";
 import {AccordionPanel} from "primevue";
 import {AccordionHeader} from "primevue";

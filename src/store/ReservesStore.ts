@@ -4,11 +4,29 @@ import {useProductStore} from "@/store/ProductStore";
 import type {Unsubscribe} from "firebase/firestore";
 import {Reserves} from "@/types/models/Reserves";
 import {Timestamp} from "firebase/firestore";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {useClientStore} from "@/store/ClientStore";
 
 export const useReservesStore = defineStore("ReservesStore", () => {
     const productStore = useProductStore();
+
     let stopListener: Unsubscribe | null = null;
+    const enrichedReservesData = computed(() => {
+        return allReserves.value.map(reserve => {
+            const client = useClientStore().allClients.find(
+                (cli) => cli.idClient === reserve.idClient
+            )
+            const product = useProductStore().productsWithCategoryName.find(
+                (prod) => prod.idProduct === reserve.idProduct
+            )
+
+            return {
+                ...reserve,
+                clientData: client,
+                productData: product,
+            }
+        })
+    })
     const allReserves = ref<Reserves[]>([])
     interface ReservesUiState extends Reserves {
         isModalOpen: boolean;
@@ -189,6 +207,7 @@ export const useReservesStore = defineStore("ReservesStore", () => {
     return {
         reserveUiState,
         allReserves,
+        enrichedReservesData,
         getAllReserves,
         openModalReserve,
         addReserve,
