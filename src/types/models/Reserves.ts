@@ -1,14 +1,16 @@
 import firebase from "firebase/compat/app"
 import Timestamp = firebase.firestore.Timestamp
+import {ReserveItem} from "@/types/models/ReserveItem";
 
 export interface Reserves {
     idReserves: string
     idClient: string
-    idProduct: string
+    items: ReserveItem[]
     reservedAt: Timestamp | null
     endReserve: Date | null
-    priceAtReserve: number
-    qtyReserve: number
-    originalQty: number
-    amount: number
+    totalAmount: number;
+    totalCostAtReserve: number
+    isPaid: boolean;
+    isDelivered: boolean;
+    isActive: boolean
 }

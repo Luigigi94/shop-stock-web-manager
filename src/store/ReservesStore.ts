@@ -6,6 +6,7 @@ import {Reserves} from "@/types/models/Reserves";
 import {Timestamp} from "firebase/firestore";
 import {computed, ref} from "vue";
 import {useClientStore} from "@/store/ClientStore";
+import {getInitialReserveState, ReserveUiState} from "@/types/ui/ReserveUiState";
 
 export const useReservesStore = defineStore("ReservesStore", () => {
     const productStore = useProductStore();
@@ -16,9 +17,15 @@ export const useReservesStore = defineStore("ReservesStore", () => {
             const client = useClientStore().allClients.find(
                 (cli) => cli.idClient === reserve.idClient
             )
-            const product = useProductStore().productsWithCategoryName.find(
-                (prod) => prod.idProduct === reserve.idProduct
-            )
+            const product = reserve.items.map((item) =>{
+                const infoProduct = productStore.productsWithCategoryName.find( productWC => productWC.idProduct === item.idProduct)
+
+                return{
+                    nameProduct: infoProduct?.nameProduct || 'Not Found',
+                    imageProduct: infoProduct?.imageProduct || '',
+                    category: infoProduct?.categoryName || '',
+                }
+            })
 
             return {
                 ...reserve,
@@ -28,31 +35,13 @@ export const useReservesStore = defineStore("ReservesStore", () => {
         })
     })
     const allReserves = ref<Reserves[]>([])
-    interface ReservesUiState extends Reserves {
-        isModalOpen: boolean;
-        isLoading: boolean,
-        isEdit: boolean,
-        success: boolean,
-        errorMessage: string | null,
+    const reserveUiState = ref<ReserveUiState>(getInitialReserveState())
+
+    const clearState = () =>{
+        reserveUiState.value = getInitialReserveState()
     }
-    const reserveUiState = ref<ReservesUiState>({
-        idReserves: "",
-        idClient: "",
-        idProduct: "",
-        priceAtReserve: 0,
-        qtyReserve: 0,
-        originalQty: 0,
-        amount: 0,
-        reservedAt: null,
-        endReserve: null,
-        isModalOpen: false,
-        isLoading: false,
-        isEdit: false,
-        success: false,
-        errorMessage: null
-    })
     function openModalReserve(){
-        reserveUiState.value.isModalOpen = true;
+        reserveUiState.value.isCartOpen = true;
 
     }
     function clear() {
@@ -75,18 +64,20 @@ export const useReservesStore = defineStore("ReservesStore", () => {
     }
 
     function createReserveObject(idReserveGenerated: string = "") {
-        return {
-            idReserves: idReserveGenerated || reserveUiState.value.idReserves,
-            idClient: reserveUiState.value.idClient,
-            idProduct: reserveUiState.value.idProduct,
-            reservedAt: idReserveGenerated.length > 0 ? Timestamp.now() : reserveUiState.value.reservedAt,
-            endReserve: reserveUiState.value.endReserve,
-            priceAtReserve: reserveUiState.value.priceAtReserve,
-            qtyReserve: reserveUiState.value.qtyReserve,
-            originalQty: reserveUiState.value.originalQty,
-            amount: reserveUiState.value.amount,
+        const state = reserveUiState.value;
 
-        }
+        return {
+            idReserves: idReserveGenerated || state.id || "",
+            idClient: state.clientId || "",
+            items: [...state.items],
+            reservedAt: idReserveGenerated.length > 0 ? Timestamp.now() : state.reservedAt,
+            endReserve: state.endReserve,
+            totalAmount: state.totalAmount,
+            totalCostAtReserve: state.totalCostAtReserve,
+            isPaid: state.isPaid,
+            isDelivered: state.isDelivered,
+            isActive: state.isActive
+        };
     }
 
     function initialRequest() {
@@ -96,7 +87,7 @@ export const useReservesStore = defineStore("ReservesStore", () => {
     }
     function requestOk() {
         reserveUiState.value.isLoading = false;
-        reserveUiState.value.isModalOpen = false;
+        reserveUiState.value.isCartOpen = false;
         reserveUiState.value.success = true
     }
 
@@ -124,16 +115,16 @@ export const useReservesStore = defineStore("ReservesStore", () => {
         try{
             const reserve = await ReserveRepository.getReserveById(idReserve);
             if (reserve) {
-                reserveUiState.value.idReserves = reserve.idReserves;
-                reserveUiState.value.idReserves = reserve.idReserves
-                reserveUiState.value.idClient = reserve.idClient
-                reserveUiState.value.idProduct = reserve.idProduct
+                reserveUiState.value.id = reserve.idReserves
+                reserveUiState.value.clientId = reserve.idClient
+                reserveUiState.value.items = [...reserve.items]
                 reserveUiState.value.reservedAt = reserve.reservedAt
                 reserveUiState.value.endReserve = reserve.endReserve
-                reserveUiState.value.priceAtReserve = reserve.priceAtReserve
-                reserveUiState.value.qtyReserve = reserve.qtyReserve
-                reserveUiState.value.originalQty = reserve.originalQty
-                reserveUiState.value.amount = reserve.amount
+                reserveUiState.value.totalAmount = reserve.totalAmount
+                reserveUiState.value.totalCostAtReserve = Number(reserve.totalCostAtReserve)
+                reserveUiState.value.isPaid = reserve.isPaid
+                reserveUiState.value.isDelivered = reserve.isDelivered
+                reserveUiState.value.isActive = reserve.isActive
                 requestOk()
                 return reserve
             }
@@ -174,34 +165,6 @@ export const useReservesStore = defineStore("ReservesStore", () => {
             console.error(e.message)
             return false
         }
-    }
-
-    function clearState() {
-        const currentState = reserveUiState.value;
-
-        // 1. Identificadores y Relaciones
-        currentState.idReserves = "";
-        currentState.idClient = "";
-        currentState.idProduct = "";
-
-        // 2. Fechas (Reseteadas a null como el modelo manda)
-        currentState.reservedAt = null;
-        currentState.endReserve = null;
-
-        // 3. Valores Numéricos
-        currentState.priceAtReserve = 0;
-        currentState.qtyReserve = 0;
-        currentState.originalQty = 0;
-        currentState.amount = 0;
-
-        // 4. Banderas de la Interfaz (UI State)
-        currentState.isModalOpen = false;
-        currentState.isLoading = false;
-        currentState.isEdit = false;
-        currentState.success = false;
-        currentState.errorMessage = null;
-
-        console.log("🧹 State de Reservas: ¡Tabula Rasa! Todo en default y null.");
     }
 
     return {
